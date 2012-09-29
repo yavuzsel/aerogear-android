@@ -1,0 +1,16 @@
+########## Intellij #########
+
+*.iml
+.idea/
+out/
+
+########## Eclipse ##########
+
+.classpath
+.project
+classes/
+
+########### Maven ###########
+
+target/
+
