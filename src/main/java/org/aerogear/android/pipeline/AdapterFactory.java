@@ -21,7 +21,7 @@ import org.aerogear.android.core.HttpRestProvider;
 
 import java.net.URL;
 
-import static org.aerogear.android.pipeline.Type.*;
+import static org.aerogear.android.pipeline.Type.REST;
 
 final class AdapterFactory {
 
@@ -31,7 +31,7 @@ final class AdapterFactory {
         if (type.equals(REST)) {
             return new RestAdapter(klass, new HttpRestProvider(url));
         }
-        throw new UnsupportedOperationException("Type is not supported yet");
+        throw new IllegalArgumentException("Type is not supported yet");
     }
 
 }
