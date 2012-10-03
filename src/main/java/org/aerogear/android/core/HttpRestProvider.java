@@ -43,29 +43,44 @@ public final class HttpRestProvider implements HttpProvider {
         return url;
     }
 
-    public String get() {
-        return execute(new HttpGet(url.toString()));
+    public String get() throws RuntimeException {
+        try {
+            return execute(new HttpGet(url.toString()));
+        } catch (IOException e) {
+            Log.e(TAG, "Error on GET of " + url, e);
+            throw new RuntimeException(e);
+        }
     }
 
-    public void post(String data) {
+    public String post(String data) throws RuntimeException {
         HttpPost post = new HttpPost(url.toString());
         addBodyRequest(post, data);
-        execute(post);
-    }
-
-    public void put(String id, String data) {
-        HttpPut put = new HttpPut(appendId(id));
-        addBodyRequest(put, data);
-        execute(put);
-    }
-
-    public void delete(String id) {
-        HttpDelete delete = new HttpDelete(appendId(id));
         try {
-            client.execute(delete);
+            return execute(post);
         } catch (IOException e) {
-            // TODO: Real error handling
+            Log.e(TAG, "Error on POST of " + url, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String put(String id, String data) throws RuntimeException {
+        HttpPut put = new HttpPut(appendIdToURL(id));
+        addBodyRequest(put, data);
+        try {
+            return execute(put);
+        } catch (IOException e) {
+            Log.e(TAG, "Error on PUT of " + url, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String delete(String id) throws RuntimeException {
+        HttpDelete delete = new HttpDelete(appendIdToURL(id));
+        try {
+            return execute(delete);
+        } catch (IOException e) {
             Log.e(TAG, "Error on DELETE of " + url, e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -75,19 +90,13 @@ public final class HttpRestProvider implements HttpProvider {
         requestBase.setEntity(entity);
     }
 
-    private String execute(HttpRequestBase method) {
-        try {
-            method.setHeader("Accept", "application/json");
-            method.setHeader("Content-type", "application/json");
-            return EntityUtils.toString(client.execute(method).getEntity());
-        } catch (IOException e) {
-            // TODO: Real error handling
-            Log.e(TAG, "Error on " + method.getMethod() + " of " + method.getURI().toString(), e);
-            return null;
-        }
+    private String execute(HttpRequestBase method) throws IOException {
+        method.setHeader("Accept", "application/json");
+        method.setHeader("Content-type", "application/json");
+        return EntityUtils.toString(client.execute(method).getEntity());
     }
 
-    private String appendId(String id) {
+    private String appendIdToURL(String id) {
         StringBuilder newUrl = new StringBuilder(url.toString());
         if( !url.toString().endsWith("/")) {
             newUrl.append("/");

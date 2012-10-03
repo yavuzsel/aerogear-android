@@ -22,9 +22,9 @@ import java.net.URL;
 public interface HttpProvider {
 
     public URL getUrl();
-    public String get();
-    public void post(String data);
-    public void put(String id, String data);
-    public void delete(String id);
+    public String get() throws RuntimeException;
+    public String post(String data) throws RuntimeException;
+    public String put(String id, String data) throws RuntimeException;
+    public String delete(String id) throws RuntimeException;
 
 }

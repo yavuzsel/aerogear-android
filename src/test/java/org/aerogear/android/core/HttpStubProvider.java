@@ -17,9 +17,6 @@
 
 package org.aerogear.android.core;
 
-import android.net.Uri;
-import org.aerogear.android.core.HttpProvider;
-
 import java.net.URL;
 
 public class HttpStubProvider implements HttpProvider {
@@ -38,13 +35,16 @@ public class HttpStubProvider implements HttpProvider {
         return null;
     }
 
-    public void post(String data) {
+    public String post(String data) {
+        return null;
     }
 
-    public void put(String id, String data) {
+    public String put(String id, String data) {
+        return null;
     }
 
-    public void delete(String id) {
+    public String delete(String id) {
+        return null;
     }
 
 }
