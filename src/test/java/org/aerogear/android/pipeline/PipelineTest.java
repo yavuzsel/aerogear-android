@@ -18,18 +18,13 @@
 package org.aerogear.android.pipeline;
 
 import org.aerogear.android.helper.Data;
-import org.aerogear.android.pipeline.Pipe;
-import org.aerogear.android.pipeline.Pipeline;
-import org.aerogear.android.pipeline.Type;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.*;
 
 public class PipelineTest {
 
@@ -102,6 +97,13 @@ public class PipelineTest {
     }
 
     @Test
+    public void testPipeTypeProperty() {
+        Pipeline pipeline = new Pipeline("tasks", Data.class, url, Type.REST);
+        Pipe tasksPipe = pipeline.get("tasks");
+        assertEquals("verifying the (default) type", Type.REST, tasksPipe.getType());
+    }
+
+    @Test
     public void testEndpointURL() {
         Pipeline pipeline = new Pipeline("bad name", Data.class, url, "projects");
         Pipe myPipe = pipeline.get("bad name");
@@ -117,7 +119,28 @@ public class PipelineTest {
     }
 
     @Test
+    public void testAddPipe() throws MalformedURLException {
+        Pipeline pipeline = new Pipeline("projects", Data.class, url);
+
+        pipeline.add("foo", Data.class);
+
+        Pipe newPipe = pipeline.get("foo");
+        assertEquals("verifying the given URL", "http://server.com/context/foo/", newPipe.getUrl().toString());
+        assertEquals("verifying the type", Type.REST, newPipe.getType());
+    }
+
+    @Test
     public void testAddPipeWithEndpoint() throws MalformedURLException {
+        Pipeline pipeline = new Pipeline("projects", Data.class, url);
+
+        pipeline.add("bad name", Data.class, "foo");
+
+        Pipe newPipe = pipeline.get("bad name");
+        assertEquals("verifying the given URL", "http://server.com/context/foo/", newPipe.getUrl().toString());
+    }
+
+    @Test
+    public void testAddPipeWithURLAndEndpoint() throws MalformedURLException {
         Pipeline pipeline = new Pipeline("projects", Data.class, url);
 
         URL otherURL = new URL("http://server.com/otherContext/");
@@ -126,6 +149,7 @@ public class PipelineTest {
         Pipe newPipe = pipeline.get("bad name");
         assertEquals("verifying the given URL", "http://server.com/otherContext/foo/", newPipe.getUrl().toString());
     }
+
 
     @Test
     public void testAddWithRestType() throws MalformedURLException {

@@ -31,10 +31,21 @@ public class Pipeline {
     private Map<String, Pipe> pipes = new HashMap<String, Pipe>();
 
     /**
+     * An initializer method to instantiate the Pipeline,
+     *
+     * @param baseURL the URL of the server
+     *
+     */
+    public Pipeline(URL baseURL) {
+        this.baseURL = baseURL;
+    }
+
+    /**
      * An initializer method to instantiate the Pipeline, which
      * contains a RESTful name.
      *
      * @param name the endpoint name of the first Pipe object
+     * @param klass class that represents the model of the pipe
      * @param baseURL the URL of the server
      *
      */
@@ -47,6 +58,7 @@ public class Pipeline {
      * contains a name object. The actual type is determined by the type argument.
      *
      * @param name the endpoint name of the first Pipe object
+     * @param klass class that represents the model of the pipe
      * @param baseURL the URL of the server
      * @param type the type of the actual pipe/connection
      *
@@ -60,6 +72,7 @@ public class Pipeline {
      * contains a RESTful name. The RESTful endpoint is determined by the endpoint argument.
      *
      * @param name the logical name of the first Pipe object
+     * @param klass class that represents the model of the pipe
      * @param baseURL the URL of the server
      * @param endpoint the serivce endpoint name
      *
@@ -68,6 +81,17 @@ public class Pipeline {
         this(name, klass, baseURL, endpoint, Type.REST);
     }
 
+    /**
+     * An initializer method to instantiate the Pipeline, which
+     * contains a RESTful name. The RESTful endpoint is determined by the endpoint argument.
+     *
+     * @param name the logical name of the first Pipe object
+     * @param klass class that represents the model of the pipe
+     * @param baseURL the URL of the server
+     * @param endpoint the serivce endpoint name
+     * @param type the type of the actual pipe/connection
+     *
+     */
     public Pipeline(String name, Class klass, URL baseURL, String endpoint, Type type) {
         this.baseURL = baseURL;
         this.add(name, klass, baseURL, endpoint, type);
@@ -78,6 +102,8 @@ public class Pipeline {
      * leveraging the given baseURL argument.
      *
      * @param name the endpoint name of the actual pipe
+     * @param klass class that represents the model of the pipe
+     *
      * @return the new created Pipe object
      */
     public Pipe add(String name, Class klass) {
@@ -89,7 +115,9 @@ public class Pipeline {
      * leveraging the given baseURL argument.
      *
      * @param name     the name of the actual pipe
+     * @param klass class that represents the model of the pipe
      * @param endpoint the serivce endpoint, if differs from the pipe name.
+     *
      * @return the new created Pipe object
      */
     public Pipe add(String name, Class klass, String endpoint) {
@@ -101,6 +129,7 @@ public class Pipeline {
      * leveraging the given baseURL argument.
      *
      * @param name the endpoint name of the actual pipe
+     * @param klass class that represents the model of the pipe
      * @param type the type of the actual pipe/connection
      *
      * @return the new created Pipe object
@@ -114,6 +143,7 @@ public class Pipeline {
      * leveraging the given baseURL argument.
      *
      * @param name the logical name of the actual pipe
+     * @param klass class that represents the model of the pipe
      * @param endpoint the serivce endpoint, if differs from the pipe name.
      * @param type the type of the actual pipe/connection
      *
@@ -127,6 +157,7 @@ public class Pipeline {
      * Adds a new RESTful pipe to the Pipeline object
      *
      * @param name the endpoint name of the actual pipe
+     * @param klass class that represents the model of the pipe
      * @param baseURL the URL of the server
      *
      * @return the new created Pipe object
@@ -139,6 +170,7 @@ public class Pipeline {
      * Adds a new RESTful pipe to the Pipeline object
      *
      * @param name the name of the actual pipe
+     * @param klass class that represents the model of the pipe
      * @param baseURL the URL of the server
      * @param endpoint the serivce endpoint, if differs from the pipe name.
      *
@@ -152,6 +184,7 @@ public class Pipeline {
      * Adds a new pipe (server connection) to the Pipeline object
      *
      * @param name the endpoint name of the actual pipe
+     * @param klass class that represents the model of the pipe
      * @param baseURL the URL of the server
      * @param type the type of the actual pipe/connection
      *
@@ -165,6 +198,7 @@ public class Pipeline {
      * Adds a new pipe (server connection) to the Pipeline object
      *
      * @param name the logical name of the actual pipe
+     * @param klass class that represents the model of the pipe
      * @param baseURL the URL of the server
      * @param endpoint the serivce endpoint, if differs from the pipe name.
      * @param type the type of the actual pipe/connection
