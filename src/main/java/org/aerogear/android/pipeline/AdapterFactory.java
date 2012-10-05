@@ -15,10 +15,23 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.query;
+package org.aerogear.android.pipeline;
 
-/**
- * Placeholder for query conditions
- */
-public class Conditions {
+import org.aerogear.android.core.HttpRestProvider;
+
+import java.net.URL;
+
+import static org.aerogear.android.pipeline.Type.REST;
+
+final class AdapterFactory {
+
+    private AdapterFactory() {}
+
+    public static Pipe createPipe(Type type, Class klass, URL url) {
+        if (type.equals(REST)) {
+            return new RestAdapter(klass, new HttpRestProvider(url));
+        }
+        throw new IllegalArgumentException("Type is not supported yet");
+    }
+
 }
