@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.aerogear.android.core.HttpProvider;
 
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     }
 
     public T[] read() throws Exception {
-        return (T[]) gson.fromJson(httpProvider.get(), exemplar);
+        return (T[]) gson.fromJson(new InputStreamReader(httpProvider.get()), exemplar);
     }
 
     public List<T> getAll(List<T> existingList) throws Exception {

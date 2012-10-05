@@ -17,14 +17,15 @@
 
 package org.aerogear.android.core;
 
+import java.io.InputStream;
 import java.net.URL;
 
 public interface HttpProvider {
 
     public URL getUrl();
-    public String get() throws RuntimeException;
-    public String post(String data) throws RuntimeException;
-    public String put(String id, String data) throws RuntimeException;
-    public String delete(String id) throws RuntimeException;
+    public InputStream get() throws RuntimeException;
+    public InputStream post(String data) throws RuntimeException;
+    public InputStream put(String id, String data) throws RuntimeException;
+    public InputStream delete(String id) throws RuntimeException;
 
 }

@@ -26,6 +26,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 public final class HttpRestProvider implements HttpProvider {
@@ -43,7 +44,7 @@ public final class HttpRestProvider implements HttpProvider {
         return url;
     }
 
-    public String get() throws RuntimeException {
+    public InputStream get() throws RuntimeException {
         try {
             return execute(new HttpGet(url.toString()));
         } catch (IOException e) {
@@ -52,7 +53,7 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    public String post(String data) throws RuntimeException {
+    public InputStream post(String data) throws RuntimeException {
         HttpPost post = new HttpPost(url.toString());
         addBodyRequest(post, data);
         try {
@@ -63,7 +64,7 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    public String put(String id, String data) throws RuntimeException {
+    public InputStream put(String id, String data) throws RuntimeException {
         HttpPut put = new HttpPut(appendIdToURL(id));
         addBodyRequest(put, data);
         try {
@@ -74,7 +75,7 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    public String delete(String id) throws RuntimeException {
+    public InputStream delete(String id) throws RuntimeException {
         HttpDelete delete = new HttpDelete(appendIdToURL(id));
         try {
             return execute(delete);
@@ -90,10 +91,10 @@ public final class HttpRestProvider implements HttpProvider {
         requestBase.setEntity(entity);
     }
 
-    private String execute(HttpRequestBase method) throws IOException {
+    private InputStream execute(HttpRequestBase method) throws IOException {
         method.setHeader("Accept", "application/json");
         method.setHeader("Content-type", "application/json");
-        return EntityUtils.toString(client.execute(method).getEntity());
+        return client.execute(method).getEntity().getContent();
     }
 
     private String appendIdToURL(String id) {

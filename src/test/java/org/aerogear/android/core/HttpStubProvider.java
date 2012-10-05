@@ -17,6 +17,7 @@
 
 package org.aerogear.android.core;
 
+import java.io.InputStream;
 import java.net.URL;
 
 public class HttpStubProvider implements HttpProvider {
@@ -31,19 +32,19 @@ public class HttpStubProvider implements HttpProvider {
         return url;
     }
 
-    public String get() {
+    public InputStream get() {
         return null;
     }
 
-    public String post(String data) {
+    public InputStream post(String data) {
         return null;
     }
 
-    public String put(String id, String data) {
+    public InputStream put(String id, String data) {
         return null;
     }
 
-    public String delete(String id) {
+    public InputStream delete(String id) {
         return null;
     }
 
