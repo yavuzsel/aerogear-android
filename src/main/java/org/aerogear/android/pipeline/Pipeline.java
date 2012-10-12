@@ -41,6 +41,20 @@ public class Pipeline {
     }
 
     /**
+     * An initializer method to instantiate the Pipeline,
+     *
+     * @param baseURL the URL of the server
+     *
+     */
+    public Pipeline(String baseURL) {
+        try {
+            this.baseURL = new URL(baseURL);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    /**
      * An initializer method to instantiate the Pipeline, which
      * contains a RESTful name.
      *

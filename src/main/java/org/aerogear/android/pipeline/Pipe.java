@@ -17,6 +17,8 @@
 
 package org.aerogear.android.pipeline;
 
+import org.aerogear.android.Callback;
+
 import java.net.URL;
 import java.util.List;
 
@@ -25,11 +27,11 @@ public interface Pipe<T> {
     Type getType();
     URL getUrl();
 
-    List<T> getAll(List<T> existingList) throws Exception;
+    void getAll(List<T> existingList, Callback<List<T>> callback);
 
-    T[] read() throws Exception;
+    void read(Callback<T[]> callback);
     void readWithFilter();
-    void save(T item) throws Exception;
-    void remove(String id) throws Exception;
+    void save(T item, Callback<T> callback);
+    void remove(String id, Callback<Void> callback);
 
 }

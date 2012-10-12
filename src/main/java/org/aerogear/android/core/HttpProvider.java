@@ -23,7 +23,7 @@ import java.net.URL;
 public interface HttpProvider {
 
     public URL getUrl();
-    public InputStream get() throws RuntimeException;
+    public InputStream get() throws Exception;
     public InputStream post(String data) throws RuntimeException;
     public InputStream put(String id, String data) throws RuntimeException;
     public InputStream delete(String id) throws RuntimeException;
