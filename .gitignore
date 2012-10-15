@@ -13,4 +13,6 @@ classes/
 ########### Maven ###########
 
 target/
+tmp/
+
 
