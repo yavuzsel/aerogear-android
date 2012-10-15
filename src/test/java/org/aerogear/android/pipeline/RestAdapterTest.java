@@ -17,16 +17,19 @@
 
 package org.aerogear.android.pipeline;
 
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.aerogear.android.core.HttpStubProvider;
 import org.aerogear.android.helper.Data;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import static junit.framework.Assert.assertEquals;
 
+@RunWith(RobolectricTestRunner.class)
 public class RestAdapterTest {
 
     private URL url;
