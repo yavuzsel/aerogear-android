@@ -22,7 +22,6 @@ import com.google.gson.Gson;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HttpProvider;
 
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             public void run() {
                 final T[] result;
                 try {
-                    result = gson.fromJson(new InputStreamReader(httpProvider.get()), exemplar);
+                    result = gson.fromJson(new String(httpProvider.get()), exemplar);
                 } catch (Exception e) {
                     postFailure(callback, e);
                     return;

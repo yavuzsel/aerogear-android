@@ -15,4 +15,7 @@ classes/
 target/
 tmp/
 
+########### Android ###########
+
+gen/
 

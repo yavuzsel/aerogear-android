@@ -32,19 +32,19 @@ public class HttpStubProvider implements HttpProvider {
         return url;
     }
 
-    public InputStream get() {
+    public byte [] get() {
         return null;
     }
 
-    public InputStream post(String data) {
+    public byte [] post(String data) {
         return null;
     }
 
-    public InputStream put(String id, String data) {
+    public byte [] put(String id, String data) {
         return null;
     }
 
-    public InputStream delete(String id) {
+    public byte [] delete(String id) {
         return null;
     }
 

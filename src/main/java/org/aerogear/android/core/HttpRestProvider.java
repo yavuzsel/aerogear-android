@@ -20,13 +20,18 @@ package org.aerogear.android.core;
 import android.util.Log;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 
 public final class HttpRestProvider implements HttpProvider {
@@ -34,7 +39,15 @@ public final class HttpRestProvider implements HttpProvider {
     private static final String TAG = "AeroGear";
 
     private final URL url;
-    private static final HttpClient client = new DefaultHttpClient();
+    private static HttpClient client;
+    static {
+        HttpParams params = new BasicHttpParams();
+        SchemeRegistry registry = new SchemeRegistry();
+        registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+        final ThreadSafeClientConnManager connManager =
+                new ThreadSafeClientConnManager(params, registry);
+        client = new DefaultHttpClient(connManager, params);
+    }
 
     public HttpRestProvider(URL url) {
         this.url = url;
@@ -44,7 +57,7 @@ public final class HttpRestProvider implements HttpProvider {
         return url;
     }
 
-    public InputStream get() throws RuntimeException {
+    public byte [] get() throws RuntimeException {
         try {
             return execute(new HttpGet(url.toString()));
         } catch (IOException e) {
@@ -53,7 +66,7 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    public InputStream post(String data) throws RuntimeException {
+    public byte [] post(String data) throws RuntimeException {
         HttpPost post = new HttpPost(url.toString());
         addBodyRequest(post, data);
         try {
@@ -64,7 +77,7 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    public InputStream put(String id, String data) throws RuntimeException {
+    public byte [] put(String id, String data) throws RuntimeException {
         HttpPut put = new HttpPut(appendIdToURL(id));
         addBodyRequest(put, data);
         try {
@@ -75,7 +88,7 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    public InputStream delete(String id) throws RuntimeException {
+    public byte [] delete(String id) throws RuntimeException {
         HttpDelete delete = new HttpDelete(appendIdToURL(id));
         try {
             return execute(delete);
@@ -91,10 +104,10 @@ public final class HttpRestProvider implements HttpProvider {
         requestBase.setEntity(entity);
     }
 
-    private InputStream execute(HttpRequestBase method) throws IOException {
+    private byte [] execute(HttpRequestBase method) throws IOException {
         method.setHeader("Accept", "application/json");
         method.setHeader("Content-type", "application/json");
-        return client.execute(method).getEntity().getContent();
+        return EntityUtils.toByteArray(client.execute(method).getEntity());
     }
 
     private String appendIdToURL(String id) {
