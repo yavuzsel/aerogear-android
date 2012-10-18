@@ -7,8 +7,12 @@ out/
 ########## Eclipse ##########
 
 .classpath
+.settings/
 .project
 classes/
+libs/
+bin/
+project.properties
 
 ########### Maven ###########
 
@@ -18,4 +22,4 @@ tmp/
 ########### Android ###########
 
 gen/
-
+lint.xml
