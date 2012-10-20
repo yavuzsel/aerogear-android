@@ -17,7 +17,7 @@
 
 package org.aerogear.android.pipeline;
 
-import android.os.Handler;
+import android.os.AsyncTask;
 import com.google.gson.Gson;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HttpProvider;
@@ -27,8 +27,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import static org.aerogear.android.pipeline.Type.REST;
 
@@ -37,19 +35,14 @@ import static org.aerogear.android.pipeline.Type.REST;
  */
 public final class RestAdapter<T> implements Pipe<T> {
 
-    private static Gson gson = new Gson();
-    private static ThreadPoolExecutor threadPool;
+    private final static Gson gson = new Gson();
 
     private final Class<T[]> exemplar;
     private final HttpProvider httpProvider;
-    private Handler handler;
 
     public RestAdapter(Class<T[]> exemplar, HttpProvider httpProvider) {
         this.exemplar = exemplar;
         this.httpProvider = httpProvider;
-
-        handler = new Handler(); // TODO: Confirm this is on a Looper-enabled thread
-        threadPool = (ThreadPoolExecutor)Executors.newCachedThreadPool();
     }
 
     public Type getType() {
@@ -61,20 +54,25 @@ public final class RestAdapter<T> implements Pipe<T> {
     }
 
     public void read(final Callback<T[]> callback) {
-        Runnable runner = new Runnable() {
+        new AsyncTask<Void, Void, AsyncTaskResult<T[]>>() {
             @Override
-            public void run() {
-                final T[] result;
+            protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                    result = gson.fromJson(new String(httpProvider.get()), exemplar);
+                    return new AsyncTaskResult(gson.fromJson(new String(httpProvider.get()), exemplar));
                 } catch (Exception e) {
-                    postFailure(callback, e);
-                    return;
+                    return new AsyncTaskResult(e);
                 }
-                postSuccess(callback, result);
             }
-        };
-        threadPool.submit(runner);
+
+            @Override
+            protected void onPostExecute(AsyncTaskResult<T[]> asyncTaskResult) {
+                if ( asyncTaskResult.getError() != null ) {
+                    callback.onFailure(asyncTaskResult.getError());
+                } else {
+                    callback.onSuccess(asyncTaskResult.getResult());
+                }
+            }
+        }.execute();
     }
 
     public void getAll(final List<T> existingList, final Callback<List<T>> callback) {
@@ -88,19 +86,19 @@ public final class RestAdapter<T> implements Pipe<T> {
                     ret.clear();
                 }
                 Collections.addAll(ret, data);
-                postSuccess(callback, ret);
+                callback.onSuccess(ret);
             }
 
             @Override
             public void onFailure(Exception e) {
-                postFailure(callback, e);
+                callback.onFailure(e);
             }
         };
 
         try {
             read(rawCallback);
         } catch (Exception e) {
-            postFailure(callback, e);
+            callback.onFailure(e);
         }
     }
 
@@ -108,82 +106,90 @@ public final class RestAdapter<T> implements Pipe<T> {
         // TODO implement
     }
 
-    public void save(final T dataObject, final Callback<T> callback) {
-        Runnable runnable = new Runnable() {
+    public void save(final T data, final Callback<T> callback) {
+
+        final String id;
+
+        // TODO: Make "id" field configurable
+        try {
+            Method idGetter = data.getClass().getMethod("getId");
+            Object result = idGetter.invoke(data);
+            id = result == null ? null : result.toString();
+        } catch (Exception e) {
+            callback.onFailure(e);
+            return;
+        }
+
+        new AsyncTask<Void, Void, AsyncTaskResult<T>>() {
             @Override
-            public void run() {
-                Method idGetter = null;
+            protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                    idGetter = dataObject.getClass().getMethod("getId");
-                } catch (NoSuchMethodException e) {
-                    postFailure(callback, e);
-                }
-
-                Object result = null;
-                try {
-                    result = idGetter.invoke(dataObject);
-                } catch (Exception e) {
-                    postFailure(callback, e);
-                }
-                String id = result == null ? null : result.toString();
-
-                try {
-                    // TODO: Make "id" field configurable
                     if (id == null || id.length() == 0) {
-                        httpProvider.post(gson.toJson(dataObject));
+                        httpProvider.post(gson.toJson(data));
                     } else {
-                        httpProvider.put(id, gson.toJson(dataObject));
+                        httpProvider.put(id, gson.toJson(data));
                     }
-                    postSuccess(callback, null);
-                } catch (RuntimeException e) {
-                    postFailure(callback, e);
+                    return new AsyncTaskResult(null);
+                } catch (Exception e) {
+                    return new AsyncTaskResult(e);
                 }
             }
-        };
-        threadPool.submit(runnable);
+
+            @Override
+            protected void onPostExecute(AsyncTaskResult<T> asyncTaskResult) {
+                if ( asyncTaskResult.getError() != null ) {
+                    callback.onFailure(asyncTaskResult.getError());
+                } else {
+                    callback.onSuccess(asyncTaskResult.getResult());
+                }
+            }
+        }.execute();
+
     }
 
     public void remove(final String id, final Callback<Void> callback) {
-        threadPool.submit(new Runnable() {
+        new AsyncTask<Void, Void, AsyncTaskResult<byte[]>>() {
             @Override
-            public void run() {
+            protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                    httpProvider.delete(id);
-                    callback.onSuccess(null);
-                } catch (RuntimeException e) {
-                    callback.onFailure(e);
+                    return new AsyncTaskResult(httpProvider.delete(id));
+                } catch (Exception e) {
+                    return new AsyncTaskResult(e);
                 }
             }
-        });
+
+            @Override
+            protected void onPostExecute(AsyncTaskResult<byte[]> asyncTaskResult) {
+                if ( asyncTaskResult.getError() != null ) {
+                    callback.onFailure(asyncTaskResult.getError());
+                } else {
+                    callback.onSuccess(null);
+                }
+            }
+        }.execute();
     }
 
-    /**
-     * Indicate success by invoking the Callback's onSuccess (on the main thread)
-     *
-     * @param callback the user's Callback
-     * @param data the result data
-     */
-    private <J> void postSuccess(final Callback<J> callback, final J data) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                callback.onSuccess(data);
-            }
-        });
+    private class AsyncTaskResult<T> {
+
+        private T result;
+        private Exception error;
+
+        public AsyncTaskResult(T result) {
+            this.result = result;
+        }
+
+        public AsyncTaskResult(Exception error) {
+            this.error = error;
+        }
+
+        public T getResult() {
+            return result;
+        }
+
+        public Exception getError() {
+            return error;
+        }
+
     }
 
-    /**
-     * Indicate failure by invoking the Callback's onFailure (on the main thread)
-     *
-     * @param callback the user's Callback
-     * @param e an Exception to be passed to the user
-     */
-    private <J> void postFailure(final Callback<J> callback, final Exception e) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                callback.onFailure(e);
-            }
-        });
-    }
 }
