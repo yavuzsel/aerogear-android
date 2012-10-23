@@ -19,13 +19,14 @@ package org.aerogear.android.impl.pipeline;
 
 import android.os.AsyncTask;
 import com.google.gson.Gson;
+import java.lang.reflect.Array;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.pipeline.Pipe;
 
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,35 +37,52 @@ final class RestAdapter<T> implements Pipe<T> {
 
     private final static Gson gson = new Gson();
 
-    private final Class<T[]> exemplar;
+    /**
+     * A class of the Generic type this pipe wraps.
+     * This is used by GSON for deserializing.
+     */
+    private final Class<T> klass;
+    
+    /**
+     * A class of the Generic collection type this pipe wraps.
+     * This is used by JSON for deserializing collections.
+     */
+    private final Class<T[]> arrayKlass;
     private final HttpProvider httpProvider;
 
-    public RestAdapter(Class<T[]> exemplar, HttpProvider httpProvider) {
-        this.exemplar = exemplar;
+    public RestAdapter(Class<T> klass, HttpProvider httpProvider) {
+        this.klass = klass;
+        this.arrayKlass = asArrayClass(klass);
         this.httpProvider = httpProvider;
     }
 
+    @Override
     public Type getType() {
         return Type.REST;
     }
 
+    @Override
     public URL getUrl() {
         return httpProvider.getUrl();
     }
 
-    public void read(final Callback<T[]> callback) {
-        new AsyncTask<Void, Void, AsyncTaskResult<T[]>>() {
+    @Override
+    public void read(final Callback<List<T>> callback) {
+        new AsyncTask<Void, Void, AsyncTaskResult<List<T>>>() {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                    return new AsyncTaskResult(gson.fromJson(new String(httpProvider.get()), exemplar));
+                    
+                    T[] resultArray = gson.fromJson(new String(httpProvider.get()), arrayKlass);
+                    
+                    return new AsyncTaskResult(Arrays.asList(resultArray));
                 } catch (Exception e) {
                     return new AsyncTaskResult(e);
                 }
             }
 
             @Override
-            protected void onPostExecute(AsyncTaskResult<T[]> asyncTaskResult) {
+            protected void onPostExecute(AsyncTaskResult<List<T>> asyncTaskResult) {
                 if ( asyncTaskResult.getError() != null ) {
                     callback.onFailure(asyncTaskResult.getError());
                 } else {
@@ -74,37 +92,14 @@ final class RestAdapter<T> implements Pipe<T> {
         }.execute();
     }
 
-    public void getAll(final List<T> existingList, final Callback<List<T>> callback) {
-        Callback<T[]> rawCallback = new Callback<T[]>() {
-            @Override
-            public void onSuccess(T[] data) {
-                List<T> ret = existingList;
-                if (ret == null) {
-                    ret = new ArrayList<T>(data.length);
-                } else {
-                    ret.clear();
-                }
-                Collections.addAll(ret, data);
-                callback.onSuccess(ret);
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                callback.onFailure(e);
-            }
-        };
-
-        try {
-            read(rawCallback);
-        } catch (Exception e) {
-            callback.onFailure(e);
-        }
-    }
-
+    @Override
     public void readWithFilter() {
         // TODO implement
+        throw new IllegalStateException("Not yet implemented");
     }
 
+    @Override
     public void save(final T data, final Callback<T> callback) {
 
         final String id;
@@ -146,6 +141,7 @@ final class RestAdapter<T> implements Pipe<T> {
 
     }
 
+    @Override
     public void remove(final String id, final Callback<Void> callback) {
         new AsyncTask<Void, Void, AsyncTaskResult<byte[]>>() {
             @Override
@@ -166,6 +162,19 @@ final class RestAdapter<T> implements Pipe<T> {
                 }
             }
         }.execute();
+    }
+
+    /**
+     * 
+     * This will return a class of the type T[] from a given class.
+     * When we read from the AG pipe, Java needs a reference to a 
+     * generic array type.
+     * 
+     * @param klass
+     * @return 
+     */
+    private Class<T[]> asArrayClass(Class<T> klass) {
+        return (Class<T[]>) ((T[])Array.newInstance(klass, 1)).getClass();
     }
 
     private class AsyncTaskResult<T> {

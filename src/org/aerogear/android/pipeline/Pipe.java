@@ -48,21 +48,13 @@ public interface Pipe<T> {
     /**
      * Reads all the data from the underlying server connection.
      *
-     * @param existingList @TODO no need for this param...
-     *
      * @param callback The callback for consuming the result from the {@link Pipe} invocation.
      */
-    void getAll(List<T> existingList, Callback<List<T>> callback);
+    void read(Callback<List<T>> callback);
 
-    /**
-     * Reads all the data from the underlying server connection.
-     *
-     * @param callback The callback for consuming the result from the {@link Pipe} invocation.
-     */
-    void read(Callback<T[]> callback);
-
-    /**
-     * @TODO......
+   
+   /**
+     * @TODO
      * Reads all the data that matches a given filter creteria from the underlying server connection.
      */
     void readWithFilter();
