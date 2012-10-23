@@ -73,6 +73,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         return Types.REST;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -93,7 +94,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                     byte[] responseBody = httpProvider.get();
                     String responseAsString = new String(responseBody, "utf-8");
                     T[] resultArray = gson.fromJson(responseAsString, arrayKlass);
-                    
+  
                     return new AsyncTaskResult(Arrays.asList(resultArray));
                 } catch (Exception e) {
                     return new AsyncTaskResult(e);
@@ -111,9 +112,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         }.execute();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void save(final T data, final Callback<T> callback) {
 
@@ -192,6 +191,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             }
         }.execute();
     }
+
 
     /**
      * 
