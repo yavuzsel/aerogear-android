@@ -25,36 +25,57 @@ public class MemoryStorage<T> implements Store<T> {
 
     private List data = new ArrayList();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public StoreType getType() {
         return StoreType.MEMORY;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<T> readAll() {
         return Collections.unmodifiableList(data);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public T read(String id) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void filter() {
         // TODO Implement
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void save(T item) {
         data.add(item);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reset() {
         data.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void remove(T item) {
         data.remove(item);

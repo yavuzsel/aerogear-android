@@ -24,13 +24,50 @@ import java.util.List;
  */
 public interface Store<T> {
 
+    /**
+     * Returns the type of the underlying 'store implementation'
+     *
+     * @return StoreType
+     */
     public StoreType getType();
 
+    /**
+     * Reads all the data from the underlying storage system.
+     *
+     * @return List of T
+     */
     public List<T> readAll();
+
+    /**
+     * Reads a specific object/record from the underlying storage system.
+     *
+     * @param id id from the desired object
+     * @return T
+     */
     public T read(String id);
+
+    /**
+     * Reads all, based on a filter, from the underlying storage system.
+     */
     public void filter();
+
+    /**
+     * Saves the given object in the underlying storage system.
+     *
+     * @param item Object to save
+     */
     public void save(T item);
+
+    /**
+     *  Resets the entire storage system.
+     */
     public void reset();
+
+    /**
+     * Removes a specific object/record from the underlying storage system.
+     *
+     * @param item
+     */
     public void remove(T item);
 
 }

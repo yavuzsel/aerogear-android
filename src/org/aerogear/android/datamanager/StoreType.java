@@ -17,6 +17,9 @@
 
 package org.aerogear.android.datamanager;
 
+/**
+ * Represents Store Type
+ */
 public enum StoreType {
 
     MEMORY
