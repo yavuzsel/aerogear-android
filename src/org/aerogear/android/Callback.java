@@ -17,7 +17,26 @@
 
 package org.aerogear.android;
 
+/**
+ * A handler for consuming the data/result of an operation.
+ * 
+ * @param <T> The data type of the operation
+ */
 public interface Callback<T> {
+
+    /**
+     * Invoked when a {@link org.aerogear.android.pipeline.Pipe} operation has completed.
+     *
+     * @param   data
+     *          The received data of the operation.
+     */
     void onSuccess(T data);
+
+    /**
+     * Invoked when an operation has failed.
+     *
+     * @param   e
+     *          The exception to give more insights on why the operation has failed.
+     */
     void onFailure(Exception e);
 }

@@ -22,16 +22,64 @@ import org.aerogear.android.Callback;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * A {@link Pipe} represents a server connection. An object of this class is responsible to communicate
+ * with the server in order to perfom read/write operations.
+ * 
+ * @param <T> The data type of the {@link Pipe} operation
+ */
 public interface Pipe<T> {
 
+    /**
+     * Returns the connection type of this {@link Pipe} object (e.g. <code>REST</code>).
+     *
+     * @return the connection type
+     */
     Type getType();
+
+    /**
+     * Returns the {@link URL} to which this {@link Pipe} object points.
+     *
+     * @return the enpoint URL
+     */
     URL getUrl();
 
+    /**
+     * Reads all the data from the underlying server connection.
+     *
+     * @param existingList @TODO no need for this param...
+     *
+     * @param callback The callback for consuming the result from the {@link Pipe} invocation.
+     */
     void getAll(List<T> existingList, Callback<List<T>> callback);
 
+    /**
+     * Reads all the data from the underlying server connection.
+     *
+     * @param callback The callback for consuming the result from the {@link Pipe} invocation.
+     */
     void read(Callback<T[]> callback);
+
+    /**
+     * @TODO......
+     * Reads all the data that matches a given filter creteria from the underlying server connection.
+     */
     void readWithFilter();
+
+    /**
+     * Saves or updates a given object on the server.
+     *
+     * @param item the item to save or update
+     * @param callback The callback for consuming the result from the {@link Pipe} invocation.
+     */
     void save(T item, Callback<T> callback);
+
+    /**
+     * Removes an object from the underlying server connection. The given key argument is used as the objects ID.
+     *
+     * @param id representing the ‘id’ of the object to be removed
+     * @param callback The callback for consuming the result from the {@link Pipe} invocation.
+     */
     void remove(String id, Callback<Void> callback);
 
 }
