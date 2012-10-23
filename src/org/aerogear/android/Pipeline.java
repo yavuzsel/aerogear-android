@@ -101,7 +101,7 @@ public final class Pipeline {
     }
 
     private Pipe addPipe(String name, Class klass, URL url, Type type) {
-        Pipe pipe = AdapterFactory.createPipe(type, klass, url);
+        Pipe pipe = PipeFactory.createPipe(type, klass, url);
         pipes.put(name, pipe);
         return pipe;
     }
