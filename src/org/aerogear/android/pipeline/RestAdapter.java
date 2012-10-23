@@ -33,7 +33,7 @@ import static org.aerogear.android.pipeline.Type.REST;
 /**
  * RestAdapter utility class containing useful methods for lifecycle, etc.
  */
-public final class RestAdapter<T> implements Pipe<T> {
+final class RestAdapter<T> implements Pipe<T> {
 
     private final static Gson gson = new Gson();
 
