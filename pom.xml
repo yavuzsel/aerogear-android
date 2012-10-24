@@ -9,6 +9,7 @@
 	<name>AeroGear Android Libary</name>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<proguard.skip>true</proguard.skip>
 		<android.avd>15</android.avd>
 		<debug>true</debug>
