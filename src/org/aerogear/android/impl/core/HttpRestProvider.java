@@ -19,6 +19,8 @@ package org.aerogear.android.impl.core;
 
 import android.util.Log;
 import org.aerogear.android.core.HttpProvider;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -131,7 +133,9 @@ public final class HttpRestProvider implements HttpProvider {
     private byte [] execute(HttpRequestBase method) throws IOException {
         method.setHeader("Accept", "application/json");
         method.setHeader("Content-type", "application/json");
-        return EntityUtils.toByteArray(client.execute(method).getEntity());
+        HttpResponse response = client.execute(method);
+        HttpEntity entity = response.getEntity();
+        return EntityUtils.toByteArray(entity);
     }
 
     private String appendIdToURL(String id) {
