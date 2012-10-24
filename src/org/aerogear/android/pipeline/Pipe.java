@@ -53,11 +53,6 @@ public interface Pipe<T> {
     void read(Callback<List<T>> callback);
 
     /**
-     * @TODO......
-     */
-    void readWithFilter();
-
-    /**
      * Saves or updates a given object on the server.
      *
      * @param item the item to save or update

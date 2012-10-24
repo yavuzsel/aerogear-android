@@ -103,15 +103,6 @@ final class RestAdapter<T> implements Pipe<T> {
      * {@inheritDoc}
      */
     @Override
-    public void readWithFilter() {
-        // TODO implement
-        throw new IllegalStateException("Not yet implemented");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void save(final T data, final Callback<T> callback) {
 
         final String id;
