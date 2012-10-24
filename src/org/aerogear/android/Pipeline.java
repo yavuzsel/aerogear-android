@@ -15,9 +15,12 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.pipeline;
+package org.aerogear.android;
 
 import android.util.Log;
+import org.aerogear.android.impl.pipeline.AdapterFactory;
+import org.aerogear.android.impl.pipeline.Type;
+import org.aerogear.android.pipeline.Pipe;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,8 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s). The {@link Pipeline} contains
- * some simple management APIs to create or remove {@link Pipe}s objects.
+ * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link org.aerogear.android.pipeline.Pipe}s). The {@link Pipeline} contains
+ * some simple management APIs to create or remove {@link org.aerogear.android.pipeline.Pipe}s objects.
  */
 public class Pipeline {
 

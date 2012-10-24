@@ -15,37 +15,47 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.core;
+package org.aerogear.android.impl.helper;
 
-import java.io.InputStream;
-import java.net.URL;
+public class Data {
 
-public class HttpStubProvider implements HttpProvider {
+    private Long id;
+    private String name;
+    private String description;
 
-    private final URL url;
-
-    public HttpStubProvider(URL url) {
-        this.url = url;
+    public Data(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
-    public URL getUrl() {
-        return url;
+    public Data(Long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
     }
 
-    public byte [] get() {
-        return null;
+    public Long getId() {
+        return id;
     }
 
-    public byte [] post(String data) {
-        return null;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public byte [] put(String id, String data) {
-        return null;
+    public String getName() {
+        return name;
     }
 
-    public byte [] delete(String id) {
-        return null;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

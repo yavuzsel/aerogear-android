@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.pipeline;
+package org.aerogear.android.impl.pipeline;
 
-import org.aerogear.android.core.HttpRestProvider;
+import org.aerogear.android.pipeline.Pipe;
+import org.aerogear.android.impl.core.HttpRestProvider;
 
 import java.net.URL;
 
-import static org.aerogear.android.pipeline.Type.REST;
-
-final class AdapterFactory {
+public final class AdapterFactory {
 
     private AdapterFactory() {}
 
     public static Pipe createPipe(Type type, Class klass, URL url) {
-        if (type.equals(REST)) {
+        if (type.equals(Type.REST)) {
             return new RestAdapter(klass, new HttpRestProvider(url));
         }
         throw new IllegalArgumentException("Type is not supported yet");

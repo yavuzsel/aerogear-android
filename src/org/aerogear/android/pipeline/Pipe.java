@@ -18,6 +18,7 @@
 package org.aerogear.android.pipeline;
 
 import org.aerogear.android.Callback;
+import org.aerogear.android.impl.pipeline.Type;
 
 import java.net.URL;
 import java.util.List;

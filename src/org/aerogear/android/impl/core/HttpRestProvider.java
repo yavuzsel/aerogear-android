@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.core;
+package org.aerogear.android.impl.core;
 
 import android.util.Log;
+import org.aerogear.android.core.HttpProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.scheme.PlainSocketFactory;

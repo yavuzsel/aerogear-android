@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.pipeline;
+package org.aerogear.android.impl.pipeline;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.aerogear.android.helper.Data;
+import org.aerogear.android.Pipeline;
+import org.aerogear.android.pipeline.Pipe;
+import org.aerogear.android.impl.helper.Data;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +42,7 @@ public class PipelineTest {
 
     @Test
     public void testAddNewPipeToPipeline() {
-        Pipeline  pipeline = new Pipeline("tasks", Data.class, url);
+        Pipeline pipeline = new Pipeline("tasks", Data.class, url);
         Pipe newPipe = pipeline.add("projects", Data.class, url);
         assertNotNull("Added pipe", newPipe);
     }

@@ -15,11 +15,13 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.pipeline;
+package org.aerogear.android.impl.pipeline;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.aerogear.android.core.HttpStubProvider;
-import org.aerogear.android.helper.Data;
+import junit.framework.Assert;
+import org.aerogear.android.pipeline.Pipe;
+import org.aerogear.android.impl.core.HttpStubProvider;
+import org.aerogear.android.impl.helper.Data;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +44,7 @@ public class RestAdapterTest {
     @Test
     public void testPipeTypeProperty() {
         Pipe restPipe = new RestAdapter(Data.class, new HttpStubProvider(url));
-        assertEquals("verifying the (default) type", Type.REST, restPipe.getType());
+        Assert.assertEquals("verifying the (default) type", Type.REST, restPipe.getType());
     }
 
     @Test

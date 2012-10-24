@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.pipeline;
+package org.aerogear.android.impl.pipeline;
 
 import android.os.AsyncTask;
 import com.google.gson.Gson;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.pipeline.Pipe;
 
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.aerogear.android.pipeline.Type.REST;
 
 /**
  * RestAdapter utility class containing useful methods for lifecycle, etc.
@@ -46,7 +45,7 @@ final class RestAdapter<T> implements Pipe<T> {
     }
 
     public Type getType() {
-        return REST;
+        return Type.REST;
     }
 
     public URL getUrl() {

@@ -15,10 +15,38 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.pipeline;
+package org.aerogear.android.impl.core;
 
-public enum Type {
+import org.aerogear.android.core.HttpProvider;
 
-    REST
+import java.net.URL;
+
+public class HttpStubProvider implements HttpProvider {
+
+    private final URL url;
+
+    public HttpStubProvider(URL url) {
+        this.url = url;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public byte [] get() {
+        return null;
+    }
+
+    public byte [] post(String data) {
+        return null;
+    }
+
+    public byte [] put(String id, String data) {
+        return null;
+    }
+
+    public byte [] delete(String id) {
+        return null;
+    }
 
 }
