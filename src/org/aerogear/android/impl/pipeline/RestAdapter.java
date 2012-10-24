@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * RestAdapter utility class containing useful methods for lifecycle, etc.
+ * Rest implementation of pipe.
  */
 final class RestAdapter<T> implements Pipe<T> {
 
@@ -56,25 +56,32 @@ final class RestAdapter<T> implements Pipe<T> {
         this.httpProvider = httpProvider;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Type getType() {
         return Type.REST;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public URL getUrl() {
         return httpProvider.getUrl();
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public void read(final Callback<List<T>> callback) {
         new AsyncTask<Void, Void, AsyncTaskResult<List<T>>>() {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                    
                     T[] resultArray = gson.fromJson(new String(httpProvider.get()), arrayKlass);
-                    
                     return new AsyncTaskResult(Arrays.asList(resultArray));
                 } catch (Exception e) {
                     return new AsyncTaskResult(e);
@@ -92,13 +99,18 @@ final class RestAdapter<T> implements Pipe<T> {
         }.execute();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void readWithFilter() {
         // TODO implement
         throw new IllegalStateException("Not yet implemented");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void save(final T data, final Callback<T> callback) {
 
@@ -141,6 +153,9 @@ final class RestAdapter<T> implements Pipe<T> {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void remove(final String id, final Callback<Void> callback) {
         new AsyncTask<Void, Void, AsyncTaskResult<byte[]>>() {

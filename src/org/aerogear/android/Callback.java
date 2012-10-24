@@ -25,7 +25,7 @@ package org.aerogear.android;
 public interface Callback<T> {
 
     /**
-     * Invoked when a {@link org.aerogear.android.pipeline.Pipe} operation has completed.
+     * Called when operation completes with success.
      *
      * @param   data
      *          The received data of the operation.

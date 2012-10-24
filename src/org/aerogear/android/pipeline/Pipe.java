@@ -52,10 +52,8 @@ public interface Pipe<T> {
      */
     void read(Callback<List<T>> callback);
 
-   
-   /**
-     * @TODO
-     * Reads all the data that matches a given filter creteria from the underlying server connection.
+    /**
+     * @TODO......
      */
     void readWithFilter();
 

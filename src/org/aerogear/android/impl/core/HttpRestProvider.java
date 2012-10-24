@@ -35,18 +35,21 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * HttpProvider implementation using principles of REST
+ */
 public final class HttpRestProvider implements HttpProvider {
 
     private static final String TAG = "AeroGear";
 
     private final URL url;
     private static HttpClient client;
+
     static {
         HttpParams params = new BasicHttpParams();
         SchemeRegistry registry = new SchemeRegistry();
         registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        final ThreadSafeClientConnManager connManager =
-                new ThreadSafeClientConnManager(params, registry);
+        final ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, registry);
         client = new DefaultHttpClient(connManager, params);
     }
 
@@ -54,11 +57,19 @@ public final class HttpRestProvider implements HttpProvider {
         this.url = url;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public URL getUrl() {
         return url;
     }
 
-    public byte [] get() throws RuntimeException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public byte[] get() throws RuntimeException {
         try {
             return execute(new HttpGet(url.toString()));
         } catch (IOException e) {
@@ -67,7 +78,11 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    public byte [] post(String data) throws RuntimeException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public byte[] post(String data) throws RuntimeException {
         HttpPost post = new HttpPost(url.toString());
         addBodyRequest(post, data);
         try {
@@ -78,7 +93,11 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    public byte [] put(String id, String data) throws RuntimeException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public byte[] put(String id, String data) throws RuntimeException {
         HttpPut put = new HttpPut(appendIdToURL(id));
         addBodyRequest(put, data);
         try {
@@ -89,7 +108,11 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    public byte [] delete(String id) throws RuntimeException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public byte[] delete(String id) throws RuntimeException {
         HttpDelete delete = new HttpDelete(appendIdToURL(id));
         try {
             return execute(delete);
