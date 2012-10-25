@@ -49,7 +49,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      * This is used by JSON for deserializing collections.
      */
     private final Class<T[]> arrayKlass;
-    private final HttpProvider httpProvider;
+    private HttpProvider httpProvider;
 
     public RestAdapter(Class<T> klass, HttpProvider httpProvider) {
         this.klass = klass;
@@ -91,10 +91,11 @@ public final class RestAdapter<T> implements Pipe<T> {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                    byte[] responseBody = httpProvider.get();
+
+                    byte[] responseBody = httpProvider.get().getBody();
                     String responseAsString = new String(responseBody, "utf-8");
-                    T[] resultArray = gson.fromJson(responseAsString, arrayKlass);
-  
+                    T[] resultArray = GSON.fromJson(responseAsString, arrayKlass);
+
                     return new AsyncTaskResult(Arrays.asList(resultArray));
                 } catch (Exception e) {
                     return new AsyncTaskResult(e);

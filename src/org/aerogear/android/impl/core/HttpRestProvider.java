@@ -36,9 +36,19 @@ import org.apache.http.util.EntityUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import org.aerogear.android.core.HeaderAndBodyMap;
+import org.aerogear.android.core.HttpException;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
 
 /**
- * HttpProvider implementation using principles of REST
+ * 
+ * 
+ * 
+ * These are tuned for Aerogear, assume the body is String data, and that
+ * the headers don't do anything funny.
+ * 
+
  */
 public final class HttpRestProvider implements HttpProvider {
 
@@ -52,6 +62,7 @@ public final class HttpRestProvider implements HttpProvider {
         this.client = new DefaultHttpClient();
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -64,7 +75,8 @@ public final class HttpRestProvider implements HttpProvider {
      * {@inheritDoc}
      */
     @Override
-    public byte[] get() throws RuntimeException {
+    public HeaderAndBodyMap get() throws RuntimeException {
+
         try {
             return execute(new HttpGet(url.toString()));
         } catch (IOException e) {
@@ -77,7 +89,8 @@ public final class HttpRestProvider implements HttpProvider {
      * {@inheritDoc}
      */
     @Override
-    public byte[] post(String data) throws RuntimeException {
+    public HeaderAndBodyMap post(String data) throws RuntimeException {
+
         HttpPost post = new HttpPost(url.toString());
         addBodyRequest(post, data);
         try {
@@ -88,11 +101,12 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public byte[] put(String id, String data) throws RuntimeException {
+    public HeaderAndBodyMap put(String id, String data) throws RuntimeException {
         HttpPut put = new HttpPut(appendIdToURL(id));
         addBodyRequest(put, data);
         try {
@@ -103,11 +117,12 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public byte[] delete(String id) throws RuntimeException {
+    public HeaderAndBodyMap delete(String id) throws RuntimeException {
         HttpDelete delete = new HttpDelete(appendIdToURL(id));
         try {
             return execute(delete);
@@ -123,12 +138,26 @@ public final class HttpRestProvider implements HttpProvider {
         requestBase.setEntity(entity);
     }
 
-    private byte [] execute(HttpRequestBase method) throws IOException {
+    private HeaderAndBodyMap execute(HttpRequestBase method) throws IOException {
         method.setHeader("Accept", "application/json");
         method.setHeader("Content-type", "application/json");
         HttpResponse response = client.execute(method);
-        HttpEntity entity = response.getEntity();
-        return EntityUtils.toByteArray(entity);
+        
+        int statusCode = response.getStatusLine().getStatusCode();
+        byte[] data = EntityUtils.toByteArray(response.getEntity());
+        response.getEntity().consumeContent();
+        if (statusCode != 200) {
+            throw new HttpException(data, statusCode);
+        }
+        
+        Header[] headers = response.getAllHeaders();
+        HeaderAndBodyMap result = new HeaderAndBodyMap(data, headers.length);
+        
+        for (Header header : headers) {
+            result.put(header.getName(), header.getValue());
+        }
+        
+        return result;
     }
 
     private String appendIdToURL(String id) {

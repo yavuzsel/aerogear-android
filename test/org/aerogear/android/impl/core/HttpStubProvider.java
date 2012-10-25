@@ -33,19 +33,19 @@ public class HttpStubProvider implements HttpProvider {
         return url;
     }
 
-    public byte [] get() {
+    public HeaderAndBodyMap get() {
         return null;
     }
 
-    public byte [] post(String data) {
+    public HeaderAndBodyMap post(String data) {
         return null;
     }
 
-    public byte [] put(String id, String data) {
+    public HeaderAndBodyMap put(String id, String data) {
         return null;
     }
 
-    public byte [] delete(String id) {
+    public HeaderAndBodyMap delete(String id) {
         return null;
     }
 
