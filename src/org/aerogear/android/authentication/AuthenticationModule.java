@@ -9,7 +9,6 @@ import java.util.Map;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HeaderAndBodyMap;
 import org.aerogear.android.pipeline.Pipe;
-import org.aerogear.android.pipeline.Type;
 
 /**
  *
@@ -20,7 +19,6 @@ import org.aerogear.android.pipeline.Type;
  */
 public interface AuthenticationModule {
     
-    public Type getType();
     public URL getbaseURL();
     public String getLoginEndpoint();
     public String getLogoutEndpoint();

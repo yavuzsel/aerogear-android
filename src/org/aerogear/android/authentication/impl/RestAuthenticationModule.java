@@ -17,6 +17,7 @@ import org.aerogear.android.core.HeaderAndBodyMap;
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.aerogear.android.impl.pipeline.Type;
 
+
 /**
  *
  * @author summers
@@ -51,10 +52,6 @@ public final class RestAuthenticationModule implements AuthenticationModule{
         this.enrollURL = new URL(baseURL.toString() + enrollEndpoint);
     }
 
-    @Override
-    public Type getType() {
-        return Type.REST;
-    }
 
     @Override
     public URL getbaseURL() {
