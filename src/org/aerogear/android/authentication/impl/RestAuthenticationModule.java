@@ -27,8 +27,7 @@ import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBodyMap;
 import org.aerogear.android.impl.core.HttpRestProvider;
-import org.aerogear.android.impl.pipeline.Type;
-
+import org.json.JSONObject;
 
 /**
  *
@@ -86,9 +85,24 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     }
 
     @Override
-    public void enroll(Map<String, String> userData, Callback<HeaderAndBodyMap> callback) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    public void enroll(final Map<String, String> userData,final Callback<HeaderAndBodyMap> callback) {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                HttpRestProvider provider = new HttpRestProvider(enrollURL);
+                String enrollData = new JSONObject(userData).toString();
+                try {
+                    HeaderAndBodyMap result = provider.post(enrollData);
+                    authToken = result.get("Auth-Token");
+                    isAuthenticated = true;
+                    callback.onSuccess(result);
+                } catch (Exception e) {
+                    callback.onFailure(e);
+                }
+                return null;
+            }
+        }.execute(null);    }
 
     @Override
     public void login(final String username, final String password, final Callback<HeaderAndBodyMap> callback) {

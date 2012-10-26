@@ -16,36 +16,20 @@
  */
 package org.aerogear.android.authentication;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import com.xtremelabs.robolectric.shadows.StatusLineStub;
-import com.xtremelabs.robolectric.tester.org.apache.http.RequestMatcher;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.aerogear.android.Builder;
-import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.impl.RestAuthenticationModule;
-import org.aerogear.android.core.HeaderAndBodyMap;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.message.BasicStatusLine;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
+import org.aerogear.android.core.HttpException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,99 +41,18 @@ import org.junit.runner.RunWith;
  * @author summers
  */
 @RunWith(RobolectricTestRunner.class)
-public class RestAuthenticationModuleTest {
-    private static final String TOKEN = "a016b29b-da74-4833-aa50-43c55788c528";
-    private static final Builder<RestAuthenticationModule> BUILDER;
-    private static final RequestMatcher JOHN_LOGIN_MATCHER = new RequestMatcher() {
-        
-        @Override
-        public boolean matches(HttpRequest request) {
-            if (request instanceof HttpEntityEnclosingRequest) {
-                try {
-                HttpEntity entity = ((HttpEntityEnclosingRequest)request).getEntity();
-                JSONObject data = new JSONObject(EntityUtils.toString(entity));
-                return (data.getString("username").equalsIgnoreCase("john") &&
-                        data.getString("password").equalsIgnoreCase("password") 
-                        );
-                } catch (Throwable t ) {
-                    return false;
-                }
+public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
+    
+     static final Builder<RestAuthenticationModule> BUILDER;
+    
+        static {
+            try {
+                BUILDER  = new RestAuthenticationModule.Builder().baseURL(new URL("http://localhost:8080/todo-server"));
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(RestAuthenticationModuleTest.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException(ex);
             }
-            return false;
         }
-    };
-
-    private static final HttpResponse VALID_LOGIN = new BasicHttpResponse(new StatusLineStub()) {
-
-        @Override
-        public Header getFirstHeader(String name) {
-            if (name.equals(RestAuthenticationModule.TOKEN_HEADER)) {
-                return new BasicHeader(RestAuthenticationModule.TOKEN_HEADER, 
-                          TOKEN);//Magic Number
-                
-            }
-            return super.getFirstHeader(name);
-        }
-
-        @Override
-        public Header[] getAllHeaders() {
-            return new Header[] {
-                new BasicHeader(RestAuthenticationModule.TOKEN_HEADER, TOKEN)
-            };
-        }
-
-        
-        
-        
-        @Override
-        public HttpEntity getEntity() {
-            return new BasicHttpEntity() {
-
-                @Override
-                public InputStream getContent() throws IllegalStateException {
-                    return new ByteArrayInputStream(("{\"username\":\"john\","
-                                                   + "\"roles\":[\"admin\"],"
-                                                   + "\"logged\":\"true\"}").getBytes()
-                            );
-                }
-                
-            };
-        }
-        
-        
-        
-        @Override
-        public StatusLine getStatusLine() {
-            return new BasicStatusLine(new ProtocolVersion("http", 1, 1), 200, "");
-        }
-        
-    };
-    
-    static {
-        try {
-            BUILDER = new RestAuthenticationModule.Builder().baseURL(new URL("http://localhost:8080/todo-server"));
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(RestAuthenticationModuleTest.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex);
-        }
-    }
-    
-    private final static class SimpleCallback implements Callback<HeaderAndBodyMap> {
-
-        HeaderAndBodyMap data;
-        Exception exception;
-        
-        @Override
-        public void onSuccess(HeaderAndBodyMap data) {
-            this.data = data;
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            this.exception = e;
-        }
-    
-    }
     
     @Before
     public void setup() {
@@ -166,7 +69,7 @@ public class RestAuthenticationModuleTest {
     public void loginFails() throws IOException {
         RestAuthenticationModule module = BUILDER.build();
         SimpleCallback callback = new SimpleCallback();
-        module.login("john", "password", callback);
+        module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
         
         while(!Robolectric.httpRequestWasMade()) {
         
@@ -179,9 +82,9 @@ public class RestAuthenticationModuleTest {
     @Test(timeout=50000L)
     public void loginSucceeds() throws IOException {
         RestAuthenticationModule module = BUILDER.build();
-        Robolectric.addHttpResponseRule(JOHN_LOGIN_MATCHER, VALID_LOGIN);
+        Robolectric.addHttpResponseRule(LOGIN_MATCHER, VALID_LOGIN);
         SimpleCallback callback = new SimpleCallback();
-        module.login("john", "password", callback);
+        module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
         
         while(!Robolectric.httpRequestWasMade()) {
         
@@ -190,5 +93,60 @@ public class RestAuthenticationModuleTest {
         Assert.assertNotNull(callback.data);
         Assert.assertTrue(module.isAuthenticated());
         Assert.assertEquals(TOKEN, module.getAuthToken());
+    }
+    
+    @Test(timeout=50000L)
+    public void enrollSucceeds() throws IOException {
+        RestAuthenticationModule module = BUILDER.build();
+        Robolectric.addHttpResponseRule(ENROLL_PASS_MATCHER, ENROLL_PASS);
+        SimpleCallback callback = new SimpleCallback();
+        
+        Map<String, String> userData = new HashMap<String, String>();
+        userData.put("username", PASSING_USERNAME);
+        userData.put("password", ENROLL_PASSWORD);
+        userData.put("firstname", "Summers");
+        userData.put("lastname", "Pittman");
+        userData.put("role", "admin");
+        
+        module.enroll(userData, callback);
+        
+        while(!Robolectric.httpRequestWasMade()) {
+        
+        };
+        Assert.assertNull(callback.exception);
+        Assert.assertNotNull(callback.data);
+        
+        String result = new String(callback.data.getBody(), "UTF-8");
+        JsonParser parser = new JsonParser();
+        JsonObject resultObject = (JsonObject) parser.parse(result);
+        Assert.assertEquals(PASSING_USERNAME, resultObject.get("username").getAsString());
+        
+        Assert.assertTrue(module.isAuthenticated());
+        Assert.assertEquals(TOKEN, module.getAuthToken());
+    }
+    
+    
+    @Test(timeout=50000L)
+    public void enrollFails() throws IOException {
+        RestAuthenticationModule module = BUILDER.build();
+        Robolectric.addHttpResponseRule(ENROLL_FAIL_MATCHER, ENROLL_FAIL);
+        SimpleCallback callback = new SimpleCallback();
+        
+        Map<String, String> userData = new HashMap<String, String>();
+        userData.put("username", FAILING_USERNAME);
+        userData.put("password", ENROLL_PASSWORD);
+        userData.put("firstname", "Summers");
+        userData.put("lastname", "Pittman");
+        userData.put("role", "admin");
+        
+        module.enroll(userData, callback);
+        
+        while(!Robolectric.httpRequestWasMade()) {
+        
+        };
+        Assert.assertNotNull(callback.exception);
+        Assert.assertNull(callback.data);
+        Assert.assertFalse(module.isAuthenticated());
+        Assert.assertEquals(400, ((HttpException)callback.exception).getStatusCode());
     }
 }
