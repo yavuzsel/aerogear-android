@@ -18,6 +18,7 @@
 package org.aerogear.android.pipeline;
 
 import org.aerogear.android.Callback;
+import org.aerogear.android.authentication.AuthenticationModule;
 
 import java.net.URL;
 import java.util.List;
@@ -66,5 +67,12 @@ public interface Pipe<T> {
      * @param callback The callback for consuming the result from the {@link Pipe} invocation.
      */
     void remove(String id, Callback<Void> callback);
+    
+    /**
+     * Sets the authentication module for the Pipe.
+     * It should already be logged in.
+     * @param module
+     */
+    void setAuthenticationModule(AuthenticationModule module);
 
 }

@@ -63,4 +63,13 @@ public interface HttpProvider {
      */
     public HeaderAndBodyMap delete(String id) throws RuntimeException;
 
+    /**
+     * 
+     * Will set a default header value to be used on all calls
+     * 
+     * @param header Name
+     * @param header Value
+     */
+	public void setDefaultHeader(String headerName, String headerValue);
+
 }

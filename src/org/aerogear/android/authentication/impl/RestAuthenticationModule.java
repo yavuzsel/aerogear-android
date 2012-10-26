@@ -16,19 +16,22 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import android.os.AsyncTask;
-import com.google.gson.Gson;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBodyMap;
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.json.JSONObject;
+
+import android.os.AsyncTask;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  *
@@ -148,10 +151,12 @@ public final class RestAuthenticationModule implements AuthenticationModule{
         }.execute(null);    
     }
 
+    @Override
     public String getAuthToken() {
         return authToken;
     }
 
+    @Override
     public boolean isAuthenticated() {
         return isAuthenticated;
     }
@@ -159,17 +164,13 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     
 
     private String buildLoginData(String username, String password) {
-        int keyLength = "{'username': , 'password': } ".length();
-        int stringLength = username.length() + keyLength + password.length();
-        StringBuilder builder = new StringBuilder();
-        
-        builder.append("{")
-                    .append("'username':").append(username)
-                    .append(",'password':").append(password)
-                .append("}");
-        
-        
-        return builder.toString();
+    	
+    	
+    	JsonObject response = new JsonObject();
+    	response.addProperty("username", username);
+    	response.addProperty("password", password);
+    	return response.toString();
+    	
     }
  
     public static class Builder implements org.aerogear.android.Builder<RestAuthenticationModule> {

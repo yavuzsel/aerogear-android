@@ -73,4 +73,18 @@ public interface AuthenticationModule {
      * @param callback 
      */
     public void logout(Callback<Void> callback);
+	
+    
+    /**
+     * 
+     * @return the current auth token or empty string if not logged in
+     */
+    public String getAuthToken();
+	
+    
+    /**
+     * 
+     * @return true if the module has been logged in successfully
+     */
+    public boolean isAuthenticated();
 }

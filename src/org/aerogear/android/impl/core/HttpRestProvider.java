@@ -36,6 +36,10 @@ import org.apache.http.util.EntityUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.aerogear.android.core.HeaderAndBodyMap;
 import org.aerogear.android.core.HttpException;
 import org.apache.http.Header;
@@ -56,6 +60,8 @@ public final class HttpRestProvider implements HttpProvider {
 
     private final URL url;
     private final HttpClient client;
+
+    private Map<String, String> defaultHeaders = new HashMap<String, String>();
 
     public HttpRestProvider(URL url) {
         this.url = url;
@@ -141,6 +147,11 @@ public final class HttpRestProvider implements HttpProvider {
     private HeaderAndBodyMap execute(HttpRequestBase method) throws IOException {
         method.setHeader("Accept", "application/json");
         method.setHeader("Content-type", "application/json");
+        
+        for (Entry<String, String> entry : defaultHeaders.entrySet() ) {
+        	method.setHeader(entry.getKey(), entry.getValue());	
+        }
+        
         HttpResponse response = client.execute(method);
         
         int statusCode = response.getStatusLine().getStatusCode();
@@ -168,5 +179,11 @@ public final class HttpRestProvider implements HttpProvider {
         newUrl.append(id);
         return newUrl.toString();
     }
+
+
+	@Override
+	public void setDefaultHeader(String headerName, String headerValue) {
+		defaultHeaders.put(headerName, headerValue);
+	}
 
 }
