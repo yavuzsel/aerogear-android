@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.aerogear.android.Builder;
+import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.impl.RestAuthenticationModule;
 import org.aerogear.android.core.HttpException;
 import org.junit.After;
@@ -149,4 +150,33 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         Assert.assertFalse(module.isAuthenticated());
         Assert.assertEquals(400, ((HttpException)callback.exception).getStatusCode());
     }
+    
+        
+    @Test(timeout=50000L)
+    public void logouSucceeds() throws IOException {
+        RestAuthenticationModule module = BUILDER.build();
+        Robolectric.addHttpResponseRule(LOGIN_MATCHER, VALID_LOGIN);
+        SimpleCallback callback = new SimpleCallback();
+        module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
+        
+        Assert.assertNull(callback.exception);
+        Assert.assertNotNull(callback.data);
+        Assert.assertTrue(module.isAuthenticated());
+        Assert.assertEquals(TOKEN, module.getAuthToken());
+        
+        //Reset
+        Robolectric.clearHttpResponseRules();
+        Robolectric.setDefaultHttpResponse(200, "");
+        VoidCallback voidCallback = new VoidCallback();
+        
+        
+        module.logout(voidCallback);
+        Assert.assertNull(voidCallback.exception);
+        
+        Assert.assertFalse(module.isAuthenticated());
+        Assert.assertEquals("", module.getAuthToken());
+        
+    }
+
+    
 }

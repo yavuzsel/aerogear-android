@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import com.google.gson.Gson;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,7 +103,8 @@ public final class RestAuthenticationModule implements AuthenticationModule{
                 }
                 return null;
             }
-        }.execute(null);    }
+        }.execute(null);    
+    }
 
     @Override
     public void login(final String username, final String password, final Callback<HeaderAndBodyMap> callback) {
@@ -127,8 +129,23 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     }
 
     @Override
-    public void logout(Callback<Void> callback) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void logout(final Callback<Void> callback) {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                HttpRestProvider provider = new HttpRestProvider(logoutURL);
+                try {
+                    HeaderAndBodyMap result = provider.post("");
+                    authToken = "";
+                    isAuthenticated = false;
+                    callback.onSuccess(null);
+                } catch (Exception e) {
+                    callback.onFailure(e);
+                }
+                return null;
+            }
+        }.execute(null);    
     }
 
     public String getAuthToken() {
