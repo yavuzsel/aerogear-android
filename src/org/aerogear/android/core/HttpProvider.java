@@ -72,4 +72,13 @@ public interface HttpProvider {
      */
     public void setDefaultHeader(String headerName, String headerValue);
 
+    /**
+     * 
+     * Will set a default header value to be used on all calls
+     * 
+     * @param header Name
+     * @param header Value
+     */
+	public void setDefaultHeader(String headerName, String headerValue);
+
 }

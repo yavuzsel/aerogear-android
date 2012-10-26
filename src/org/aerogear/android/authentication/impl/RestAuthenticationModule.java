@@ -29,11 +29,15 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+import android.os.AsyncTask;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  * A module for authenticating with restful AG services.
