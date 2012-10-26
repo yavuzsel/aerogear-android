@@ -183,4 +183,20 @@ public interface AuthenticationModuleTest {
             this.exception = e;
         }
     }
+    
+    final class VoidCallback implements Callback<Void> {
+
+        
+        Exception exception;
+
+        @Override
+        public void onSuccess(Void data) {
+            
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            this.exception = e;
+        }
+    }
 }
