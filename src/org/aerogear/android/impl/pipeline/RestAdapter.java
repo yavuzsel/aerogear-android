@@ -124,12 +124,10 @@ final class RestAdapter<T> implements Pipe<T> {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                    String body;
+                    String body = gson.toJson(data);
                     if (id == null || id.length() == 0) {
-                        body = gson.toJson(data);
                         httpProvider.post(body);
                     } else {
-                        body = gson.toJson(data);
                         httpProvider.put(id, body);
                     }
                     return new AsyncTaskResult(null);
