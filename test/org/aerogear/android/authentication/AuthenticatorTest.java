@@ -4,7 +4,6 @@
  */
 package org.aerogear.android.authentication;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Constants;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.aerogear.android.authentication.impl.DefaultAuthenticator;
 import org.aerogear.android.authentication.impl.RestAuthenticationModule;
-import org.aerogear.android.pipeline.Type;
+import org.aerogear.android.impl.pipeline.Type;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -40,9 +39,8 @@ public class AuthenticatorTest {
         DefaultAuthenticator authenticator = new DefaultAuthenticator();
         AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder());
         
-        
         assertNotNull(simpleAuthModule);
-        assertEquals(Type.REST, simpleAuthModule.getType());
+        
     }
     
     @Test
