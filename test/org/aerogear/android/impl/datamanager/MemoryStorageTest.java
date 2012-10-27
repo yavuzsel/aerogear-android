@@ -17,15 +17,11 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.datamanager.MemoryStorage;
-import org.aerogear.android.datamanager.StoreType;
-import org.aerogear.android.helper.Data;
+import org.aerogear.android.impl.helper.Data;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class MemoryStorageTest {
 

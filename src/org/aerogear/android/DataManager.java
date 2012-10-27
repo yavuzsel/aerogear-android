@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.datamanager;
+package org.aerogear.android;
 
-import org.aerogear.android.AdapterFactory;
+import org.aerogear.android.datamanager.Store;
+import org.aerogear.android.impl.datamanager.StoreType;
+import org.aerogear.android.impl.pipeline.AdapterFactory;
 
 import java.util.HashMap;
 import java.util.Map;

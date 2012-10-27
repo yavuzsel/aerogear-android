@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.datamanager;
+package org.aerogear.android.impl.datamanager;
 
 /**
  * Represents Store Type

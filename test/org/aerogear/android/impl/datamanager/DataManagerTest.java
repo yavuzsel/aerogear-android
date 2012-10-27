@@ -17,13 +17,13 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.datamanager.DataManager;
+import org.aerogear.android.DataManager;
 import org.aerogear.android.datamanager.Store;
 import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
-import static org.aerogear.android.datamanager.StoreType.MEMORY;
+import static org.aerogear.android.impl.datamanager.StoreType.MEMORY;
 
 public class DataManagerTest {
 

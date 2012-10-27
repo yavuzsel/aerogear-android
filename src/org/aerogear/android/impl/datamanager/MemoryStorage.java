@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.datamanager;
+package org.aerogear.android.impl.datamanager;
+
+import org.aerogear.android.datamanager.Store;
 
 import java.util.ArrayList;
 import java.util.Collections;

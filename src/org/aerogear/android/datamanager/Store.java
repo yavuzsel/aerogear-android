@@ -17,6 +17,8 @@
 
 package org.aerogear.android.datamanager;
 
+import org.aerogear.android.impl.datamanager.StoreType;
+
 import java.util.List;
 
 /**
