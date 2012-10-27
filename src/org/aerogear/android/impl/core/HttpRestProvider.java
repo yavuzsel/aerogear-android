@@ -45,18 +45,11 @@ public final class HttpRestProvider implements HttpProvider {
     private static final String TAG = "AeroGear";
 
     private final URL url;
-    private static HttpClient client;
-
-    static {
-        HttpParams params = new BasicHttpParams();
-        SchemeRegistry registry = new SchemeRegistry();
-        registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        final ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, registry);
-        client = new DefaultHttpClient(connManager, params);
-    }
+    private final HttpClient client;
 
     public HttpRestProvider(URL url) {
         this.url = url;
+        this.client = new DefaultHttpClient();
     }
 
     /**
