@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Memory implementation of Store {@link Store}.
+ */
 public class MemoryStorage<T> implements Store<T> {
 
     private List data = new ArrayList();
