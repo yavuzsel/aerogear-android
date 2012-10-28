@@ -18,19 +18,30 @@
 package org.aerogear.android;
 
 import org.aerogear.android.datamanager.Store;
+import org.aerogear.android.impl.datamanager.GeneratorId;
 import org.aerogear.android.impl.datamanager.StoreType;
+import org.aerogear.android.impl.datamanager.UUIDGeneratorId;
 import org.aerogear.android.impl.pipeline.AdapterFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * represents an abstraction layer for a storage system.
+ * Represents an abstraction layer for a storage system.
  */
 
 public final class DataManager {
 
-    private Map<String, Store> stores = new HashMap<String, Store>();
+    private final Map<String, Store> stores = new HashMap<String, Store>();
+    private final GeneratorId generatorId;
+
+    public DataManager() {
+        this.generatorId = new UUIDGeneratorId();
+    }
+
+    public DataManager(GeneratorId generatorId) {
+        this.generatorId = generatorId;
+    }
 
     /**
      * Creates a new default (in memory) Store implemention.
@@ -48,7 +59,7 @@ public final class DataManager {
      * @param type The type of the new data store object.
      */
     public Store add(String storeName, StoreType type) {
-        Store store = AdapterFactory.createStore(type);
+        Store store = AdapterFactory.createStore(type, generatorId);
         stores.put(storeName, store);
         return store;
     }

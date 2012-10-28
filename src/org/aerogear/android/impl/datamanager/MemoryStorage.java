@@ -19,16 +19,20 @@ package org.aerogear.android.impl.datamanager;
 
 import org.aerogear.android.datamanager.Store;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Memory implementation of Store {@link Store}.
  */
 public class MemoryStorage<T> implements Store<T> {
 
-    private List data = new ArrayList();
+    private final Map<Serializable, T> data = new HashMap<Serializable, T>();
+    private final GeneratorId generatorId;
+
+    public MemoryStorage(GeneratorId generatorId) {
+        this.generatorId = generatorId;
+    }
 
     /**
      * {@inheritDoc}
@@ -42,24 +46,16 @@ public class MemoryStorage<T> implements Store<T> {
      * {@inheritDoc}
      */
     @Override
-    public List<T> readAll() {
-        return Collections.unmodifiableList(data);
+    public Collection<T> readAll() {
+        return data.values();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public T read(String id) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void filter() {
-        // TODO Implement
+    public T read(Serializable id) {
+        return data.get(id);
     }
 
     /**
@@ -67,7 +63,9 @@ public class MemoryStorage<T> implements Store<T> {
      */
     @Override
     public void save(T item) {
-        data.add(item);
+        Serializable newId = generatorId.generate();
+        // TODO Put newId on item
+        data.put(newId, item);
     }
 
     /**
@@ -82,8 +80,8 @@ public class MemoryStorage<T> implements Store<T> {
      * {@inheritDoc}
      */
     @Override
-    public void remove(T item) {
-        data.remove(item);
+    public void remove(Serializable id) {
+        data.remove(id);
     }
 
 }

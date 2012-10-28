@@ -21,6 +21,9 @@ import org.aerogear.android.impl.helper.Data;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class MemoryStorageTest {
@@ -29,7 +32,7 @@ public class MemoryStorageTest {
 
     @Before
     public void setup() {
-        store = new MemoryStorage<Data>();
+        store = new MemoryStorage<Data>(new StubGeneratorId());
     }
 
     @Test
@@ -38,54 +41,64 @@ public class MemoryStorageTest {
     }
 
     @Test
-    public void testSave() {
-        store.save(new Data(1L, "foo", "desc of foo"));
+    public void testReadAll() {
+        store.save(new Data("foo", "desc of foo"));
+        store.save(new Data("bar", "desc of bar"));
+
+        Collection<Data> datas = store.readAll();
+        assertNotNull("datas could not be null", datas);
+        assertEquals("datas should 2 data", 2, datas.size());
     }
 
     @Test()
     public void testRead() {
-        store.save(new Data(1L, "foo", "desc of foo"));
-        Data data = store.read("1");
+        store.save(new Data("foo", "desc of foo"));
+        Data data = store.read(1);
         assertNotNull("data could not be null", data);
     }
 
     @Test
-    public void testRemove() {
-        store.save(new Data(1L, "foo", "desc of foo"));
-        store.save(new Data(2L, "bar", "desc of bar"));
-
-        Data foo = store.read("1");
-        assertNotNull("foo could not be null", foo);
-
-        Data bar = store.read("2");
-        assertNotNull("bar could not be null", bar);
-
-        store.remove(bar);
-
-        foo = store.read("1");
-        assertNotNull("foo could not be null", foo);
-
-        bar = store.read("2");
-        assertNull("bar should be null", bar);
+    public void testSave() {
+        store.save(new Data("foo", "desc of foo"));
     }
 
     @Test
     public void testReset() {
-        store.save(new Data(1L, "foo", "desc of foo"));
-        store.save(new Data(2L, "bar", "desc of bar"));
+        store.save(new Data("foo", "desc of foo"));
+        store.save(new Data("bar", "desc of bar"));
 
-        Data foo = store.read("1");
+        Data foo = store.read(1);
         assertNotNull("foo could not be null", foo);
 
-        Data bar = store.read("2");
+        Data bar = store.read(2);
         assertNotNull("bar could not be null", bar);
 
         store.reset();
 
-        foo = store.read("1");
+        foo = store.read(1);
         assertNull("foo should be null", foo);
 
-        bar = store.read("2");
+        bar = store.read(2);
+        assertNull("bar should be null", bar);
+    }
+
+    @Test
+    public void testRemove() {
+        store.save(new Data("foo", "desc of foo"));
+        store.save(new Data("bar", "desc of bar"));
+
+        Data foo = store.read(1);
+        assertNotNull("foo could not be null", foo);
+
+        Data bar = store.read(2);
+        assertNotNull("bar could not be null", bar);
+
+        store.remove(2);
+
+        foo = store.read(1);
+        assertNotNull("foo could not be null", foo);
+
+        bar = store.read(2);
         assertNull("bar should be null", bar);
     }
 

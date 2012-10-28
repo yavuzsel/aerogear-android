@@ -19,6 +19,8 @@ package org.aerogear.android.datamanager;
 
 import org.aerogear.android.impl.datamanager.StoreType;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -38,7 +40,7 @@ public interface Store<T> {
      *
      * @return List of T
      */
-    public List<T> readAll();
+    public Collection<T> readAll();
 
     /**
      * Reads a specific object/record from the underlying storage system.
@@ -46,12 +48,7 @@ public interface Store<T> {
      * @param id id from the desired object
      * @return T
      */
-    public T read(String id);
-
-    /**
-     * Reads all, based on a filter, from the underlying storage system.
-     */
-    public void filter();
+    public T read(Serializable id);
 
     /**
      * Saves the given object in the underlying storage system.
@@ -68,8 +65,8 @@ public interface Store<T> {
     /**
      * Removes a specific object/record from the underlying storage system.
      *
-     * @param item
+     * @param id Id of item to remote
      */
-    public void remove(T item);
+    public void remove(Serializable id);
 
 }
