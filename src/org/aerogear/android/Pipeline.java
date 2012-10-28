@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link org.aerogear.android.pipeline.Pipe}s). The {@link Pipeline} contains
- * some simple management APIs to create or remove {@link org.aerogear.android.pipeline.Pipe}s objects.
+ * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s).
+ * The {@link Pipeline} contains some simple management APIs to create or remove {@link Pipe}s objects.
  */
 public class Pipeline {
 

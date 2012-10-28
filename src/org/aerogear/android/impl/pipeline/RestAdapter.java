@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Rest implementation of pipe.
+ * Rest implementation of {@link Pipe}.
  */
 final class RestAdapter<T> implements Pipe<T> {
 
