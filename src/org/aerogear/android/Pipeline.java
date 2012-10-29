@@ -27,6 +27,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.aerogear.android.impl.pipeline.Type.REST;
+
 /**
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s).
  * The {@link Pipeline} contains some simple management APIs to create or remove {@link Pipe}s objects.
@@ -35,7 +37,7 @@ public class Pipeline {
 
     private final URL baseURL;
 
-    private Map<String, Pipe> pipes = new HashMap<String, Pipe>();
+    private final Map<String, Pipe> pipes = new HashMap<String, Pipe>();
 
     /**
      * An initializer method to instantiate the Pipeline,
@@ -61,173 +63,90 @@ public class Pipeline {
         }
     }
 
-    /**
-     * An initializer method to instantiate the Pipeline, which
-     * contains a RESTful name.
-     *
-     * @param name the endpoint name of the first Pipe object
-     * @param klass class that represents the model of the pipe
-     * @param baseURL the URL of the server
-     *
-     */
-    public Pipeline(String name, Class klass, URL baseURL) {
-        this(name, klass, baseURL, name, Type.REST);
+    public PipeBuilderMandatoryName add() {
+        return new BuilderImpl(baseURL);
     }
 
-    /**
-     * An initializer method to instantiate the Pipeline, which
-     * contains a name object. The actual type is determined by the type argument.
-     *
-     * @param name the endpoint name of the first Pipe object
-     * @param klass class that represents the model of the pipe
-     * @param baseURL the URL of the server
-     * @param type the type of the actual pipe/connection
-     *
-     */
-    public Pipeline(String name, Class klass, URL baseURL, Type type) {
-        this(name, klass, baseURL, name, type);
+    public final class BuilderImpl implements PipeBuilderMandatoryName,
+            PipeBuilderMandatoryClass, PipeBuilder {
+
+        private String name;
+        private Class klass;
+        private String endpoint;
+        private Type type = REST;
+        private URL url;
+
+        public BuilderImpl(URL url) {
+            this.url = url;
+        }
+
+        @Override
+        public PipeBuilderMandatoryClass name(String name) {
+            this.name = name;
+            this.endpoint = name;
+            return this;
+        }
+
+        @Override
+        public PipeBuilder useClass(Class klass) {
+            this.klass = klass;
+            return this;
+        }
+
+
+        @Override
+        public PipeBuilder enpoint(String endpoint) {
+            this.endpoint = endpoint;
+            return this;
+        }
+
+        @Override
+        public PipeBuilder type(Type type) {
+            this.type = type;
+            return this;
+        }
+
+        @Override
+        public PipeBuilder url(URL url) {
+            this.url = url;
+            return this;
+        }
+
+        @Override
+        public Pipe buildAndAdd() {
+            Pipe pipe = AdapterFactory.createPipe(type, klass, appendEndpoint(url, endpoint));
+            pipes.put(name, pipe);
+            return pipe;
+        }
+
+        private URL appendEndpoint(URL baseURL, String endpoint) {
+
+            try {
+                if( !baseURL.toString().endsWith("/")) {
+                    endpoint = "/" + endpoint;
+                }
+                return new URL(baseURL + endpoint + "/");
+            } catch (MalformedURLException e) {
+                Log.e("AeroGear", e.getMessage());
+                return null;
+            }
+        }
+
     }
 
-    /**
-     * An initializer method to instantiate the Pipeline, which
-     * contains a RESTful name. The RESTful endpoint is determined by the endpoint argument.
-     *
-     * @param name the logical name of the first Pipe object
-     * @param klass class that represents the model of the pipe
-     * @param baseURL the URL of the server
-     * @param endpoint the serivce endpoint name
-     *
-     */
-    public Pipeline(String name, Class klass, URL baseURL, String endpoint) {
-        this(name, klass, baseURL, endpoint, Type.REST);
+    public static interface PipeBuilderMandatoryName {
+        public PipeBuilderMandatoryClass name(String name);
     }
 
-    /**
-     * An initializer method to instantiate the Pipeline, which
-     * contains a RESTful name. The RESTful endpoint is determined by the endpoint argument.
-     *
-     * @param name the logical name of the first Pipe object
-     * @param klass class that represents the model of the pipe
-     * @param baseURL the URL of the server
-     * @param endpoint the serivce endpoint name
-     * @param type the type of the actual pipe/connection
-     *
-     */
-    public Pipeline(String name, Class klass, URL baseURL, String endpoint, Type type) {
-        this.baseURL = baseURL;
-        this.add(name, klass, baseURL, endpoint, type);
+    public static interface PipeBuilderMandatoryClass {
+        public PipeBuilder useClass(Class klass);
     }
 
-    /**
-     * Adds a new RESTful pipe to the Pipeline object,
-     * leveraging the given baseURL argument.
-     *
-     * @param name the endpoint name of the actual pipe
-     * @param klass class that represents the model of the pipe
-     *
-     * @return the new created Pipe object
-     */
-    public Pipe add(String name, Class klass) {
-        return this.add(name, klass, baseURL, name, Type.REST);
-    }
-
-    /**
-     * Adds a new RESTful pipe to the Pipeline object,
-     * leveraging the given baseURL argument.
-     *
-     * @param name     the name of the actual pipe
-     * @param klass class that represents the model of the pipe
-     * @param endpoint the serivce endpoint, if differs from the pipe name.
-     *
-     * @return the new created Pipe object
-     */
-    public Pipe add(String name, Class klass, String endpoint) {
-        return this.add(name, klass, baseURL, endpoint, Type.REST);
-    }
-
-    /**
-     * Adds a new pipe (server connection) to the Pipeline object,
-     * leveraging the given baseURL argument.
-     *
-     * @param name the endpoint name of the actual pipe
-     * @param klass class that represents the model of the pipe
-     * @param type the type of the actual pipe/connection
-     *
-     * @return the new created Pipe object
-     */
-    public Pipe add(String name, Class klass, Type type) {
-        return this.add(name, klass, baseURL, name, type);
-    }
-
-    /**
-     * Adds a new pipe (server connection) to the Pipeline object,
-     * leveraging the given baseURL argument.
-     *
-     * @param name the logical name of the actual pipe
-     * @param klass class that represents the model of the pipe
-     * @param endpoint the serivce endpoint, if differs from the pipe name.
-     * @param type the type of the actual pipe/connection
-     *
-     * @return the new created Pipe object
-     */
-    public Pipe add(String name, Class klass, String endpoint, Type type) {
-        return this.add(name, klass, baseURL, endpoint, type);
-    }
-
-    /**
-     * Adds a new RESTful pipe to the Pipeline object
-     *
-     * @param name the endpoint name of the actual pipe
-     * @param klass class that represents the model of the pipe
-     * @param baseURL the URL of the server
-     *
-     * @return the new created Pipe object
-     */
-    public Pipe add(String name, Class klass, URL baseURL) {
-        return this.add(name, klass, baseURL, name, Type.REST);
-    }
-
-    /**
-     * Adds a new RESTful pipe to the Pipeline object
-     *
-     * @param name the name of the actual pipe
-     * @param klass class that represents the model of the pipe
-     * @param baseURL the URL of the server
-     * @param endpoint the serivce endpoint, if differs from the pipe name.
-     *
-     * @return the new created Pipe object
-     */
-    public Pipe add(String name, Class klass, URL baseURL, String endpoint) {
-        return this.add(name, klass, baseURL, endpoint, Type.REST);
-    }
-
-    /**
-     * Adds a new pipe (server connection) to the Pipeline object
-     *
-     * @param name the endpoint name of the actual pipe
-     * @param klass class that represents the model of the pipe
-     * @param baseURL the URL of the server
-     * @param type the type of the actual pipe/connection
-     *
-     * @return the new created Pipe object
-     */
-    public Pipe add(String name, Class klass, URL baseURL, Type type) {
-        return this.add(name, klass, baseURL, name, type);
-    }
-
-    /**
-     * Adds a new pipe (server connection) to the Pipeline object
-     *
-     * @param name the logical name of the actual pipe
-     * @param klass class that represents the model of the pipe
-     * @param baseURL the URL of the server
-     * @param endpoint the serivce endpoint, if differs from the pipe name.
-     * @param type the type of the actual pipe/connection
-     *
-     * @return the new created Pipe object
-     */
-    public Pipe add(String name, Class klass, URL baseURL, String endpoint, Type type) {
-        return this.addPipe(name, klass, appendEndpoint(baseURL, endpoint), type);
+    public static interface PipeBuilder {
+        public PipeBuilder enpoint(String endpoint);
+        public PipeBuilder type(Type type);
+        public PipeBuilder url(URL url);
+        public Pipe buildAndAdd();
     }
 
     /**
@@ -250,26 +169,6 @@ public class Pipeline {
      */
     public Pipe get(String name) {
         return pipes.get(name);
-    }
-
-    private Pipe addPipe(String name, Class klass, URL url, Type type) {
-        Pipe pipe = AdapterFactory.createPipe(type, klass, url);
-        pipes.put(name, pipe);
-        return pipe;
-    }
-
-    private URL appendEndpoint(URL baseURL, String endpoint) {
-
-        try {
-            // TODO Move to helper?
-            if( !baseURL.toString().endsWith("/")) {
-                endpoint = "/" + endpoint;
-            }
-            return new URL(baseURL + endpoint + "/");
-        } catch (MalformedURLException e) {
-            Log.e("AeroGear", e.getMessage());
-            return null;
-        }
     }
 
 }
