@@ -31,7 +31,7 @@ import static org.aerogear.android.impl.pipeline.Type.REST;
 
 /**
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s).
- * The {@link Pipeline} contains some simple management APIs to create or remove {@link Pipe}s objects.
+ + The {@link Pipeline} contains some simple management APIs to create or remove {@link Pipe}s objects.
  */
 public class Pipeline {
 
