@@ -49,7 +49,13 @@ public class AuthenticatorTest {
     @Test
     public void testAddSimpleAuthenticator() {
         DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL));
+        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL) {
+
+            @Override
+            public RestAuthenticationModule add() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        }.build());
         
         assertNotNull(simpleAuthModule);
         
@@ -58,9 +64,31 @@ public class AuthenticatorTest {
     @Test
     public void testAddAndGetSimpleAuthenticator() {
         DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL));
+        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL) {
+
+            @Override
+            public RestAuthenticationModule add() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        }.build());
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
+
+    
+        @Test
+    public void testAddAuthenticator() {
+        DefaultAuthenticator authenticator = new DefaultAuthenticator();
+        authenticator.auth(AuthType.REST, SIMPLE_MODULE_NAME, SIMPLE_URL).enrollEndpoint("testEnroill").add();
+        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL) {
+
+            @Override
+            public RestAuthenticationModule add() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        }.build());
+        assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
+    }
+
     
     @Test
     public void testGetNullAuthModule() {

@@ -210,7 +210,7 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     	
     }
  
-    public static class Builder implements org.aerogear.android.Builder<RestAuthenticationModule> {
+    public static abstract class Builder implements AddAuthBuilder<RestAuthenticationModule> {
         private final URL baseURL;
         private       String loginEndpoint = "/auth/login";
         private       String logoutEndpoint = "/auth/logout";
@@ -220,17 +220,20 @@ public final class RestAuthenticationModule implements AuthenticationModule{
             this.baseURL = baseURL;
         }
 
-        public Builder loginEndpoint(String loginEndpoint) {
+        @Override
+        public AddAuthBuilder loginEndpoint(String loginEndpoint) {
             this.loginEndpoint = loginEndpoint;
             return this;
         }
 
-        public Builder logoutEndpoint(String logoutEndpoint) {
+        @Override
+        public AddAuthBuilder logoutEndpoint(String logoutEndpoint) {
             this.logoutEndpoint = logoutEndpoint;
             return this;
         }
 
-        public Builder enrollEndpoint(String enrollEndpoint) {
+        @Override
+        public AddAuthBuilder enrollEndpoint(String enrollEndpoint) {
             this.enrollEndpoint = enrollEndpoint;
             return this;
         }
@@ -263,6 +266,7 @@ public final class RestAuthenticationModule implements AuthenticationModule{
                 throw new IllegalArgumentException(ex);
             }
         }
+
 
     }
     

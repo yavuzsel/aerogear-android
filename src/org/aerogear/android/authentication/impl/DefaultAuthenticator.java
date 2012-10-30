@@ -16,9 +16,14 @@
  */
 package org.aerogear.android.authentication.impl;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.aerogear.android.Builder;
+import org.aerogear.android.authentication.AuthType;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.Authenticator;
 
@@ -29,13 +34,20 @@ import org.aerogear.android.authentication.Authenticator;
 public class DefaultAuthenticator implements Authenticator {
 
     Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
+
+    private static final Map<AuthType, Class<? extends Builder>> BUILDER_MAP;
+    
+    static {
+        BUILDER_MAP = new HashMap<AuthType, Class<? extends Builder>>(AuthType.values().length);
+        BUILDER_MAP.put(AuthType.REST, RestAuthenticationModule.Builder.class);
+    }
     
     /**
      * {@inheritDoc }
      */
     @Override
-    public AuthenticationModule add(String name, Builder<? extends AuthenticationModule> builder) {
-        modules.put(name, builder.build());
+    public AuthenticationModule add(String name, AuthenticationModule authModule) {
+        modules.put(name, authModule);
         return modules.get(name);
     }
 
@@ -54,6 +66,24 @@ public class DefaultAuthenticator implements Authenticator {
     @Override
     public AuthenticationModule remove(String name) {
         return modules.remove(name);
+    }
+
+      /**
+     * {@inheritDoc }
+     */
+    @Override
+    public AddAuthBuilder<? extends AuthenticationModule> auth( AuthType authType, final String name, URL baseURL) {
+        if (authType != AuthType.REST) {
+            throw new IllegalArgumentException("Unsupported Auth Type passed");
+        }
+        
+        
+        return new RestAuthenticationModule.Builder(baseURL) {
+            @Override
+            public RestAuthenticationModule add() {
+                return (RestAuthenticationModule) DefaultAuthenticator.this.add(name, build());
+            }
+         };
     }
     
 }

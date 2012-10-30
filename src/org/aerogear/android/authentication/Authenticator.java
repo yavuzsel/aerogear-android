@@ -16,7 +16,9 @@
  */
 package org.aerogear.android.authentication;
 
+import java.net.URL;
 import org.aerogear.android.Builder;
+import org.aerogear.android.authentication.impl.AddAuthBuilder;
 
 /**
  * This is a factory and manager for {@link AuthenticationModule}
@@ -30,11 +32,11 @@ public interface Authenticator {
      * Creates a new {@link AuthenticationModule } 
      * 
      * @param name a key to use to lookup the Module later
-     * @param moduleBuilder a configured module to build and add to the 
+     * @param authModule a configured module to add to the 
      *        Authenticator
      * @return 
      */
-    public AuthenticationModule add(String name, Builder<? extends AuthenticationModule> moduleBuilder);
+    public AuthenticationModule add(String name, AuthenticationModule authModule);
    
 
     /**
@@ -55,5 +57,18 @@ public interface Authenticator {
      */
     public AuthenticationModule remove(String name);
     
+    /**
+     * 
+     * Creates a builder to add an AuthenticationModule to the system.
+     * 
+     * Eventually users will be able to add their own AuthTypes, but for now
+     * we will restrict them using na Enum
+     * 
+     * @param authType  
+     * @param name A key to use to fetch the module using get
+     * @param baseURL the base url of a {@link AuthenticationModule}
+     * @return 
+     */
+    public AddAuthBuilder<? extends AuthenticationModule> auth(AuthType authType, String name, URL baseURL);
     
 }
