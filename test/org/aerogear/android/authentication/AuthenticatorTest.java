@@ -46,16 +46,24 @@ public class AuthenticatorTest {
         }
     }
     
+    private static class RestBuilder extends RestAuthenticationModule.Builder {
+
+        public RestBuilder(URL baseURL) {
+            super(baseURL);
+        }
+
+        
+        
+        @Override
+        public RestAuthenticationModule add(String name) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
+    
     @Test
     public void testAddSimpleAuthenticator() {
         DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL) {
-
-            @Override
-            public RestAuthenticationModule add() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        }.build());
+        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestBuilder(SIMPLE_URL).build());
         
         assertNotNull(simpleAuthModule);
         
@@ -64,13 +72,7 @@ public class AuthenticatorTest {
     @Test
     public void testAddAndGetSimpleAuthenticator() {
         DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL) {
-
-            @Override
-            public RestAuthenticationModule add() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        }.build());
+        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestBuilder(SIMPLE_URL).build());
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
 
@@ -78,14 +80,8 @@ public class AuthenticatorTest {
         @Test
     public void testAddAuthenticator() {
         DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        authenticator.auth(AuthType.REST, SIMPLE_MODULE_NAME, SIMPLE_URL).enrollEndpoint("testEnroill").add();
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL) {
-
-            @Override
-            public RestAuthenticationModule add() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        }.build());
+        authenticator.auth(AuthType.REST,  SIMPLE_URL).enrollEndpoint("testEnroill").add(SIMPLE_MODULE_NAME);
+        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestBuilder(SIMPLE_URL).build());
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
 
