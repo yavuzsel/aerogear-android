@@ -51,7 +51,13 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     
         static {
             try {
-                BUILDER  = new RestAuthenticationModule.Builder(new URL("http://localhost:8080/todo-server"));
+                BUILDER  = new RestAuthenticationModule.Builder(new URL("http://localhost:8080/todo-server")) {
+
+                    @Override
+                    public RestAuthenticationModule add() {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                };
             } catch (MalformedURLException ex) {
                 Logger.getLogger(RestAuthenticationModuleTest.class.getName()).log(Level.SEVERE, null, ex);
                 throw new RuntimeException(ex);
