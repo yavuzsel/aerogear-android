@@ -30,7 +30,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.aerogear.android.Builder;
+import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthValue;
+import org.aerogear.android.authentication.impl.RestAuthenticationModule;
 import org.aerogear.android.core.HttpException;
 import org.junit.After;
 import org.junit.Assert;
@@ -38,7 +40,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
+/**
+ *
+ * @author summers
+ */
 @RunWith(RobolectricTestRunner.class)
 public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     
@@ -99,7 +104,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
         Assert.assertTrue(module.isLoggedIn());
-        Assert.assertEquals(TOKEN, module.getAuthToken());
+        Assert.assertEquals(TOKEN, getAuthToken(module));
     }
     
     @Test(timeout=50000L)
@@ -129,7 +134,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         Assert.assertEquals(PASSING_USERNAME, resultObject.get("username").getAsString());
         
         Assert.assertTrue(module.isLoggedIn());
-        Assert.assertEquals(TOKEN, module.getAuthToken());
+        Assert.assertEquals(TOKEN, getAuthToken(module));
     }
     
     
@@ -159,7 +164,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     
         
     @Test(timeout=50000L)
-    public void logoutSucceeds() throws IOException {
+    public void logouSucceeds() throws IOException {
         RestAuthenticationModule module = BUILDER.build();
         Robolectric.addHttpResponseRule(LOGIN_MATCHER, VALID_LOGIN);
         SimpleCallback callback = new SimpleCallback();
@@ -168,7 +173,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
         Assert.assertTrue(module.isLoggedIn());
-        Assert.assertEquals(TOKEN, module.getAuthToken());
+        Assert.assertEquals(TOKEN, getAuthToken(module));
         
         //Reset
         Robolectric.clearHttpResponseRules();
@@ -180,9 +185,31 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         Assert.assertNull(voidCallback.exception);
         
         Assert.assertFalse(module.isLoggedIn());
-        Assert.assertEquals("", module.getAuthToken());
+        Assert.assertEquals("", getAuthToken(module));
         
         
+    }
+
+    private String getAuthToken(RestAuthenticationModule authModule) {
+        for (Field field : authModule.getClass().getDeclaredFields()) {
+                            if (field.isAnnotationPresent(AuthValue.class)) {
+                                if (!field.isAccessible()) {
+                                    field.setAccessible(true);
+                                }
+                                AuthValue authValueAnnotation = field.getAnnotation(AuthValue.class);
+                                String headerName = authValueAnnotation.name();
+                                try {
+                                    return field.get(authModule).toString();
+                                } catch (IllegalArgumentException ex) {
+                                    Log.e(TAG, "IllegalArgumentException fetching " + field.getName(), ex);
+                                    throw new IllegalStateException(ex);
+                                } catch (IllegalAccessException ex) {
+                                    Log.e(TAG, "IllegalAccessException fetching " + field.getName(), ex);
+                                    throw new IllegalStateException(ex);
+                                }
+                            }
+                        }
+        throw new IllegalStateException("A field was not marked with AuthValue");
     }
 
     

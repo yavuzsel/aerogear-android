@@ -22,7 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.impl.RestAuthenticationModule;
-import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.core.HeaderAndBodyMap;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -104,11 +104,10 @@ public interface AuthenticationModuleTest {
     };
     
     static final HttpResponse VALID_LOGIN = new BasicHttpResponse(new StatusLineStub()) {
-        private String  TOKEN_HEADER = "Auth-Token";
         @Override
         public Header getFirstHeader(String name) {
-            if (name.equals(TOKEN_HEADER)) {
-                return new BasicHeader(TOKEN_HEADER,
+            if (name.equals(RestAuthenticationModule.TOKEN_HEADER)) {
+                return new BasicHeader(RestAuthenticationModule.TOKEN_HEADER,
                         TOKEN);//Magic Number
 
             }
@@ -118,7 +117,7 @@ public interface AuthenticationModuleTest {
         @Override
         public Header[] getAllHeaders() {
             return new Header[]{
-                        new BasicHeader(TOKEN_HEADER, TOKEN)
+                        new BasicHeader(RestAuthenticationModule.TOKEN_HEADER, TOKEN)
                     };
         }
 
@@ -169,13 +168,13 @@ public interface AuthenticationModuleTest {
         }
     };
     
-    final class SimpleCallback implements Callback<HeaderAndBody> {
+    final class SimpleCallback implements Callback<HeaderAndBodyMap> {
 
-        HeaderAndBody data;
+        HeaderAndBodyMap data;
         Exception exception;
 
         @Override
-        public void onSuccess(HeaderAndBody data) {
+        public void onSuccess(HeaderAndBodyMap data) {
             this.data = data;
         }
 
