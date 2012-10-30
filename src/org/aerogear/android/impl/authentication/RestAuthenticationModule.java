@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.authentication.impl;
+package org.aerogear.android.impl.authentication;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -214,7 +214,7 @@ public final class RestAuthenticationModule implements AuthenticationModule{
         private final URL baseURL;
         private       String loginEndpoint = "/auth/login";
         private       String logoutEndpoint = "/auth/logout";
-        private       String enrollEndpoint = "/auth/enroll";
+        private       String enrollEndpoint = "/auth/register";
 
         public Builder(URL baseURL) {
             this.baseURL = baseURL;
