@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.authentication;
+package org.aerogear.android.authentication.impl;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.aerogear.android.authentication.AuthType;
+import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.impl.DefaultAuthenticator;
 import org.aerogear.android.authentication.impl.RestAuthenticationModule;
 import org.aerogear.android.impl.pipeline.Type;

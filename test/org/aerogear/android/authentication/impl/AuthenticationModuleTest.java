@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.authentication;
+package org.aerogear.android.authentication.impl;
 
 import com.xtremelabs.robolectric.shadows.StatusLineStub;
 import com.xtremelabs.robolectric.tester.org.apache.http.RequestMatcher;

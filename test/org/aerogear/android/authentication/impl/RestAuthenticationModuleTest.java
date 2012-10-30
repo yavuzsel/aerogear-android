@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.authentication;
+package org.aerogear.android.authentication.impl;
 
 import android.util.Log;
 import com.google.gson.JsonObject;
@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.aerogear.android.Builder;
 import org.aerogear.android.Callback;
+import org.aerogear.android.authentication.AuthValue;
 import org.aerogear.android.authentication.impl.RestAuthenticationModule;
 import org.aerogear.android.core.HttpException;
 import org.junit.After;
