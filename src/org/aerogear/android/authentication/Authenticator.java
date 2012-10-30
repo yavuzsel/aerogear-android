@@ -19,7 +19,7 @@ package org.aerogear.android.authentication;
 import org.aerogear.android.Builder;
 
 /**
- * This is a factory and manager for %{@link AuthenticationModule}
+ * This is a factory and manager for {@link AuthenticationModule}
  * 
  *  It allows you to add and remove authentication modules.
  */
@@ -27,7 +27,7 @@ public interface Authenticator {
     
     /**
      * 
-     * Creates a new %{@link AuthenticationModule } 
+     * Creates a new {@link AuthenticationModule } 
      * 
      * @param name a key to use to lookup the Module later
      * @param moduleBuilder a configured module to build and add to the 

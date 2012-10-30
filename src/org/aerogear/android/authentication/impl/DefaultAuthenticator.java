@@ -31,7 +31,7 @@ public class DefaultAuthenticator implements Authenticator {
     Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
     
     /**
-     * %{@inheritDoc }
+     * {@inheritDoc }
      */
     @Override
     public AuthenticationModule add(String name, Builder<? extends AuthenticationModule> builder) {
@@ -41,7 +41,7 @@ public class DefaultAuthenticator implements Authenticator {
 
 
     /**
-     * %{@inheritDoc }
+     * {@inheritDoc }
      */
     @Override
     public AuthenticationModule get(String name) {
@@ -49,7 +49,7 @@ public class DefaultAuthenticator implements Authenticator {
     }
 
     /**
-     * %{@inheritDoc }
+     * {@inheritDoc }
      */
     @Override
     public AuthenticationModule remove(String name) {

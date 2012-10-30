@@ -26,7 +26,10 @@ import org.aerogear.android.pipeline.Pipe;
  *
  * A module which can authenticate a user.  It also provides the 
  * necessary tools to log a user in, out, and modify requests from a 
- * %{@link Pipe} so they are seen as authenticated.             
+ * {@link Pipe} so they are seen as authenticated.             
+ * 
+ * If you have fields which need to be passed as tokens to the server,
+ * annotate them with {@link AuthValue}
  * 
  */
 public interface AuthenticationModule {
@@ -72,19 +75,11 @@ public interface AuthenticationModule {
      * 
      * @param callback 
      */
-    public void logout(Callback<Void> callback);
-	
-    
-    /**
-     * 
-     * @return the current auth token or empty string if not logged in
-     */
-    public String getAuthToken();
-	
+    public void logout(Callback<Void> callback);	
     
     /**
      * 
      * @return true if the module has been logged in successfully
      */
-    public boolean isAuthenticated();
+    public boolean isLoggedIn();
 }

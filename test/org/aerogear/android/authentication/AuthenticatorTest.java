@@ -49,7 +49,7 @@ public class AuthenticatorTest {
     @Test
     public void testAddSimpleAuthenticator() {
         DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder());
+        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL));
         
         assertNotNull(simpleAuthModule);
         
@@ -58,7 +58,7 @@ public class AuthenticatorTest {
     @Test
     public void testAddAndGetSimpleAuthenticator() {
         DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder());
+        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestAuthenticationModule.Builder(SIMPLE_URL));
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
     

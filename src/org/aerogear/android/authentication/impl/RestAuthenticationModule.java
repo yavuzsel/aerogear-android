@@ -32,6 +32,7 @@ import android.os.AsyncTask;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.aerogear.android.authentication.AuthValue;
 
 /**
  *
@@ -52,7 +53,8 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     
     private final String enrollEndpoint;
     private final URL enrollURL;
-    
+  
+    @AuthValue(name="Auth-Token")
     private String authToken = "";
     private boolean isAuthenticated = false;
     
@@ -92,41 +94,69 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     public void enroll(final Map<String, String> userData,final Callback<HeaderAndBodyMap> callback) {
         new AsyncTask<Void, Void, Void>() {
 
+            HeaderAndBodyMap result = null;
+            Exception exception = null;
+            
             @Override
             protected Void doInBackground(Void... params) {
                 HttpRestProvider provider = new HttpRestProvider(enrollURL);
                 String enrollData = new JSONObject(userData).toString();
                 try {
-                    HeaderAndBodyMap result = provider.post(enrollData);
+                    result = provider.post(enrollData);
                     authToken = result.get("Auth-Token");
                     isAuthenticated = true;
-                    callback.onSuccess(result);
+                    
                 } catch (Exception e) {
-                    callback.onFailure(e);
+                    exception = e;
                 }
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void ignore) {
+                super.onPostExecute(ignore);
+                if (exception == null) {
+                    callback.onSuccess(this.result);
+                } else {
+                    callback.onFailure(exception);
+                }
+            }
+            
+            
+            
         }.execute(null);    
     }
 
     @Override
     public void login(final String username, final String password, final Callback<HeaderAndBodyMap> callback) {
         new AsyncTask<Void, Void, Void>() {
+            private Exception exception;
+            private HeaderAndBodyMap result;
 
             @Override
             protected Void doInBackground(Void... params) {
                 HttpRestProvider provider = new HttpRestProvider(loginURL);
                 String loginData = buildLoginData(username, password);
                 try {
-                    HeaderAndBodyMap result = provider.post(loginData);
+                    result = provider.post(loginData);
                     authToken = result.get("Auth-Token");
                     isAuthenticated = true;
-                    callback.onSuccess(result);
                 } catch (Exception e) {
-                    callback.onFailure(e);
+                    exception = e;
                 }
                 return null;
             }
+            
+            @Override
+            protected void onPostExecute(Void ignore) {
+                super.onPostExecute(ignore);
+                if (exception == null) {
+                    callback.onSuccess(this.result);
+                } else {
+                    callback.onFailure(exception);
+                }
+            }
+            
         }.execute(null);
         
     }
@@ -134,30 +164,37 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     @Override
     public void logout(final Callback<Void> callback) {
         new AsyncTask<Void, Void, Void>() {
+            private Exception exception;
 
             @Override
             protected Void doInBackground(Void... params) {
                 HttpRestProvider provider = new HttpRestProvider(logoutURL);
                 try {
-                    HeaderAndBodyMap result = provider.post("");
+                    provider.post("");
                     authToken = "";
                     isAuthenticated = false;
-                    callback.onSuccess(null);
+                    
                 } catch (Exception e) {
-                    callback.onFailure(e);
+                    exception = e;
                 }
                 return null;
             }
+            
+              @Override
+            protected void onPostExecute(Void ignore) {
+                super.onPostExecute(ignore);
+                if (exception == null) {
+                    callback.onSuccess(null);
+                } else {
+                    callback.onFailure(exception);
+                }
+            }
+            
         }.execute(null);    
     }
 
     @Override
-    public String getAuthToken() {
-        return authToken;
-    }
-
-    @Override
-    public boolean isAuthenticated() {
+    public boolean isLoggedIn() {
         return isAuthenticated;
     }
     
@@ -174,20 +211,13 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     }
  
     public static class Builder implements org.aerogear.android.Builder<RestAuthenticationModule> {
-        private URL baseURL;
-        private String loginEndpoint = "/auth/login";
-        private String logoutEndpoint = "/auth/logout";
-        private String enrollEndpoint = "/auth/enroll";
+        private final URL baseURL;
+        private       String loginEndpoint = "/auth/login";
+        private       String logoutEndpoint = "/auth/logout";
+        private       String enrollEndpoint = "/auth/enroll";
 
-        public Builder() {
-            try {
-                baseURL = new URL("http://localhost:80");
-            } catch (MalformedURLException ignore) {}
-        }
-        
-        public Builder baseURL(URL baseURL) {
+        public Builder(URL baseURL) {
             this.baseURL = baseURL;
-            return this;
         }
 
         public Builder loginEndpoint(String loginEndpoint) {

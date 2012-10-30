@@ -14,44 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.aerogear.android.authentication;
 
-package org.aerogear.android.impl.core;
+import org.aerogear.android.Builder;
 
-import org.aerogear.android.core.HttpProvider;
-
-import java.net.URL;
-import org.aerogear.android.core.HeaderAndBodyMap;
-
-public class HttpStubProvider implements HttpProvider {
-
-    private final URL url;
-
-    public HttpStubProvider(URL url) {
-        this.url = url;
-    }
-
-    public URL getUrl() {
-        return url;
-    }
-
-    public HeaderAndBodyMap get() {
-        return null;
-    }
-
-    public HeaderAndBodyMap post(String data) {
-        return null;
-    }
-
-    public HeaderAndBodyMap put(String id, String data) {
-        return null;
-    }
-
-    public HeaderAndBodyMap delete(String id) {
-        return null;
-    }
-
-    @Override
-    public void setDefaultHeader(String headerName, String headerValue) {
-    }
-
+/**
+ *
+ * @author summers
+ */
+public abstract class AbstractAuthenticationModuleBuilder<T extends AuthenticationModule> implements Builder<T> {
+   
+    
+    
 }
