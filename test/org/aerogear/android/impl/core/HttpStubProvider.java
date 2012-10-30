@@ -20,7 +20,7 @@ package org.aerogear.android.impl.core;
 import org.aerogear.android.core.HttpProvider;
 
 import java.net.URL;
-import org.aerogear.android.core.HeaderAndBodyMap;
+import org.aerogear.android.core.HeaderAndBody;
 
 public class HttpStubProvider implements HttpProvider {
 
@@ -34,19 +34,19 @@ public class HttpStubProvider implements HttpProvider {
         return url;
     }
 
-    public HeaderAndBodyMap get() {
+    public HeaderAndBody get() {
         return null;
     }
 
-    public HeaderAndBodyMap post(String data) {
+    public HeaderAndBody post(String data) {
         return null;
     }
 
-    public HeaderAndBodyMap put(String id, String data) {
+    public HeaderAndBody put(String id, String data) {
         return null;
     }
 
-    public HeaderAndBodyMap delete(String id) {
+    public HeaderAndBody delete(String id) {
         return null;
     }
 

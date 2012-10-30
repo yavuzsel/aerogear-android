@@ -19,7 +19,7 @@ package org.aerogear.android.authentication;
 import java.net.URL;
 import java.util.Map;
 import org.aerogear.android.Callback;
-import org.aerogear.android.core.HeaderAndBodyMap;
+import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.pipeline.Pipe;
 
 /**
@@ -51,7 +51,7 @@ public interface AuthenticationModule {
      * @param userData
      * @param callback 
      */
-    public void enroll(Map<String, String> userData, Callback<HeaderAndBodyMap> callback);
+    public void enroll(Map<String, String> userData, Callback<HeaderAndBody> callback);
     
     /**
      * 
@@ -64,7 +64,7 @@ public interface AuthenticationModule {
      * @param password 
      * @param callback 
      */
-    public void login(String username, String password, Callback<HeaderAndBodyMap> callback);
+    public void login(String username, String password, Callback<HeaderAndBody> callback);
     
     /**
      * 

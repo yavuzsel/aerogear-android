@@ -34,7 +34,7 @@ public interface HttpProvider {
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBodyMap get() throws HttpException, Exception;
+    public HeaderAndBody get() throws HttpException, Exception;
     
     /**
      * Issues an HTTP request, consumes the content, and cleans up 
@@ -43,7 +43,7 @@ public interface HttpProvider {
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBodyMap post(String data) throws RuntimeException;
+    public HeaderAndBody post(String data) throws RuntimeException;
     
     /**
      * Issues an HTTP request, consumes the content, and cleans up 
@@ -52,7 +52,7 @@ public interface HttpProvider {
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBodyMap put(String id, String data) throws RuntimeException;
+    public HeaderAndBody put(String id, String data) throws RuntimeException;
     
     /**
      * Issues an HTTP request, consumes the content, and cleans up 
@@ -61,7 +61,7 @@ public interface HttpProvider {
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBodyMap delete(String id) throws RuntimeException;
+    public HeaderAndBody delete(String id) throws RuntimeException;
 
     /**
      * 

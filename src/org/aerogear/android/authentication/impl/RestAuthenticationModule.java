@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
-import org.aerogear.android.core.HeaderAndBodyMap;
+import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.json.JSONObject;
 
@@ -92,10 +92,10 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     }
 
     @Override
-    public void enroll(final Map<String, String> userData,final Callback<HeaderAndBodyMap> callback) {
+    public void enroll(final Map<String, String> userData,final Callback<HeaderAndBody> callback) {
         new AsyncTask<Void, Void, Void>() {
 
-            HeaderAndBodyMap result = null;
+            HeaderAndBody result = null;
             Exception exception = null;
             
             @Override
@@ -104,7 +104,7 @@ public final class RestAuthenticationModule implements AuthenticationModule{
                 String enrollData = new JSONObject(userData).toString();
                 try {
                     result = provider.post(enrollData);
-                    authToken = result.get("Auth-Token");
+                    authToken = result.getHeader("Auth-Token").toString();
                     isAuthenticated = true;
                     
                 } catch (Exception e) {
@@ -129,10 +129,10 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     }
 
     @Override
-    public void login(final String username, final String password, final Callback<HeaderAndBodyMap> callback) {
+    public void login(final String username, final String password, final Callback<HeaderAndBody> callback) {
         new AsyncTask<Void, Void, Void>() {
             private Exception exception;
-            private HeaderAndBodyMap result;
+            private HeaderAndBody result;
 
             @Override
             protected Void doInBackground(Void... params) {
@@ -140,7 +140,7 @@ public final class RestAuthenticationModule implements AuthenticationModule{
                 String loginData = buildLoginData(username, password);
                 try {
                     result = provider.post(loginData);
-                    authToken = result.get("Auth-Token");
+                    authToken = result.getHeader("Auth-Token").toString();
                     isAuthenticated = true;
                 } catch (Exception e) {
                     exception = e;

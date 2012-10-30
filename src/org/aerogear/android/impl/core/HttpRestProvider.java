@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.aerogear.android.core.HeaderAndBodyMap;
+import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpException;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -81,8 +81,7 @@ public final class HttpRestProvider implements HttpProvider {
      * {@inheritDoc}
      */
     @Override
-    public HeaderAndBodyMap get() throws RuntimeException {
-
+    public HeaderAndBody get() throws RuntimeException {
         try {
             return execute(new HttpGet(url.toString()));
         } catch (IOException e) {
@@ -95,7 +94,7 @@ public final class HttpRestProvider implements HttpProvider {
      * {@inheritDoc}
      */
     @Override
-    public HeaderAndBodyMap post(String data) throws RuntimeException {
+    public HeaderAndBody post(String data) throws RuntimeException {
 
         HttpPost post = new HttpPost(url.toString());
         addBodyRequest(post, data);
@@ -112,7 +111,7 @@ public final class HttpRestProvider implements HttpProvider {
      * {@inheritDoc}
      */
     @Override
-    public HeaderAndBodyMap put(String id, String data) throws RuntimeException {
+    public HeaderAndBody put(String id, String data) throws RuntimeException {
         HttpPut put = new HttpPut(appendIdToURL(id));
         addBodyRequest(put, data);
         try {
@@ -128,7 +127,7 @@ public final class HttpRestProvider implements HttpProvider {
      * {@inheritDoc}
      */
     @Override
-    public HeaderAndBodyMap delete(String id) throws RuntimeException {
+    public HeaderAndBody delete(String id) throws RuntimeException {
         HttpDelete delete = new HttpDelete(appendIdToURL(id));
         try {
             return execute(delete);
@@ -144,7 +143,7 @@ public final class HttpRestProvider implements HttpProvider {
         requestBase.setEntity(entity);
     }
 
-    private HeaderAndBodyMap execute(HttpRequestBase method) throws IOException {
+    private HeaderAndBody execute(HttpRequestBase method) throws IOException {
         method.setHeader("Accept", "application/json");
         method.setHeader("Content-type", "application/json");
         
@@ -162,10 +161,10 @@ public final class HttpRestProvider implements HttpProvider {
         }
         
         Header[] headers = response.getAllHeaders();
-        HeaderAndBodyMap result = new HeaderAndBodyMap(data, headers.length);
+        HeaderAndBody result = new HeaderAndBody(data, new HashMap<String, Object>(headers.length));
         
         for (Header header : headers) {
-            result.put(header.getName(), header.getValue());
+            result.setHeader(header.getName(), header.getValue());
         }
         
         return result;
