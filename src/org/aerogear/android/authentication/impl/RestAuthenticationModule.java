@@ -211,7 +211,11 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     	
     }
  
-    public static abstract class Builder implements AddAuthBuilder<RestAuthenticationModule> {
+    /**
+     * This class extended by {@link DefaultAuthenticator#auth(org.aerogear.android.authentication.AuthType, java.net.URL) }
+     * to creating an adding builder
+     */
+    protected static abstract class Builder implements AddAuthBuilder<RestAuthenticationModule> {
         private final URL baseURL;
         private       String loginEndpoint = "/auth/login";
         private       String logoutEndpoint = "/auth/logout";
