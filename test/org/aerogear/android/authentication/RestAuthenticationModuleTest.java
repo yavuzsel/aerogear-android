@@ -16,11 +16,13 @@
  */
 package org.aerogear.android.authentication;
 
+import android.util.Log;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -44,16 +46,18 @@ import org.junit.runner.RunWith;
 @RunWith(RobolectricTestRunner.class)
 public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     
-     static final Builder<RestAuthenticationModule> BUILDER;
+    private static final String TAG = "RestAuthenticationModuleTest";
+    static final Builder<RestAuthenticationModule> BUILDER;
     
         static {
             try {
-                BUILDER  = new RestAuthenticationModule.Builder().baseURL(new URL("http://localhost:8080/todo-server"));
+                BUILDER  = new RestAuthenticationModule.Builder(new URL("http://localhost:8080/todo-server"));
             } catch (MalformedURLException ex) {
                 Logger.getLogger(RestAuthenticationModuleTest.class.getName()).log(Level.SEVERE, null, ex);
                 throw new RuntimeException(ex);
             }
         }
+    
     
     @Before
     public void setup() {
@@ -76,7 +80,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         
         };
         Assert.assertNotNull(callback.exception);
-        Assert.assertFalse(module.isAuthenticated());
+        Assert.assertFalse(module.isLoggedIn());
     }
     
     
@@ -92,8 +96,8 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         };
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
-        Assert.assertTrue(module.isAuthenticated());
-        Assert.assertEquals(TOKEN, module.getAuthToken());
+        Assert.assertTrue(module.isLoggedIn());
+        Assert.assertEquals(TOKEN, getAuthToken(module));
     }
     
     @Test(timeout=50000L)
@@ -122,8 +126,8 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         JsonObject resultObject = (JsonObject) parser.parse(result);
         Assert.assertEquals(PASSING_USERNAME, resultObject.get("username").getAsString());
         
-        Assert.assertTrue(module.isAuthenticated());
-        Assert.assertEquals(TOKEN, module.getAuthToken());
+        Assert.assertTrue(module.isLoggedIn());
+        Assert.assertEquals(TOKEN, getAuthToken(module));
     }
     
     
@@ -147,7 +151,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         };
         Assert.assertNotNull(callback.exception);
         Assert.assertNull(callback.data);
-        Assert.assertFalse(module.isAuthenticated());
+        Assert.assertFalse(module.isLoggedIn());
         Assert.assertEquals(400, ((HttpException)callback.exception).getStatusCode());
     }
     
@@ -161,8 +165,8 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
-        Assert.assertTrue(module.isAuthenticated());
-        Assert.assertEquals(TOKEN, module.getAuthToken());
+        Assert.assertTrue(module.isLoggedIn());
+        Assert.assertEquals(TOKEN, getAuthToken(module));
         
         //Reset
         Robolectric.clearHttpResponseRules();
@@ -173,9 +177,32 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         module.logout(voidCallback);
         Assert.assertNull(voidCallback.exception);
         
-        Assert.assertFalse(module.isAuthenticated());
-        Assert.assertEquals("", module.getAuthToken());
+        Assert.assertFalse(module.isLoggedIn());
+        Assert.assertEquals("", getAuthToken(module));
         
+        
+    }
+
+    private String getAuthToken(RestAuthenticationModule authModule) {
+        for (Field field : authModule.getClass().getDeclaredFields()) {
+                            if (field.isAnnotationPresent(AuthValue.class)) {
+                                if (!field.isAccessible()) {
+                                    field.setAccessible(true);
+                                }
+                                AuthValue authValueAnnotation = field.getAnnotation(AuthValue.class);
+                                String headerName = authValueAnnotation.name();
+                                try {
+                                    return field.get(authModule).toString();
+                                } catch (IllegalArgumentException ex) {
+                                    Log.e(TAG, "IllegalArgumentException fetching " + field.getName(), ex);
+                                    throw new IllegalStateException(ex);
+                                } catch (IllegalAccessException ex) {
+                                    Log.e(TAG, "IllegalAccessException fetching " + field.getName(), ex);
+                                    throw new IllegalStateException(ex);
+                                }
+                            }
+                        }
+        throw new IllegalStateException("A field was not marked with AuthValue");
     }
 
     

@@ -38,6 +38,7 @@ import android.os.AsyncTask;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.aerogear.android.authentication.AuthValue;
 
 /**
  * A module for authenticating with restful AG services.

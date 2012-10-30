@@ -39,7 +39,7 @@ import org.json.JSONObject;
 
 /**
  * This interface sets up all of the static values for 
- * %{@link RestAuthenticationModuleTest}
+ * {@link RestAuthenticationModuleTest}
  */
 public interface AuthenticationModuleTest {
 
