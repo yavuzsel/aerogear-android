@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.impl.authentication;
+package org.aerogear.android.authentication;
 
 import org.aerogear.android.Builder;
 import org.aerogear.android.authentication.AuthenticationModule;
