@@ -22,7 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.impl.RestAuthenticationModule;
-import org.aerogear.android.core.HeaderAndBodyMap;
+import org.aerogear.android.core.HeaderAndBody;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -168,13 +168,13 @@ public interface AuthenticationModuleTest {
         }
     };
     
-    final class SimpleCallback implements Callback<HeaderAndBodyMap> {
+    final class SimpleCallback implements Callback<HeaderAndBody> {
 
-        HeaderAndBodyMap data;
+        HeaderAndBody data;
         Exception exception;
 
         @Override
-        public void onSuccess(HeaderAndBodyMap data) {
+        public void onSuccess(HeaderAndBody data) {
             this.data = data;
         }
 
