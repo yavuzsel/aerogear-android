@@ -54,7 +54,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
                 BUILDER  = new RestAuthenticationModule.Builder(new URL("http://localhost:8080/todo-server")) {
 
                     @Override
-                    public RestAuthenticationModule add() {
+                    public RestAuthenticationModule add(String name) {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
                 };

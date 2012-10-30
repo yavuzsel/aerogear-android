@@ -65,10 +65,9 @@ public interface Authenticator {
      * we will restrict them using na Enum
      * 
      * @param authType  
-     * @param name A key to use to fetch the module using get
      * @param baseURL the base url of a {@link AuthenticationModule}
      * @return 
      */
-    public AddAuthBuilder<? extends AuthenticationModule> auth(AuthType authType, String name, URL baseURL);
+    public AddAuthBuilder<? extends AuthenticationModule> auth(AuthType authType, URL baseURL);
     
 }

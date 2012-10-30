@@ -16,9 +16,6 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +31,6 @@ import org.aerogear.android.authentication.Authenticator;
 public class DefaultAuthenticator implements Authenticator {
 
     Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
-
-    private static final Map<AuthType, Class<? extends Builder>> BUILDER_MAP;
-    
-    static {
-        BUILDER_MAP = new HashMap<AuthType, Class<? extends Builder>>(AuthType.values().length);
-        BUILDER_MAP.put(AuthType.REST, RestAuthenticationModule.Builder.class);
-    }
     
     /**
      * {@inheritDoc }
@@ -72,7 +62,7 @@ public class DefaultAuthenticator implements Authenticator {
      * {@inheritDoc }
      */
     @Override
-    public AddAuthBuilder<? extends AuthenticationModule> auth( AuthType authType, final String name, URL baseURL) {
+    public AddAuthBuilder<? extends AuthenticationModule> auth( AuthType authType, URL baseURL) {
         if (authType != AuthType.REST) {
             throw new IllegalArgumentException("Unsupported Auth Type passed");
         }
@@ -80,7 +70,7 @@ public class DefaultAuthenticator implements Authenticator {
         
         return new RestAuthenticationModule.Builder(baseURL) {
             @Override
-            public RestAuthenticationModule add() {
+            public RestAuthenticationModule add(String name) {
                 return (RestAuthenticationModule) DefaultAuthenticator.this.add(name, build());
             }
          };
