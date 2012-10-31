@@ -20,7 +20,7 @@ package org.aerogear.android.datamanager;
 import java.io.Serializable;
 
 /**
- * Identifier generator container
+ * Id generator strategy to using on store
  */
 public interface IdGenerator {
 

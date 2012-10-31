@@ -21,7 +21,7 @@ import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.impl.datamanager.DefaultIdGenerator;
 import org.aerogear.android.impl.datamanager.StoreType;
-import org.aerogear.android.impl.pipeline.AdapterFactory;
+import org.aerogear.android.AdapterFactory;
 
 import java.util.HashMap;
 import java.util.Map;

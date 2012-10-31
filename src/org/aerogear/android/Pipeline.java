@@ -18,7 +18,7 @@
 package org.aerogear.android;
 
 import android.util.Log;
-import org.aerogear.android.impl.pipeline.AdapterFactory;
+import org.aerogear.android.AdapterFactory;
 import org.aerogear.android.impl.pipeline.Type;
 import org.aerogear.android.pipeline.Pipe;
 

@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Rest implementation of {@link Pipe}.
  */
-final class RestAdapter<T> implements Pipe<T> {
+public final class RestAdapter<T> implements Pipe<T> {
 
     private final static Gson gson = new Gson();
 
