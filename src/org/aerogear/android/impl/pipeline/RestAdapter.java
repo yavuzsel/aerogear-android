@@ -256,26 +256,8 @@ public final class RestAdapter<T> implements Pipe<T> {
 	 */
 	private void applyAuthToken() {
 		if (authModule != null && authModule.isLoggedIn()) {
-                        for (Field field : authModule.getClass().getDeclaredFields()) {
-                            if (field.isAnnotationPresent(AuthValue.class)) {
-                                if (!field.isAccessible()) {
-                                    field.setAccessible(true);
-                                }
-                                AuthValue authValueAnnotation = field.getAnnotation(AuthValue.class);
-                                String headerName = authValueAnnotation.name();
-                                try {
-                                    this.httpProvider.setDefaultHeader(headerName, field.get(authModule).toString());
-                                } catch (IllegalArgumentException ex) {
-                                    Log.e(TAG, "IllegalArgumentException fetching " + field.getName(), ex);
-                                    throw new IllegalStateException(ex);
-                                } catch (IllegalAccessException ex) {
-                                    Log.e(TAG, "IllegalAccessException fetching " + field.getName(), ex);
-                                    throw new IllegalStateException(ex);
-                                }
-                            }
-                        }
-			
-		}
+                    authModule.applyAuthentication(httpProvider);
+                }
 	}
 
 }

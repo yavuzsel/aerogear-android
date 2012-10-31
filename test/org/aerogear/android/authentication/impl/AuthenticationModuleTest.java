@@ -104,10 +104,11 @@ public interface AuthenticationModuleTest {
     };
     
     static final HttpResponse VALID_LOGIN = new BasicHttpResponse(new StatusLineStub()) {
+        private String  TOKEN_HEADER = "Auth-Token";
         @Override
         public Header getFirstHeader(String name) {
-            if (name.equals(RestAuthenticationModule.TOKEN_HEADER)) {
-                return new BasicHeader(RestAuthenticationModule.TOKEN_HEADER,
+            if (name.equals(TOKEN_HEADER)) {
+                return new BasicHeader(TOKEN_HEADER,
                         TOKEN);//Magic Number
 
             }
@@ -117,7 +118,7 @@ public interface AuthenticationModuleTest {
         @Override
         public Header[] getAllHeaders() {
             return new Header[]{
-                        new BasicHeader(RestAuthenticationModule.TOKEN_HEADER, TOKEN)
+                        new BasicHeader(TOKEN_HEADER, TOKEN)
                     };
         }
 

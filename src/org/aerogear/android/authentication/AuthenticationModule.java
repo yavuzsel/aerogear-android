@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.Map;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.pipeline.Pipe;
 
 /**
@@ -82,4 +83,10 @@ public interface AuthenticationModule {
      * @return true if the module has been logged in successfully
      */
     public boolean isLoggedIn();
+    
+    /**
+     * Applies any necessary security to a HttpProvider
+     * @param httpProvider 
+     */
+    public void applyAuthentication(HttpProvider httpProvider);
 }

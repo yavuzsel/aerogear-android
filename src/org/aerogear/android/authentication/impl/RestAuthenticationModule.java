@@ -34,12 +34,12 @@ import android.os.AsyncTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.aerogear.android.authentication.AuthValue;
+import org.aerogear.android.core.HttpProvider;
 
 /**
  * A module for authenticating with restful AG services.
  */
-public final class RestAuthenticationModule implements AuthenticationModule{
-    public static final String TOKEN_HEADER = "Auth-Token";
+public final class RestAuthenticationModule implements AuthenticationModule {
     
     private final URL baseURL;
 
@@ -53,25 +53,33 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     
     private final String enrollEndpoint;
     private final URL enrollURL;
-  
+
+        
     /**
      * This is the field which stores the AG security token.
-     * The annotation is read by RestAdapter
      */
-    @AuthValue(name="Auth-Token")
     private String authToken = "";
-    private boolean isAuthenticated = false;
     
-    private RestAuthenticationModule(URL baseURL, String loginEndpoint, String logoutEndpoint, String enrollEndpoint) throws MalformedURLException {
+    /**
+     * This is the name of the header to set for the token.
+     */
+    private final String tokenHeaderName;
+    
+    private boolean isLoggedIn = false;
+
+    private RestAuthenticationModule(URL baseURL, String loginEndpoint, String logoutEndpoint, String enrollEndpoint, String tokenHeaderName) throws MalformedURLException {
         this.baseURL = baseURL;
         this.loginEndpoint = loginEndpoint;
         this.logoutEndpoint = logoutEndpoint;
         this.enrollEndpoint = enrollEndpoint;
+        this.tokenHeaderName = tokenHeaderName;
         
         this.loginURL = new URL(baseURL.toString() + loginEndpoint);
         this.logoutURL = new URL(baseURL.toString() + logoutEndpoint);
         this.enrollURL = new URL(baseURL.toString() + enrollEndpoint);
+        
     }
+
 
 
     @Override
@@ -107,8 +115,8 @@ public final class RestAuthenticationModule implements AuthenticationModule{
                 String enrollData = new JSONObject(userData).toString();
                 try {
                     result = provider.post(enrollData);
-                    authToken = result.getHeader("Auth-Token").toString();
-                    isAuthenticated = true;
+                    authToken = result.getHeader(tokenHeaderName).toString();
+                    isLoggedIn = true;
                     
                 } catch (Exception e) {
                     exception = e;
@@ -143,8 +151,8 @@ public final class RestAuthenticationModule implements AuthenticationModule{
                 String loginData = buildLoginData(username, password);
                 try {
                     result = provider.post(loginData);
-                    authToken = result.getHeader("Auth-Token").toString();
-                    isAuthenticated = true;
+                    authToken = result.getHeader(tokenHeaderName).toString();
+                    isLoggedIn = true;
                 } catch (Exception e) {
                     exception = e;
                 }
@@ -176,7 +184,7 @@ public final class RestAuthenticationModule implements AuthenticationModule{
                 try {
                     provider.post("");
                     authToken = "";
-                    isAuthenticated = false;
+                    isLoggedIn = false;
                     
                 } catch (Exception e) {
                     exception = e;
@@ -199,10 +207,12 @@ public final class RestAuthenticationModule implements AuthenticationModule{
 
     @Override
     public boolean isLoggedIn() {
-        return isAuthenticated;
+        return isLoggedIn;
     }
     
-    
+    protected String getAuthToken() {
+        return authToken;
+    }
 
     private String buildLoginData(String username, String password) {
     	
@@ -213,6 +223,11 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     	return response.toString();
     	
     }
+
+    @Override
+    public void applyAuthentication(HttpProvider httpProvider) {
+        httpProvider.setDefaultHeader(tokenHeaderName, authToken);
+    }
  
     /**
      * This class extended by {@link DefaultAuthenticator#auth(org.aerogear.android.authentication.AuthType, java.net.URL) }
@@ -220,14 +235,21 @@ public final class RestAuthenticationModule implements AuthenticationModule{
      */
     protected static abstract class Builder implements AddAuthBuilder<RestAuthenticationModule> {
         private final URL baseURL;
-        private       String loginEndpoint = "/auth/login";
-        private       String logoutEndpoint = "/auth/logout";
-        private       String enrollEndpoint = "/auth/enroll";
+        private       String tokenHeaderName = "Auth-Token";
+        private       String loginEndpoint   = "/auth/login";
+        private       String logoutEndpoint  = "/auth/logout";
+        private       String enrollEndpoint  = "/auth/enroll";
 
         public Builder(URL baseURL) {
             this.baseURL = baseURL;
         }
 
+        public AddAuthBuilder tokenHeader(String tokenHeaderName) {
+            this.tokenHeaderName = tokenHeaderName;
+            return this;
+        }
+
+        
         @Override
         public AddAuthBuilder loginEndpoint(String loginEndpoint) {
             this.loginEndpoint = loginEndpoint;
@@ -268,7 +290,8 @@ public final class RestAuthenticationModule implements AuthenticationModule{
                 return new RestAuthenticationModule(this.baseURL, 
                                                     this.loginEndpoint, 
                                                     this.logoutEndpoint,
-                                                    this.enrollEndpoint);
+                                                    this.enrollEndpoint,
+                                                    this.tokenHeaderName);
             } catch (MalformedURLException ex) {
                 Logger.getLogger(RestAuthenticationModule.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IllegalArgumentException(ex);

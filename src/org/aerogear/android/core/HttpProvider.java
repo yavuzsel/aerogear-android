@@ -70,6 +70,6 @@ public interface HttpProvider {
      * @param header Name
      * @param header Value
      */
-	public void setDefaultHeader(String headerName, String headerValue);
+    public void setDefaultHeader(String headerName, String headerValue);
 
 }
