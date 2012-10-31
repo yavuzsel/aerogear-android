@@ -67,7 +67,7 @@ public class Pipeline {
         return new BuilderImpl(baseURL);
     }
 
-    public final class BuilderImpl implements PipeBuilderMandatoryName,
+    private final class BuilderImpl implements PipeBuilderMandatoryName,
             PipeBuilderMandatoryClass, PipeBuilder {
 
         private String name;
