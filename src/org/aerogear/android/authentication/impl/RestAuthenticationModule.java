@@ -36,8 +36,7 @@ import com.google.gson.JsonObject;
 import org.aerogear.android.authentication.AuthValue;
 
 /**
- *
- * @author summers
+ * A module for authenticating with restful AG services.
  */
 public final class RestAuthenticationModule implements AuthenticationModule{
     public static final String TOKEN_HEADER = "Auth-Token";
@@ -55,6 +54,10 @@ public final class RestAuthenticationModule implements AuthenticationModule{
     private final String enrollEndpoint;
     private final URL enrollURL;
   
+    /**
+     * This is the field which stores the AG security token.
+     * The annotation is read by RestAdapter
+     */
     @AuthValue(name="Auth-Token")
     private String authToken = "";
     private boolean isAuthenticated = false;

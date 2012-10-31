@@ -23,7 +23,6 @@ import java.util.Arrays;
  * If an HTTP Request does not return status code 200 then this will 
  * be thrown.
  * 
- * @author summers
  */
 public class HttpException extends RuntimeException {
    

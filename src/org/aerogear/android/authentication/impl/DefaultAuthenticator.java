@@ -25,12 +25,12 @@ import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.Authenticator;
 
 /**
- *
- * @author summers
+ * This is the default implementation of Authenticator.
+ * It uses a HashMap behind the scenes to store its modules.
  */
 public class DefaultAuthenticator implements Authenticator {
 
-    Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
+    private Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
     
     /**
      * {@inheritDoc }
@@ -66,7 +66,6 @@ public class DefaultAuthenticator implements Authenticator {
         if (authType != AuthType.REST) {
             throw new IllegalArgumentException("Unsupported Auth Type passed");
         }
-        
         
         return new RestAuthenticationModule.Builder(baseURL) {
             @Override
