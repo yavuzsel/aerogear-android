@@ -28,7 +28,7 @@ public class HeaderAndBody {
     
     private final byte[] body;
 
-    private final HashMap<String, Object> headers;
+    private final Map<String, Object> headers;
     
     public HeaderAndBody(byte[] body, Map<String, Object> headers) {        
         this.body = Arrays.copyOf(body, body.length);
