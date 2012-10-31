@@ -17,6 +17,8 @@
 
 package org.aerogear.android.datamanager.impl;
 
+import org.aerogear.android.impl.datamanager.MemoryStorage;
+import org.aerogear.android.impl.datamanager.StoreType;
 import org.aerogear.android.impl.helper.Data;
 import org.junit.Before;
 import org.junit.Test;

@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
-import static org.aerogear.android.datamanager.impl.StoreType.MEMORY;
+import static org.aerogear.android.impl.datamanager.StoreType.MEMORY;
 
 public class DataManagerTest {
 

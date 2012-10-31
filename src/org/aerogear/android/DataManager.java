@@ -19,8 +19,8 @@ package org.aerogear.android;
 
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
-import org.aerogear.android.datamanager.impl.DefaultIdGenerator;
-import org.aerogear.android.datamanager.impl.StoreType;
+import org.aerogear.android.impl.datamanager.DefaultIdGenerator;
+import org.aerogear.android.impl.datamanager.StoreType;
 import org.aerogear.android.impl.pipeline.AdapterFactory;
 
 import java.util.HashMap;
