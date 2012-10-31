@@ -23,16 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.aerogear.android.authentication.AuthType;
 import org.aerogear.android.authentication.AuthenticationModule;
-import org.aerogear.android.authentication.impl.DefaultAuthenticator;
-import org.aerogear.android.authentication.impl.RestAuthenticationModule;
-import org.aerogear.android.impl.pipeline.Type;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
-/**
- *
- * @author summers
- */
+
 @RunWith(RobolectricTestRunner.class)
 public class AuthenticatorTest {
     
