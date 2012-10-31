@@ -63,7 +63,7 @@ public class Pipeline {
         }
     }
 
-    public PipeBuilderMandatoryName add() {
+    public PipeBuilderMandatoryName pipe() {
         return new BuilderImpl(baseURL);
     }
 

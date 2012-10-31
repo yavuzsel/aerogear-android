@@ -44,7 +44,7 @@ public class PipelineTest {
     @Test
     public void testAddPipe() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("foo").useClass(Data.class).buildAndAdd();
+        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).buildAndAdd();
 
         assertEquals("verifying the given URL", "http://server.com/context/foo/", newPipe.getUrl().toString());
         assertEquals("verifying the type", REST, newPipe.getType());
@@ -53,7 +53,7 @@ public class PipelineTest {
     @Test
     public void testAddPipeWithEndpoint() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("bad name").useClass(Data.class).endpoint("foo").buildAndAdd();
+        Pipe newPipe = pipeline.pipe().name("bad name").useClass(Data.class).endpoint("foo").buildAndAdd();
 
         assertEquals("verifying the given URL", "http://server.com/context/foo/", newPipe.getUrl().toString());
     }
@@ -61,7 +61,7 @@ public class PipelineTest {
     @Test
     public void testAddPipeWithType() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("foo").useClass(Data.class).type(REST).buildAndAdd();
+        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).type(REST).buildAndAdd();
 
         assertEquals("verifying the type", REST, newPipe.getType());
     }
@@ -71,7 +71,7 @@ public class PipelineTest {
         URL otherURL = new URL("http://server.com/otherContext/");
 
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("foo").useClass(Data.class).url(otherURL).buildAndAdd();
+        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).url(otherURL).buildAndAdd();
 
         assertEquals("verifying the given URL", "http://server.com/otherContext/foo/", newPipe.getUrl().toString());
     }
@@ -79,7 +79,7 @@ public class PipelineTest {
     @Test
     public void testAddPipeWithEndpointAndType() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("foo").useClass(Data.class).type(REST).endpoint("bar").buildAndAdd();
+        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).type(REST).endpoint("bar").buildAndAdd();
 
         assertEquals("verifying the type", REST, newPipe.getType());
         assertEquals("verifying the given URL", "http://server.com/context/bar/", newPipe.getUrl().toString());
@@ -90,7 +90,7 @@ public class PipelineTest {
         URL otherURL = new URL("http://server.com/otherContext/");
 
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("bad name").useClass(Data.class).url(otherURL).endpoint("foo").buildAndAdd();
+        Pipe newPipe = pipeline.pipe().name("bad name").useClass(Data.class).url(otherURL).endpoint("foo").buildAndAdd();
 
         assertEquals("verifying the given URL", "http://server.com/otherContext/foo/", newPipe.getUrl().toString());
     }
@@ -100,7 +100,7 @@ public class PipelineTest {
         URL otherURL = new URL("http://server.com/otherContext/");
 
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("foo").useClass(Data.class).type(REST).url(otherURL).buildAndAdd();
+        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).type(REST).url(otherURL).buildAndAdd();
 
         assertEquals("verifying the type", REST, newPipe.getType());
         assertEquals("verifying the given URL", "http://server.com/otherContext/foo/", newPipe.getUrl().toString());
@@ -109,7 +109,7 @@ public class PipelineTest {
     @Test
     public void testGetExistingPipe() {
         Pipeline pipeline = new Pipeline(url);
-        pipeline.add().name("tasks").useClass(Data.class).buildAndAdd();
+        pipeline.pipe().name("tasks").useClass(Data.class).buildAndAdd();
 
         Pipe tasksPipe = pipeline.get("tasks");
         assertNotNull("received pipe", tasksPipe);
@@ -126,7 +126,7 @@ public class PipelineTest {
     @Test
     public void testRemoveExistingPipe() {
         Pipeline pipeline = new Pipeline(url);
-        pipeline.add().name("tasks").useClass(Data.class).buildAndAdd();
+        pipeline.pipe().name("tasks").useClass(Data.class).buildAndAdd();
 
         Pipe tasksPipe = pipeline.remove("tasks");
         assertNotNull("deleted pipe", tasksPipe);
