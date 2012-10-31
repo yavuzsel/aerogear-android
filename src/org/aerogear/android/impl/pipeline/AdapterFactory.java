@@ -17,7 +17,7 @@
 
 package org.aerogear.android.impl.pipeline;
 
-import org.aerogear.android.datamanager.GeneratorId;
+import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.impl.MemoryStorage;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.datamanager.impl.StoreType;
@@ -39,9 +39,9 @@ public final class AdapterFactory {
         throw new IllegalArgumentException("Type is not supported yet");
     }
 
-    public static Store createStore(StoreType type, GeneratorId generatorId) {
+    public static Store createStore(StoreType type, IdGenerator idGenerator) {
         if (type.equals(MEMORY)) {
-            return new MemoryStorage(generatorId);
+            return new MemoryStorage(idGenerator);
         }
         throw new IllegalArgumentException("Type is not supported yet");
     }

@@ -17,10 +17,10 @@
 
 package org.aerogear.android;
 
+import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
-import org.aerogear.android.datamanager.GeneratorId;
+import org.aerogear.android.datamanager.impl.DefaultIdGenerator;
 import org.aerogear.android.datamanager.impl.StoreType;
-import org.aerogear.android.datamanager.impl.UUIDGeneratorId;
 import org.aerogear.android.impl.pipeline.AdapterFactory;
 
 import java.util.HashMap;
@@ -33,14 +33,14 @@ import java.util.Map;
 public final class DataManager {
 
     private final Map<String, Store> stores = new HashMap<String, Store>();
-    private final GeneratorId generatorId;
+    private final IdGenerator idGenerator;
 
     public DataManager() {
-        this.generatorId = new UUIDGeneratorId();
+        this.idGenerator = new DefaultIdGenerator();
     }
 
-    public DataManager(GeneratorId generatorId) {
-        this.generatorId = generatorId;
+    public DataManager(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 
     /**
@@ -59,7 +59,7 @@ public final class DataManager {
      * @param type The type of the new data store object.
      */
     public Store add(String storeName, StoreType type) {
-        Store store = AdapterFactory.createStore(type, generatorId);
+        Store store = AdapterFactory.createStore(type, idGenerator);
         stores.put(storeName, store);
         return store;
     }

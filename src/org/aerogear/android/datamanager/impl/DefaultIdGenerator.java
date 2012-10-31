@@ -15,12 +15,17 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.datamanager;
+package org.aerogear.android.datamanager.impl;
 
-import java.io.Serializable;
+import org.aerogear.android.datamanager.IdGenerator;
 
-public interface GeneratorId {
+import java.util.UUID;
 
-    Serializable generate();
+public class DefaultIdGenerator implements IdGenerator {
+
+    @Override
+    public UUID generate() {
+        return UUID.randomUUID();
+    }
 
 }

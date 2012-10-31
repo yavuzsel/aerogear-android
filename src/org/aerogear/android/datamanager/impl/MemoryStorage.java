@@ -17,7 +17,7 @@
 
 package org.aerogear.android.datamanager.impl;
 
-import org.aerogear.android.datamanager.GeneratorId;
+import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 
 import java.io.Serializable;
@@ -29,10 +29,10 @@ import java.util.*;
 public class MemoryStorage<T> implements Store<T> {
 
     private final Map<Serializable, T> data = new HashMap<Serializable, T>();
-    private final GeneratorId generatorId;
+    private final IdGenerator idGenerator;
 
-    public MemoryStorage(GeneratorId generatorId) {
-        this.generatorId = generatorId;
+    public MemoryStorage(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 
     /**
@@ -64,7 +64,7 @@ public class MemoryStorage<T> implements Store<T> {
      */
     @Override
     public void save(T item) {
-        Serializable newId = generatorId.generate();
+        Serializable newId = idGenerator.generate();
         // TODO Put newId on item
         data.put(newId, item);
     }

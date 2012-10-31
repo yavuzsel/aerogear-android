@@ -17,11 +17,11 @@
 
 package org.aerogear.android.datamanager.impl;
 
-import org.aerogear.android.datamanager.GeneratorId;
+import org.aerogear.android.datamanager.IdGenerator;
 
 import java.io.Serializable;
 
-public class StubGeneratorId implements GeneratorId {
+public class StubGeneratorId implements IdGenerator {
 
     private int lastIdGenerated = 0;
 
