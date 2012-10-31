@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.datamanager;
+package org.aerogear.android.datamanager.impl;
 
-/**
- * Represents Store Type
- */
-public enum StoreType {
+import java.util.UUID;
 
-    MEMORY
+public class UUIDGeneratorId implements GeneratorId {
+
+    @Override
+    public UUID generate() {
+        return UUID.randomUUID();
+    }
 
 }

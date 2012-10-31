@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.datamanager;
+package org.aerogear.android.datamanager.impl;
 
 import org.aerogear.android.impl.helper.Data;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.*;
 

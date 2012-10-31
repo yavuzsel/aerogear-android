@@ -15,15 +15,17 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.datamanager;
+package org.aerogear.android.datamanager.impl;
 
-import java.util.UUID;
+import java.io.Serializable;
 
-public class UUIDGeneratorId implements GeneratorId {
+public class StubGeneratorId implements GeneratorId {
+
+    private int lastIdGenerated = 0;
 
     @Override
-    public UUID generate() {
-        return UUID.randomUUID();
+    public Serializable generate() {
+        return ++lastIdGenerated;
     }
 
 }

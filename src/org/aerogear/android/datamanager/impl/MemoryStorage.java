@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.datamanager;
+package org.aerogear.android.datamanager.impl;
 
 import org.aerogear.android.datamanager.Store;
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.datamanager;
+package org.aerogear.android.datamanager.impl;
 
 import org.aerogear.android.DataManager;
 import org.aerogear.android.datamanager.Store;
@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
-import static org.aerogear.android.impl.datamanager.StoreType.MEMORY;
+import static org.aerogear.android.datamanager.impl.StoreType.MEMORY;
 
 public class DataManagerTest {
 

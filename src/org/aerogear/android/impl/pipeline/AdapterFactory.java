@@ -17,16 +17,16 @@
 
 package org.aerogear.android.impl.pipeline;
 
-import org.aerogear.android.impl.datamanager.GeneratorId;
-import org.aerogear.android.impl.datamanager.MemoryStorage;
+import org.aerogear.android.datamanager.impl.GeneratorId;
+import org.aerogear.android.datamanager.impl.MemoryStorage;
 import org.aerogear.android.datamanager.Store;
-import org.aerogear.android.impl.datamanager.StoreType;
+import org.aerogear.android.datamanager.impl.StoreType;
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.aerogear.android.pipeline.Pipe;
 
 import java.net.URL;
 
-import static org.aerogear.android.impl.datamanager.StoreType.MEMORY;
+import static org.aerogear.android.datamanager.impl.StoreType.MEMORY;
 
 public final class AdapterFactory {
 

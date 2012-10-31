@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.datamanager;
+package org.aerogear.android.datamanager.impl;
 
-import java.io.Serializable;
+/**
+ * Represents Store Type
+ */
+public enum StoreType {
 
-public interface GeneratorId {
-
-    Serializable generate();
+    MEMORY
 
 }

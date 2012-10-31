@@ -17,11 +17,10 @@
 
 package org.aerogear.android.datamanager;
 
-import org.aerogear.android.impl.datamanager.StoreType;
+import org.aerogear.android.datamanager.impl.StoreType;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Represents an abstraction layer for a storage system.
