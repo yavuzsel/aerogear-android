@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.datamanager.impl;
+package org.aerogear.android.datamanager;
 
 import java.io.Serializable;
 

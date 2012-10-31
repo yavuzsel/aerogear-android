@@ -17,6 +17,8 @@
 
 package org.aerogear.android.datamanager.impl;
 
+import org.aerogear.android.datamanager.GeneratorId;
+
 import java.io.Serializable;
 
 public class StubGeneratorId implements GeneratorId {

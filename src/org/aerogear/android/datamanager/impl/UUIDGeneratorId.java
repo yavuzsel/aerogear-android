@@ -17,6 +17,8 @@
 
 package org.aerogear.android.datamanager.impl;
 
+import org.aerogear.android.datamanager.GeneratorId;
+
 import java.util.UUID;
 
 public class UUIDGeneratorId implements GeneratorId {

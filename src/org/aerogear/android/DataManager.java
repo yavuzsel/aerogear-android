@@ -18,7 +18,7 @@
 package org.aerogear.android;
 
 import org.aerogear.android.datamanager.Store;
-import org.aerogear.android.datamanager.impl.GeneratorId;
+import org.aerogear.android.datamanager.GeneratorId;
 import org.aerogear.android.datamanager.impl.StoreType;
 import org.aerogear.android.datamanager.impl.UUIDGeneratorId;
 import org.aerogear.android.impl.pipeline.AdapterFactory;

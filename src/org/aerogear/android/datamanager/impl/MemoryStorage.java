@@ -17,6 +17,7 @@
 
 package org.aerogear.android.datamanager.impl;
 
+import org.aerogear.android.datamanager.GeneratorId;
 import org.aerogear.android.datamanager.Store;
 
 import java.io.Serializable;

@@ -17,7 +17,7 @@
 
 package org.aerogear.android.impl.pipeline;
 
-import org.aerogear.android.datamanager.impl.GeneratorId;
+import org.aerogear.android.datamanager.GeneratorId;
 import org.aerogear.android.datamanager.impl.MemoryStorage;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.datamanager.impl.StoreType;
