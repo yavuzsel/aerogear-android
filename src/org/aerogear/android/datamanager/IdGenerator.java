@@ -19,8 +19,16 @@ package org.aerogear.android.datamanager;
 
 import java.io.Serializable;
 
+/**
+ * Identifier generator container
+ */
 public interface IdGenerator {
 
+    /**
+     * Generate new id
+     *
+     * @return {@link Serializable}
+     */
     Serializable generate();
 
 }
