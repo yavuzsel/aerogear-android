@@ -53,7 +53,7 @@ public class PipelineTest {
     @Test
     public void testAddPipeWithEndpoint() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("bad name").useClass(Data.class).enpoint("foo").buildAndAdd();
+        Pipe newPipe = pipeline.add().name("bad name").useClass(Data.class).endpoint("foo").buildAndAdd();
 
         assertEquals("verifying the given URL", "http://server.com/context/foo/", newPipe.getUrl().toString());
     }
@@ -79,7 +79,7 @@ public class PipelineTest {
     @Test
     public void testAddPipeWithEndpointAndType() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("foo").useClass(Data.class).type(REST).enpoint("bar").buildAndAdd();
+        Pipe newPipe = pipeline.add().name("foo").useClass(Data.class).type(REST).endpoint("bar").buildAndAdd();
 
         assertEquals("verifying the type", REST, newPipe.getType());
         assertEquals("verifying the given URL", "http://server.com/context/bar/", newPipe.getUrl().toString());
@@ -90,7 +90,7 @@ public class PipelineTest {
         URL otherURL = new URL("http://server.com/otherContext/");
 
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.add().name("bad name").useClass(Data.class).url(otherURL).enpoint("foo").buildAndAdd();
+        Pipe newPipe = pipeline.add().name("bad name").useClass(Data.class).url(otherURL).endpoint("foo").buildAndAdd();
 
         assertEquals("verifying the given URL", "http://server.com/otherContext/foo/", newPipe.getUrl().toString());
     }

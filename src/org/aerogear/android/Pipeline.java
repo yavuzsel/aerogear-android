@@ -95,7 +95,7 @@ public class Pipeline {
 
 
         @Override
-        public PipeBuilder enpoint(String endpoint) {
+        public PipeBuilder endpoint(String endpoint) {
             this.endpoint = endpoint;
             return this;
         }
@@ -143,7 +143,7 @@ public class Pipeline {
     }
 
     public static interface PipeBuilder {
-        public PipeBuilder enpoint(String endpoint);
+        public PipeBuilder endpoint(String endpoint);
         public PipeBuilder type(Type type);
         public PipeBuilder url(URL url);
         public Pipe buildAndAdd();

@@ -41,7 +41,7 @@ public interface Pipe<T> {
     /**
      * Returns the {@link URL} to which this {@link Pipe} object points.
      *
-     * @return the enpoint URL
+     * @return the endpoint URL
      */
     URL getUrl();
 
