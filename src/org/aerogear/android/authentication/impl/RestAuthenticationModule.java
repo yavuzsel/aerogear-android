@@ -136,7 +136,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
             
             
             
-        }.execute(null);    
+        }.execute((Void)null);    
     }
 
     @Override
@@ -169,7 +169,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                 }
             }
             
-        }.execute(null);
+        }.execute((Void)null);
         
     }
 
@@ -202,7 +202,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                 }
             }
             
-        }.execute(null);    
+        }.execute((Void)null);    
     }
 
     @Override
