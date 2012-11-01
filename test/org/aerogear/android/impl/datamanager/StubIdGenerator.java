@@ -21,7 +21,7 @@ import org.aerogear.android.datamanager.IdGenerator;
 
 import java.io.Serializable;
 
-public class StubGeneratorId implements IdGenerator {
+public class StubIdGenerator implements IdGenerator {
 
     private int lastIdGenerated = 0;
 

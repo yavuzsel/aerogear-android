@@ -31,7 +31,7 @@ public class MemoryStorageTest {
 
     @Before
     public void setup() {
-        store = new MemoryStorage<Data>(new StubGeneratorId());
+        store = new MemoryStorage<Data>(new StubIdGenerator());
     }
 
     @Test
