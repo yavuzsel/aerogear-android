@@ -18,9 +18,18 @@
 package org.aerogear.android.impl.core;
 
 import android.util.Log;
+import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.core.HttpException;
 import org.aerogear.android.core.HttpProvider;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -31,11 +40,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpException;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 
 /**
  * 

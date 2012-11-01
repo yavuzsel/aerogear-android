@@ -17,7 +17,6 @@
 package org.aerogear.android.authentication;
 
 import org.aerogear.android.Builder;
-import org.aerogear.android.authentication.AuthenticationModule;
 
 /**
  *

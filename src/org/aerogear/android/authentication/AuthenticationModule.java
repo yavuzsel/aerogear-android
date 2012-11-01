@@ -16,12 +16,13 @@
  */
 package org.aerogear.android.authentication;
 
-import java.net.URL;
-import java.util.Map;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.pipeline.Pipe;
+
+import java.net.URL;
+import java.util.Map;
 
 /**
  *

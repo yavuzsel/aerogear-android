@@ -17,12 +17,13 @@
 package org.aerogear.android.authentication.impl;
 
 import org.aerogear.android.authentication.AddAuthBuilder;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import org.aerogear.android.authentication.AuthType;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.Authenticator;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is the default implementation of Authenticator.

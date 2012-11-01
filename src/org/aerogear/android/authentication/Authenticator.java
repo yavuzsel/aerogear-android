@@ -17,7 +17,6 @@
 package org.aerogear.android.authentication;
 
 import java.net.URL;
-import org.aerogear.android.Builder;
 
 /**
  * This is a factory and manager for {@link AuthenticationModule}

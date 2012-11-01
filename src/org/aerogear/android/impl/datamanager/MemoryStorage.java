@@ -21,7 +21,9 @@ import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Memory implementation of Store {@link Store}.
