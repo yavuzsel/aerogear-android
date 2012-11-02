@@ -1,5 +1,7 @@
 package org.aerogear.android.impl.pipeline;
 
+import org.aerogear.android.pipeline.PipeType;
+
 import java.net.URL;
 
 public final class PipeConfig {
@@ -7,21 +9,21 @@ public final class PipeConfig {
     private final String name;
     private final URL url;
     private final String endpoint;
-    private final Type type;
+    private final PipeType type;
 
     public PipeConfig(String name, URL url) {
         this(name, url, name);
     }
 
     public PipeConfig(String name, URL url, String endpoint) {
-        this(name, url, endpoint, Type.REST);
+        this(name, url, endpoint, Types.REST);
     }
 
-    public PipeConfig(String name, URL url, Type type) {
+    public PipeConfig(String name, URL url, PipeType type) {
         this(name, url, name, type);
     }
 
-    public PipeConfig(String name, URL url, String endpoint, Type type) {
+    public PipeConfig(String name, URL url, String endpoint, PipeType type) {
         this.name = name;
         this.url = url;
         this.endpoint = endpoint;
@@ -40,7 +42,7 @@ public final class PipeConfig {
         return endpoint;
     }
 
-    public Type getType() {
+    public PipeType getType() {
         return type;
     }
 }
