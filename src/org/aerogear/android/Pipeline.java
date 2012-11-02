@@ -17,18 +17,13 @@
 
 package org.aerogear.android;
 
-import android.util.Log;
-import org.aerogear.android.AdapterFactory;
 import org.aerogear.android.impl.pipeline.PipeConfig;
-import org.aerogear.android.impl.pipeline.Type;
 import org.aerogear.android.pipeline.Pipe;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.aerogear.android.impl.pipeline.Type.REST;
 
 /**
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s).
@@ -65,12 +60,12 @@ public final class Pipeline {
     }
 
     public Pipe pipe(Class klass) {
-        PipeConfig config = new PipeConfig(klass.getSimpleName().toLowerCase());
+        PipeConfig config = new PipeConfig(klass.getSimpleName().toLowerCase(), baseURL);
         return pipe(klass, config);
     }
 
     public Pipe pipe(Class klass, PipeConfig config) {
-        Pipe pipe = AdapterFactory.createPipe(klass, baseURL, config);
+        Pipe pipe = AdapterFactory.createPipe(klass, config);
         pipes.put(config.getName(), pipe);
         return pipe;
     }
