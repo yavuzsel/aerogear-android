@@ -25,7 +25,7 @@ import org.aerogear.android.impl.datamanager.StoreType;
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.aerogear.android.impl.pipeline.PipeConfig;
 import org.aerogear.android.impl.pipeline.RestAdapter;
-import org.aerogear.android.impl.pipeline.Type;
+import org.aerogear.android.impl.pipeline.Types;
 import org.aerogear.android.pipeline.Pipe;
 
 import java.net.MalformedURLException;
@@ -38,7 +38,7 @@ final class AdapterFactory {
     private AdapterFactory() {}
 
     public static Pipe createPipe(Class klass, PipeConfig config) {
-        if (config.getType().equals(Type.REST)) {
+        if (config.getType().equals(Types.REST)) {
             return new RestAdapter(klass, new HttpRestProvider(appendEndpoint(config.getUrl(), config.getEndpoint())));
         }
         throw new IllegalArgumentException("Type is not supported yet");

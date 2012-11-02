@@ -23,11 +23,11 @@ import java.lang.reflect.Array;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.pipeline.Pipe;
+import org.aerogear.android.pipeline.PipeType;
 
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,8 +60,8 @@ public final class RestAdapter<T> implements Pipe<T> {
      * {@inheritDoc}
      */
     @Override
-    public Type getType() {
-        return Type.REST;
+    public PipeType getType() {
+        return Types.REST;
     }
 
     /**

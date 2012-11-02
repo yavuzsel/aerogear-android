@@ -20,7 +20,7 @@ package org.aerogear.android.impl.pipeline;
 /**
  * Type of pipe
  */
-public enum Type {
+public enum Types {
 
     REST
 
