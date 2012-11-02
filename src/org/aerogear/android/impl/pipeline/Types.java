@@ -24,10 +24,15 @@ import org.aerogear.android.pipeline.PipeType;
  */
 public enum Types implements PipeType {
 
-    REST;
+    REST("REST");
+    private String typeDescription;
+
+    Types(String typeDescription) {
+        this.typeDescription = typeDescription;
+    }
 
     @Override
     public String getType() {
-        return REST.toString();
+        return this.typeDescription;
     }
 }
