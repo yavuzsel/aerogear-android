@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.datamanager.impl;
+package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.impl.datamanager.MemoryStorage;
-import org.aerogear.android.impl.datamanager.StoreType;
 import org.aerogear.android.impl.helper.Data;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +31,7 @@ public class MemoryStorageTest {
 
     @Before
     public void setup() {
-        store = new MemoryStorage<Data>(new StubGeneratorId());
+        store = new MemoryStorage<Data>(new StubIdGenerator());
     }
 
     @Test

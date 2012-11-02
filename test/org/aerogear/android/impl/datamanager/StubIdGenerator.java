@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.datamanager.impl;
+package org.aerogear.android.impl.datamanager;
 
 import org.aerogear.android.datamanager.IdGenerator;
 
 import java.io.Serializable;
 
-public class StubGeneratorId implements IdGenerator {
+public class StubIdGenerator implements IdGenerator {
 
     private int lastIdGenerated = 0;
 
