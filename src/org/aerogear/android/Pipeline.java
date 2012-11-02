@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import org.aerogear.android.pipeline.PipeType;
 
 /**
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s).
@@ -98,26 +99,6 @@ public final class Pipeline {
      */
     public Pipe get(String name) {
         return pipes.get(name);
-    }
-
-    private Pipe addPipe(String name, Class klass, URL url, Type type) {
-        Pipe pipe = AdapterFactory.createPipe(type, klass, url);
-        pipes.put(name, pipe);
-        return pipe;
-    }
-
-    private URL appendEndpoint(URL baseURL, String endpoint) {
-
-        try {
-            // TODO Move to helper?
-            if( !baseURL.toString().endsWith("/")) {
-                endpoint = "/" + endpoint;
-            }
-            return new URL(baseURL + endpoint + "/");
-        } catch (MalformedURLException e) {
-            Log.e("AeroGear", e.getMessage());
-            return null;
-        }
     }
 
 }

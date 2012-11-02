@@ -30,6 +30,8 @@ import org.aerogear.android.pipeline.Pipe;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.aerogear.android.impl.datamanager.MemoryStorage;
+import org.aerogear.android.impl.datamanager.StoreType;
 
 import static org.aerogear.android.impl.datamanager.StoreType.MEMORY;
 
