@@ -23,6 +23,9 @@ import org.aerogear.android.impl.pipeline.PipeConfig;
 import android.util.Log;
 import com.google.gson.GsonBuilder;
 import org.aerogear.android.AdapterFactory;
+
+import org.aerogear.android.AdapterFactory;
+import org.aerogear.android.impl.pipeline.PipeConfig;
 import org.aerogear.android.pipeline.Pipe;
 
 import java.net.MalformedURLException;
@@ -70,7 +73,7 @@ public final class Pipeline {
     }
 
     public Pipe pipe(Class klass, PipeConfig config) {
-        Pipe pipe = AdapterFactory.createPipe(klass, config);
+        Pipe pipe = AdapterFactory.createPipe(klass, baseURL, config);
         pipes.put(config.getName(), pipe);
         return pipe;
     }
