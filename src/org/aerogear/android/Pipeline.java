@@ -19,6 +19,7 @@ package org.aerogear.android;
 
 import android.util.Log;
 import org.aerogear.android.AdapterFactory;
+import org.aerogear.android.impl.pipeline.PipeConfig;
 import org.aerogear.android.impl.pipeline.Type;
 import org.aerogear.android.pipeline.Pipe;
 
@@ -33,7 +34,7 @@ import static org.aerogear.android.impl.pipeline.Type.REST;
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s).
  * The {@link Pipeline} contains some simple management APIs to create or remove {@link Pipe}s objects.
  */
-public class Pipeline {
+public final class Pipeline {
 
     private final URL baseURL;
 
@@ -63,90 +64,15 @@ public class Pipeline {
         }
     }
 
-    public PipeBuilderMandatoryName pipe() {
-        return new BuilderImpl(baseURL);
+    public Pipe pipe(Class klass) {
+        PipeConfig config = new PipeConfig(klass.getSimpleName().toLowerCase());
+        return pipe(klass, config);
     }
 
-    private final class BuilderImpl implements PipeBuilderMandatoryName,
-            PipeBuilderMandatoryClass, PipeBuilder {
-
-        private String name;
-        private Class klass;
-        private String endpoint;
-        private Type type = REST;
-        private URL url;
-
-        public BuilderImpl(URL url) {
-            this.url = url;
-        }
-
-        @Override
-        public PipeBuilderMandatoryClass name(String name) {
-            this.name = name;
-            this.endpoint = name;
-            return this;
-        }
-
-        @Override
-        public PipeBuilder useClass(Class klass) {
-            this.klass = klass;
-            return this;
-        }
-
-
-        @Override
-        public PipeBuilder endpoint(String endpoint) {
-            this.endpoint = endpoint;
-            return this;
-        }
-
-        @Override
-        public PipeBuilder type(Type type) {
-            this.type = type;
-            return this;
-        }
-
-        @Override
-        public PipeBuilder url(URL url) {
-            this.url = url;
-            return this;
-        }
-
-        @Override
-        public Pipe buildAndAdd() {
-            Pipe pipe = AdapterFactory.createPipe(type, klass, appendEndpoint(url, endpoint));
-            pipes.put(name, pipe);
-            return pipe;
-        }
-
-        private URL appendEndpoint(URL baseURL, String endpoint) {
-
-            try {
-                if( !baseURL.toString().endsWith("/")) {
-                    endpoint = "/" + endpoint;
-                }
-                return new URL(baseURL + endpoint + "/");
-            } catch (MalformedURLException e) {
-                Log.e("AeroGear", e.getMessage());
-                return null;
-            }
-        }
-
-    }
-
-    public static interface PipeBuilderMandatoryName {
-        public PipeBuilderMandatoryClass name(String name);
-    }
-
-    public static interface PipeBuilderMandatoryClass {
-        public PipeBuilder useClass(Class klass);
-    }
-
-    public static interface PipeBuilder {
-        public PipeBuilder endpoint(String endpoint);
-        public PipeBuilder type(Type type);
-        public PipeBuilder url(URL url);
-        public Pipe buildAndAdd();
+    public Pipe pipe(Class klass, PipeConfig config) {
+        Pipe pipe = AdapterFactory.createPipe(klass, baseURL, config);
+        pipes.put(config.getName(), pipe);
+        return pipe;
     }
 
     /**

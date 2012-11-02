@@ -17,15 +17,18 @@
 
 package org.aerogear.android;
 
+import android.util.Log;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.impl.datamanager.MemoryStorage;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.impl.datamanager.StoreType;
 import org.aerogear.android.impl.core.HttpRestProvider;
+import org.aerogear.android.impl.pipeline.PipeConfig;
 import org.aerogear.android.impl.pipeline.RestAdapter;
 import org.aerogear.android.impl.pipeline.Type;
 import org.aerogear.android.pipeline.Pipe;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import static org.aerogear.android.impl.datamanager.StoreType.MEMORY;
@@ -34,9 +37,9 @@ final class AdapterFactory {
 
     private AdapterFactory() {}
 
-    public static Pipe createPipe(Type type, Class klass, URL url) {
-        if (type.equals(Type.REST)) {
-            return new RestAdapter(klass, new HttpRestProvider(url));
+    public static Pipe createPipe(Class klass, URL baseURL, PipeConfig config) {
+        if (config.getType().equals(Type.REST)) {
+            return new RestAdapter(klass, new HttpRestProvider(appendEndpoint(baseURL, config.getEndpoint())));
         }
         throw new IllegalArgumentException("Type is not supported yet");
     }
@@ -46,6 +49,19 @@ final class AdapterFactory {
             return new MemoryStorage(idGenerator);
         }
         throw new IllegalArgumentException("Type is not supported yet");
+    }
+
+    private static URL appendEndpoint(URL baseURL, String endpoint) {
+
+        try {
+            if( !baseURL.toString().endsWith("/")) {
+                endpoint = "/" + endpoint;
+            }
+            return new URL(baseURL + endpoint + "/");
+        } catch (MalformedURLException e) {
+            Log.e("AeroGear", e.getMessage());
+            return null;
+        }
     }
 
 }
