@@ -99,101 +99,6 @@ Since we are pointing to a RESTful endpoint, the API issues a HTTP GET request. 
             TODO put that in.
         */
 
-
-DataManager
-=============
-
-## Create a datamanager with store object:
-
-After receiving data from the server, your application may want to keep the data around. The DataManager API allows you to create Store instances. To create a datamanager, you need to use the DataManager class. Below is an example: 
-
-	// create the datamanager
-    DataManager* dm = [DataManager manager];
-    // add a new (default) store object:
-    id<Store> myStore = [dm add:^(id<StoreConfig> config) {
-	        [config name:@"tasks"];
-	    }];
-
-The DataManager class offers some simple 'management' APIs to work with containing Store objects. The API offers read and write functionality. The default implementation represents an "in-memory" store. Similar to the pipe API technical details of the underlying system are not exposed.
-
-## Save data to the Store
-
-When using a pipe to read all entries of a endpoint, you can use the Store to save the received objects:
-
-    ....
-    id<Pipe> tasksPipe = [todo get:@"tasks"];
-    ...
-
-    [tasksPipe read:^(id responseObject) {
-	    // the response object represents an NSArray,
-	    // containing multile 'Tasks' (as NSDictionary objects)
-	    [myStore save:responseObject success:^(id object) {
-
-            // Indicate that the save operation was successful
-
-        } failure:	^(NSError *error) {
-            // when an error occurs... at least log it to the console..
-            NSLog(@"Read: An error occured! \n%@", error);
-		}];    
-
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"Read: An error occured! \n%@", error);
-    }];
-
-When loading all tasks from the server, the Store object is used inside of the _read_ block from the Pipe object. The returned collection of tasks is stored inside our in-memory store, from where the data can be accessed.
-
-## Read an object from the Store
-
-    id taskObject;
-    // read the task with the '0' ID:
-    [myStore read:@"0" success:^(id object) {
-        taskObject = object;
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"Read: An error occured! \n%@", error);
-    }];
-
-The read accepts the _recordID_ and two simple blocks that are invoked on success or in case of an failure. The _readAll_ allows you to read the entire store, it accepts two simple blocks that are invoked on success or in case of an failure:
-
-    // read all object from the store
-    [myStore readAll:^(NSArray *objects) {
-
-	    // work with the received collection, containing all objects
-
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"Read: An error occured! \n%@", error);
-    }];
-
-## Remove one object
-
-The remove function allows you to delete a single entry in the collection, if present:
-
-    // remove the task with the '0' ID:
-    [myStore remove:@"0" success:^(id object) {
-        taskObject = object;
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"Read: An error occured! \n%@", error);
-    }];
-
-The remove method accepts the _recordID_ and two simple blocks that are invoked on success or in case of an failure.
-
-## Reset the entire store
-
-The reset function allows you the erase all data available in the used Store object:
-
-    // clears the entire store
-    [myStore reset:^{
-        // nope...
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"Read: An error occured! \n%@", error);
-    }];
-
-The reset method accepts two simple blocks that are invoked on success or in case of an failure.
-
 Authentication and User enrollment
 ==================================
 
@@ -219,22 +124,24 @@ The DefaultAuthenticator class offers some simple 'management' APIs to work with
 The _enroll_ function of the AuthenticationModule interface is used to register new users with the backend:
 
     // assemble the dictionary that has all the data for THIS particular user:
-    MAP<String, String> userData = new HashMap<String, String>();
+    Map<String, String> userData = new HashMap<String, String>();
     userData.put("username","john");
     userData.put("password","123");
-    [userData setValue:@"me@you.com" forKey:@"email"];
-    [userData setValue:@"21sda812sad24" forKey:@"betaAccountToken"];
+    ...//Add your user props here
     
 
     // register a new user
-    [myMod enroll:userData success:^(id data) {
-        // after a successful _registration_, we can work
-        // with the returned data...
-        NSLog(@"We got: %@", data);
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"SAVE: An error occured! \n%@", error);
-    }];
+    authModule.enroll(userData,Callback<HeaderAndBody> {
+        onSuccess(HeaderAndBody result) {
+            //authModule is now enrolled AND authenticated.
+            //Fetch whatever you need from here
+        }
+        
+        onFailure(Exception e) {
+            System.out.println("Failure!");
+        }
+
+    });
 
 The _enroll_ function submits a generic map object with contains all the information about the new user, that the server endpoint requires. The default (REST) auth module issues for the above a request against _https://todoauth-aerogear.rhcloud.com/todo-server/auth/register_. Besides the NSDictionary the function accepts two simple blocks that are invoked on success or in case of an failure.
 
@@ -242,14 +149,20 @@ The _enroll_ function submits a generic map object with contains all the informa
 
 Once you have a _valid_ user you can use that information to issue a login against the server, to start accessing protected endpoints:
 
-    // issuing a login
-    [myMod login:@"john" password:@"123" success:^(id object) {
-        // after a successful _login_, we can work
-        // with the returned data...
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"SAVE: An error occured! \n%@", error);
-    }];
+    String username = "johnDoe74";
+    String password = "12345!";
+    // login
+    authModule.login(username, password ,Callback<HeaderAndBody> {
+        onSuccess(HeaderAndBody result) {
+            //authModule is now enrolled AND authenticated.
+            //Fetch whatever you need from here
+        }
+        
+        onFailure(Exception e) {
+            System.out.println("Failure!");
+        }
+
+    });
 
 The default (REST) auth module issues for the above a request against _https://todoauth-aerogear.rhcloud.com/todo-server/auth/login_. Besides the _username_ and the _password_, the function accepts two simple blocks that are invoked on success or in case of an failure.
 
@@ -258,15 +171,11 @@ The default (REST) auth module issues for the above a request against _https://t
 After running a successful login, you can start using the _RestAuthenticationmodule_ object on a _Pipe_ object to access protected endpoints:
 
     ...
-    id<Pipe> tasks = [pipeline add:@"tasks" baseURL:serverURL authModule:myMod];
+    PipeConfig config = new PipeConfig("tasks", serverURL, authModule);
+    Pipe<Task> tasks = pipeline.pipe(Task.class, config);
 
-    [tasks read:^(id responseObject) {
-        // LOG the JSON response, returned from the server:
-        NSLog(@"READ RESPONSE\n%@", [responseObject description]);
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"Read: An error occured! \n%@", error);
-    }];
+    tasks.read(Callback<List<Task>){/*normal callback code*/});
+
 
 When creating a pipe you need to use the _authModule_ argument in order to pass in an _RestAuthenticationmodule_ object.
 
@@ -274,12 +183,6 @@ When creating a pipe you need to use the _authModule_ argument in order to pass 
 
 The logout from the server can be archived by using the _logout_ function:
 
-    // logout:
-    [myMod logout:^{
-        // after a successful _logout_, when can notify the application
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"SAVE: An error occured! \n%@", error);
-    }];
+    authMod.logout(Callback<Void>() {/*normal callback stuff*/});
 
 The default (REST) auth module issues for the above a request against _https://todoauth-aerogear.rhcloud.com/todo-server/auth/logout_. The function accepts two simple blocks that are invoked on success or in case of an failure.
