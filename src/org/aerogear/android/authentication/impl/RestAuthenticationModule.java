@@ -27,11 +27,6 @@ import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 import java.net.MalformedURLException;
