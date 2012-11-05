@@ -19,6 +19,7 @@ package org.aerogear.android.impl.pipeline;
 
 import android.os.AsyncTask;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.lang.reflect.Array;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HttpProvider;
@@ -35,7 +36,7 @@ import java.util.List;
  */
 public final class RestAdapter<T> implements Pipe<T> {
 
-    private final static Gson gson = new Gson();
+    private final Gson gson;
 
     /**
      * A class of the Generic type this pipe wraps.
@@ -54,8 +55,16 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.klass = klass;
         this.arrayKlass = asArrayClass(klass);
         this.httpProvider = httpProvider;
+        this.gson = new Gson();
     }
 
+    public RestAdapter(Class<T> klass, HttpProvider httpProvider, GsonBuilder gsonBuilder) {
+        this.klass = klass;
+        this.arrayKlass = asArrayClass(klass);
+        this.httpProvider = httpProvider;
+        this.gson = gsonBuilder.create();
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -124,13 +133,23 @@ public final class RestAdapter<T> implements Pipe<T> {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
+                    /*Serialize the object.*/
                     String body = gson.toJson(data);
+                    byte[] result = null;
                     if (id == null || id.length() == 0) {
-                        httpProvider.post(body);
+                        result = httpProvider.post(body);
                     } else {
-                        httpProvider.put(id, body);
+                        result = httpProvider.put(id, body);
                     }
-                    return new AsyncTaskResult(null);
+                    
+                    /*Deseralize the result and return it, or pass null.*/
+                    
+                    if (result != null) {
+                        return new AsyncTaskResult(gson.fromJson(new String(result, "UTF-8"), klass));
+                    } else {
+                        return new AsyncTaskResult((T)null);
+                    }
+                    
                 } catch (Exception e) {
                     return new AsyncTaskResult(e);
                 }

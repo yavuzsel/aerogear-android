@@ -18,6 +18,7 @@
 package org.aerogear.android;
 
 import android.util.Log;
+import com.google.gson.GsonBuilder;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.impl.datamanager.MemoryStorage;
 import org.aerogear.android.datamanager.Store;
@@ -40,6 +41,12 @@ final class AdapterFactory {
     public static Pipe createPipe(Class klass, PipeConfig config) {
         if (config.getType().equals(Types.REST)) {
             return new RestAdapter(klass, new HttpRestProvider(appendEndpoint(config.getBaseURL(), config.getEndpoint())));
+        }
+        throw new IllegalArgumentException("Type is not supported yet");
+    }
+    public static Pipe createPipe(Type type, Class klass, URL url, GsonBuilder builder) {
+        if (type.equals(Type.REST)) {
+                return new RestAdapter(klass, new HttpRestProvider(url), builder);
         }
         throw new IllegalArgumentException("Type is not supported yet");
     }
