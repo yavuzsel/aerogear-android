@@ -58,11 +58,6 @@ public final class RestAdapter<T> implements Pipe<T> {
     private AuthenticationModule authModule;
     private static final String TAG = "RestAdapter";
 
-
-    private final HttpProvider httpProvider;
-    private AuthenticationModule authModule;
-    private static final String TAG = "RestAdapter";
-
     public RestAdapter(Class<T> klass, HttpProvider httpProvider) {
         this.klass = klass;
         this.arrayKlass = asArrayClass(klass);
