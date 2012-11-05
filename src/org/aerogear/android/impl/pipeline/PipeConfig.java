@@ -9,7 +9,7 @@ public final class PipeConfig {
     private URL url;
     private String name;
     private String endpoint;
-    private PipeType type;
+    private PipeType type = Types.REST;
 
     public PipeConfig(Class klass, URL baseURL) {
         this.url = baseURL;
