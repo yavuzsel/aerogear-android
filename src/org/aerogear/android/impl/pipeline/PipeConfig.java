@@ -6,43 +6,47 @@ import java.net.URL;
 
 public final class PipeConfig {
 
-    private final String name;
-    private final URL url;
-    private final String endpoint;
-    private final PipeType type;
+    private String name;
+    private URL url;
+    private String endpoint;
+    private PipeType type;
 
-    public PipeConfig(String name, URL url) {
-        this(name, url, name);
+    public PipeConfig() {
     }
 
-    public PipeConfig(String name, URL url, String endpoint) {
-        this(name, url, endpoint, Types.REST);
-    }
-
-    public PipeConfig(String name, URL url, PipeType type) {
-        this(name, url, name, type);
-    }
-
-    public PipeConfig(String name, URL url, String endpoint, PipeType type) {
-        this.name = name;
-        this.url = url;
-        this.endpoint = endpoint;
-        this.type = type;
+    public PipeConfig(URL baseURL) {
+        this.url = baseURL;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public URL getUrl() {
         return url;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
     }
 
     public String getEndpoint() {
         return endpoint;
     }
 
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
     public PipeType getType() {
         return type;
+    }
+
+    public void setType(PipeType type) {
+        this.type = type;
     }
 }
