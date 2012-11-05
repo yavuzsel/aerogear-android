@@ -32,7 +32,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import org.aerogear.android.pipeline.PipeType;
 
 /**
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s).

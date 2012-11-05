@@ -13,15 +13,15 @@ To create a pipeline, you need to use the Pipeline class. Below is an example:
 
 
 
-    // NSURL object:
+    
     String ROOT_URL = "http://todo-aerogear.rhcloud.com/todo-server";
 
     // create the 'todo' pipeline, which points to the baseURL of the REST application
     Pipeline pipeline = new Pipeline(ROOT_URL);
 
     // Add a REST pipe for the 'projects' endpoint
-    Pipe<Task> = pipeline.pipe().name("tasks")
-                                .useClass(Task.class)
+    Pipe<Project> projects = pipeline.pipe().name("projects")
+                                .useClass(Project.class)
                                 .buildAndAdd();
 
 
@@ -34,60 +34,45 @@ The Pipeline class offers some simple 'management' APIs to work with containing 
 
 The Pipe offers an API to store newly created objects on a _remote_ server resource. These object are serialized by Google's GSON library. The 'save' method is described below:
 
-    // create a dictionary and set some key/value data on it:
-    NSMutableDictionary* projectEntity = [NSMutableDictionary dictionary];
-    [projectEntity setValue:@"Hello World" forKey:@"title"];
-    // add other properties, like style etc ...
+
+    Project project = new Project();
+    project.setName("Demo Project");
+    project setDescription("This is a test project");
+    // etc...
 
     // save the 'new' project:
-    [projects save:projectEntity success:^(id responseObject) {
-	    // LOG the JSON response, returned from the server:
-        NSLog(@"CREATE RESPONSE\n%@", [responseObject description]);
-        
-        // get the id of the new project, from the JSON response...
-        id resourceId = [responseObject valueForKey:@"id"];
+    projects.save(projectEntity, new Callback<Project>(){
+        void onSuccess(Project project) {
+            alert("Success!");
+        }
+        void onFailure(Exception e) {
+            alert("Failure!");
+        }
+    });
 
-        // and update the 'object', so that it knows its ID...
-        [projectEntity setValue:[resourceId stringValue] forKey:@"id"];
-        
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"SAVE: An error occured! \n%@", error);
-    }];
-
-Above the _save_ function stores the given NSDictionary on the server, in this case on a RESTful resource. As arguments it accepts simple blocks that are invoked on _success_ or in case of an _failure_.
+Above the _save_ function serializes the project object to JSON and then saves it on the server using a REST put or post.  
 
 ## Update data
 
-The 'save' method (like in aerogear.js) is also responsible for updating an 'object'. However this happens _only_ when there is an 'id' property/field available:
-
-    // change the title of the previous project 'object':
-    [projectEntity setValue:@"Hello Update World!" forKey:@"title"];
-    
-    // and now udpdate it on the server
-    [projects save:projectEntity success:^(id responseObject) {
-	    // LOG the JSON response, returned from the server:
-        NSLog(@"UPDATE RESPONSE\n%@", [responseObject description]);
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"UPDATE: An error occured! \n%@", error);
-    }];
+The 'save' method (like in aerogear.js) is also responsible for updating an 'object'. However this happens _only_ when there is an 'getId()' method available:
 
 ## Remove data
 
-The Pipe also contains a 'remove' method to delete the data on the server. It takes the value of the 'id' property, so that it knows which resource to delete:
+The Pipe also contains a 'remove' method to delete the data on the server. It takes the value of the 'getId()' method, so that it knows which resource to delete:
 
     // get the 'id' value:
-    id deleteId = [projectEntity objectForKey:@"id"];
+    String deleteId = "12345";
 
     // Now, just remove this project:
-    [projects remove:deleteId success:^(id responseObject) {
-	    // LOG the JSON response, returned from the server:
-	    NSLog(@"DELETE RESPONSE\n%@", [responseObject description]);
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"DELETE: An error occured! \n%@", error);
-    }];
+    projects.remove(deleteId, new Callback<Project>(){
+        void onSuccess(Project project) {
+            alert("Success!");
+        }
+        void onFailure(Exception e) {
+            alert("Failure!");
+        }
+    });
+
 
 In this case, where we have a RESTful pipe the API issues a HTTP DELETE request.
 
@@ -95,55 +80,45 @@ In this case, where we have a RESTful pipe the API issues a HTTP DELETE request.
 
 The 'read' method allows to (currently) read _all_ data from the server, of the underlying Pipe:
 
-    [projects read:^(id responseObject) {
-	    // LOG the JSON response, returned from the server:
-        NSLog(@"READ RESPONSE\n%@", [responseObject description]);
-    } failure:^(NSError *error) {
-        // when an error occurs... at least log it to the console..
-        NSLog(@"Read: An error occured! \n%@", error);
-    }];
+    projects.read(Callback<List<Project>> {
+        onSuccess(List<Project> projects) {
+            for (Project p : projects) {
+                System.out.println(project);
+            }
+        }
+        
+        onFailure(Exception e) {
+            System.out.println("Failure!");
+        }
 
-Since we are pointing to a RESTful endpoint, the API issues a HTTP GET request. The JSON output of the above NSLog() call looks like this:
+    });
 
-	(
-	        {
-	        id = 8;
-	        style = "project-234-255-0";
-	        tasks =         (
-	        );
-	        title = "Created from testcase";
-	    },
-	        {
-	        id = 15;
-	        style = "project-255-255-255";
-	        tasks =         (
-	        );
-	        title = "matzew: do NOT delete!";
-	    }
-	)
+Since we are pointing to a RESTful endpoint, the API issues a HTTP GET request. The raw response of the above call looks like this:
 
-Of course the _collection_ behind the responseObject can be stored to a variable...
+	/*
+            TODO put that in.
+        */
 
 
-AGDataManager
+DataManager
 =============
 
 ## Create a datamanager with store object:
 
-After receiving data from the server, your application may want to keep the data around. The AGDataManager API allows you to create AGStore instances. To create a datamanager, you need to use the AGDataManager class. Below is an example: 
+After receiving data from the server, your application may want to keep the data around. The DataManager API allows you to create Store instances. To create a datamanager, you need to use the DataManager class. Below is an example: 
 
 	// create the datamanager
-    AGDataManager* dm = [AGDataManager manager];
+    DataManager* dm = [DataManager manager];
     // add a new (default) store object:
-    id<AGStore> myStore = [dm add:^(id<AGStoreConfig> config) {
+    id<Store> myStore = [dm add:^(id<StoreConfig> config) {
 	        [config name:@"tasks"];
 	    }];
 
-The AGDataManager class offers some simple 'management' APIs to work with containing AGStore objects. The API offers read and write functionality. The default implementation represents an "in-memory" store. Similar to the pipe API technical details of the underlying system are not exposed.
+The DataManager class offers some simple 'management' APIs to work with containing Store objects. The API offers read and write functionality. The default implementation represents an "in-memory" store. Similar to the pipe API technical details of the underlying system are not exposed.
 
 ## Save data to the Store
 
-When using a pipe to read all entries of a endpoint, you can use the AGStore to save the received objects:
+When using a pipe to read all entries of a endpoint, you can use the Store to save the received objects:
 
     ....
     id<Pipe> tasksPipe = [todo get:@"tasks"];
@@ -166,9 +141,9 @@ When using a pipe to read all entries of a endpoint, you can use the AGStore to 
         NSLog(@"Read: An error occured! \n%@", error);
     }];
 
-When loading all tasks from the server, the AGStore object is used inside of the _read_ block from the Pipe object. The returned collection of tasks is stored inside our in-memory store, from where the data can be accessed.
+When loading all tasks from the server, the Store object is used inside of the _read_ block from the Pipe object. The returned collection of tasks is stored inside our in-memory store, from where the data can be accessed.
 
-## Read an object from the AGStore
+## Read an object from the Store
 
     id taskObject;
     // read the task with the '0' ID:
@@ -207,7 +182,7 @@ The remove method accepts the _recordID_ and two simple blocks that are invoked 
 
 ## Reset the entire store
 
-The reset function allows you the erase all data available in the used AGStore object:
+The reset function allows you the erase all data available in the used Store object:
 
     // clears the entire store
     [myStore reset:^{
@@ -224,28 +199,29 @@ Authentication and User enrollment
 
 ## Creating an authenticator with an authentication module
 
-To create an authenticator, you need to use the AGAuthenticator class. Below is an example: 
+To create an authenticator, you need to use the DefaultAuthenticator class. Below is an example: 
 
     // create an authenticator object
-    AGAuthenticator* authenticator = [AGAuthenticator authenticator];
+    Authenticator authenticator = new DefaultAuthenticator();
 
-	// add a new auth module and the required 'base url':
-    NSURL* baseURL = [NSURL URLWithString:@"https://todoauth-aerogear.rhcloud.com/todo-server/"];
-    id<AGAuthenticationModule> myMod = [authenticator add:^(id<AGAuthConfig> config) {
-	        [config name:@"authMod"];
-	        [config baseURL:baseURL];
-	    }];
+    // add a new auth module and the required 'base url':
+    URL baseURL = null;
+    try {    
+        URL baseURL = new URL("https://todoauth-aerogear.rhcloud.com/todo-server/");
+    } catch (MalformedURLException exception) {throw new RuntiemException(exception);}
+   
+    Authenticationmodule authMod = Authenticator.auth(AuthType.REST, baseURL).add();
 
-The AGAuthenticator class offers some simple 'management' APIs to work with containing AGAuthenticationModule objects. The API provides an authentication and enrollment API. The default implementation uses REST as the auth transport. Similar to the pipe API technical details of the underlying system are not exposed.
+The DefaultAuthenticator class offers some simple 'management' APIs to work with containing RestAuthenticationmodule objects. The API provides an authentication and enrollment API. The default implementation uses REST as the auth transport. Similar to the pipe API technical details of the underlying system are not exposed.
 
 ## Register a user
 
-The _enroll_ function of the AGAuthenticationModule protocol is used to register new users with the backend:
+The _enroll_ function of the AuthenticationModule interface is used to register new users with the backend:
 
     // assemble the dictionary that has all the data for THIS particular user:
-    NSMutableDictionary* userData = [NSMutableDictionary dictionary];
-    [userData setValue:@"john" forKey:@"username"];
-    [userData setValue:@"123" forKey:@"password"];
+    MAP<String, String> userData = new HashMap<String, String>();
+    userData.put("username","john");
+    userData.put("password","123");
     [userData setValue:@"me@you.com" forKey:@"email"];
     [userData setValue:@"21sda812sad24" forKey:@"betaAccountToken"];
     
@@ -279,7 +255,7 @@ The default (REST) auth module issues for the above a request against _https://t
 
 ## Pass the auth module to a pipe
 
-After running a successful login, you can start using the _AGAuthenticationModule_ object on a _Pipe_ object to access protected endpoints:
+After running a successful login, you can start using the _RestAuthenticationmodule_ object on a _Pipe_ object to access protected endpoints:
 
     ...
     id<Pipe> tasks = [pipeline add:@"tasks" baseURL:serverURL authModule:myMod];
@@ -292,7 +268,7 @@ After running a successful login, you can start using the _AGAuthenticationModul
         NSLog(@"Read: An error occured! \n%@", error);
     }];
 
-When creating a pipe you need to use the _authModule_ argument in order to pass in an _AGAuthenticationModule_ object.
+When creating a pipe you need to use the _authModule_ argument in order to pass in an _RestAuthenticationmodule_ object.
 
 ## Logout
 
