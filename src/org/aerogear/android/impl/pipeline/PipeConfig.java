@@ -13,7 +13,7 @@ public final class PipeConfig {
     private String endpoint;
     private PipeType type = Types.REST;
     private GsonBuilder gsonBuilder;
-    private final AuthenticationModule authModule;
+    private AuthenticationModule authModule;
 
     public PipeConfig(URL baseURL, Class klass) {
         this.baseURL = baseURL;
@@ -67,6 +67,6 @@ public final class PipeConfig {
     }
     
     public void setAuthModule(AuthenticationModule authModule) {
-        return authModule;
+        this.authModule = authModule;
     }
 }

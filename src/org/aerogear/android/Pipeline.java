@@ -73,7 +73,7 @@ public final class Pipeline {
     }
 
     public Pipe pipe(Class klass, PipeConfig config) {
-        Pipe pipe = AdapterFactory.createPipe(klass, baseURL, config);
+        Pipe pipe = AdapterFactory.createPipe(klass, config);
         pipes.put(config.getName(), pipe);
         return pipe;
     }

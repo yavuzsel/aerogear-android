@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import org.aerogear.android.core.HeaderAndBody;
 
 /**
  * Rest implementation of {@link Pipe}.
@@ -101,7 +102,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                     applyAuthToken();
                     byte[] responseBody = httpProvider.get().getBody();
                     String responseAsString = new String(responseBody, "utf-8");
-                    T[] resultArray = GSON.fromJson(responseAsString, arrayKlass);
+                    T[] resultArray = gson.fromJson(responseAsString, arrayKlass);
 
                     return new AsyncTaskResult(Arrays.asList(resultArray));
                 } catch (Exception e) {
@@ -146,7 +147,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                     applyAuthToken();
 
                                         
-                    byte[] result = null;
+                    HeaderAndBody result = null;
                     if (id == null || id.length() == 0) {
                         result = httpProvider.post(body);
                     } else {
@@ -156,7 +157,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                     /*Deseralize the result and return it, or pass null.*/
                     
                     if (result != null) {
-                        return new AsyncTaskResult(gson.fromJson(new String(result, "UTF-8"), klass));
+                        return new AsyncTaskResult(gson.fromJson(new String(result.getBody(), "UTF-8"), klass));
                     } else {
                         return new AsyncTaskResult((T)null);
 
