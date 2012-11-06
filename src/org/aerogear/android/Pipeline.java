@@ -66,7 +66,6 @@ public final class Pipeline {
 
     public Pipe pipe(Class klass) {
         PipeConfig config = new PipeConfig(baseURL, klass);
-        config.setName(klass.getSimpleName().toLowerCase());
         return pipe(klass, config);
     }
 
