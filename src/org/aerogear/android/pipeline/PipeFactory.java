@@ -15,24 +15,12 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.pipeline;
+package org.aerogear.android.pipeline;
 
-import org.aerogear.android.pipeline.PipeType;
+import org.aerogear.android.impl.pipeline.PipeConfig;
 
-/**
- * Types of pipes
- */
-public enum Types implements PipeType {
+public interface PipeFactory {
 
-    REST("REST");
-    private String typeDescription;
+    public Pipe createPipe(Class klass, PipeConfig config);
 
-    Types(String typeDescription) {
-        this.typeDescription = typeDescription;
-    }
-
-    @Override
-    public String getName() {
-        return this.typeDescription;
-    }
 }

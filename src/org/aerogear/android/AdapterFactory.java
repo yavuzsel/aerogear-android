@@ -17,19 +17,8 @@
 
 package org.aerogear.android;
 
-import android.util.Log;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
-import org.aerogear.android.impl.core.HttpRestProvider;
-import org.aerogear.android.impl.datamanager.MemoryStorage;
-import org.aerogear.android.impl.datamanager.StoreType;
-import org.aerogear.android.impl.pipeline.PipeConfig;
-import org.aerogear.android.impl.pipeline.RestAdapter;
-import org.aerogear.android.impl.pipeline.Types;
-import org.aerogear.android.pipeline.Pipe;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import org.aerogear.android.impl.datamanager.MemoryStorage;
 import org.aerogear.android.impl.datamanager.StoreType;
 
@@ -40,35 +29,11 @@ final class AdapterFactory {
     private AdapterFactory() {
     }
 
-    public static Pipe createPipe(Class klass, PipeConfig config) {
-        if (config.getType().equals(Types.REST)) {
-            if (config.getGsonBuilder() == null) {
-                return new RestAdapter(klass, new HttpRestProvider(appendEndpoint(config.getBaseURL(), config.getEndpoint())));
-            } else {
-                return new RestAdapter(klass, new HttpRestProvider(appendEndpoint(config.getBaseURL(), config.getEndpoint())), config.getGsonBuilder());
-            }
-        }
-        throw new IllegalArgumentException("Type is not supported yet");
-    }
-
     public static Store createStore(StoreType type, IdGenerator idGenerator) {
         if (type.equals(MEMORY)) {
             return new MemoryStorage(idGenerator);
         }
         throw new IllegalArgumentException("Type is not supported yet");
-    }
-
-    private static URL appendEndpoint(URL baseURL, String endpoint) {
-
-        try {
-            if (!baseURL.toString().endsWith("/")) {
-                endpoint = "/" + endpoint;
-            }
-            return new URL(baseURL + endpoint + "/");
-        } catch (MalformedURLException e) {
-            Log.e("AeroGear", e.getMessage());
-            return null;
-        }
     }
 
 }
