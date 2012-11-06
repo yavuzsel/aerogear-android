@@ -14,10 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.aerogear.android.impl.pipeline;
 
+import android.graphics.Point;
+import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import java.lang.reflect.Type;
 import junit.framework.Assert;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.impl.core.HttpStubProvider;
@@ -28,12 +38,20 @@ import org.junit.runner.RunWith;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.Assert.assertEquals;
+import org.aerogear.android.Callback;
 
 @RunWith(RobolectricTestRunner.class)
 public class RestAdapterTest {
 
+    private static final String SERIALIZED_POINTS = "{\"points\":[{\"x\":0,\"y\":0},{\"x\":1,\"y\":2},{\"x\":2,\"y\":4},{\"x\":3,\"y\":6},{\"x\":4,\"y\":8},{\"x\":5,\"y\":10},{\"x\":6,\"y\":12},{\"x\":7,\"y\":14},{\"x\":8,\"y\":16},{\"x\":9,\"y\":18}],\"id\":\"1\"}";
+    
     private URL url;
 
     @Before
@@ -53,4 +71,98 @@ public class RestAdapterTest {
         assertEquals("verifying the given URL", "http://server.com/context/", restPipe.getUrl().toString());
     }
 
+    @Test
+    public void testGsonBuilderProperty() throws ParseException, InterruptedException {
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
+
+        final StringBuilder request = new StringBuilder("");
+
+        HttpStubProvider provider = new HttpStubProvider(url) {
+            @Override
+            public byte[] put(String id, String data) {
+                request.delete(0, request.length());
+                request.append(data);
+                return data.getBytes();
+            }
+
+            @Override
+            public byte[] post(String data) {
+                request.delete(0, request.length());
+                request.append(data);
+                return data.getBytes();
+            }
+        };
+
+        Pipe<RestAdapterTest.ListClassId> restPipe = new RestAdapter<RestAdapterTest.ListClassId>(RestAdapterTest.ListClassId.class, provider, builder);
+        final CountDownLatch latch = new CountDownLatch(1);
+        final RestAdapterTest.ListClassId listClass = new RestAdapterTest.ListClassId();
+        final List<Point> returnedPoints = new ArrayList<Point>(10);
+        
+        
+        restPipe.save(listClass, new Callback<RestAdapterTest.ListClassId>() {
+            @Override
+            public void onSuccess(RestAdapterTest.ListClassId data) {
+                returnedPoints.addAll(data.points);
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+        latch.await(2, TimeUnit.SECONDS);
+        assertEquals(SERIALIZED_POINTS, request.toString());
+        assertEquals(listClass.points, returnedPoints);
+    }
+
+    public final static class ListClassId {
+
+        List<Point> points = new ArrayList<Point>(10);
+        String id = "1";
+
+        public ListClassId() {
+            for (int i = 0; i < 10; i++) {
+                points.add(new Point(i, i * 2));
+            }
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            try {
+                return points.equals(((RestAdapterTest.ListClassId) obj).points);
+            } catch (Throwable ignore) {
+                return false;
+            }
+        }
+    }
+
+    private static class PointTypeAdapter implements InstanceCreator, JsonSerializer, JsonDeserializer {
+
+        @Override
+        public Object createInstance(Type type) {
+            return new Point();
+        }
+
+        @Override
+        public JsonElement serialize(Object src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject object = new JsonObject();
+            object.addProperty("x", ((Point)src).x);
+            object.addProperty("y", ((Point)src).y);
+            return object;
+        }
+
+        @Override
+        public Object deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return new Point(json.getAsJsonObject().getAsJsonPrimitive("x").getAsInt(), 
+                                json.getAsJsonObject().getAsJsonPrimitive("y").getAsInt());
+        }
+
+    }
 }

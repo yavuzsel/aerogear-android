@@ -1,5 +1,6 @@
 package org.aerogear.android.impl.pipeline;
 
+import com.google.gson.GsonBuilder;
 import org.aerogear.android.pipeline.PipeType;
 
 import java.net.URL;
@@ -10,6 +11,7 @@ public final class PipeConfig {
     private String name;
     private String endpoint;
     private PipeType type = Types.REST;
+    private GsonBuilder gsonBuilder;
 
     public PipeConfig(URL baseURL, Class klass) {
         this.baseURL = baseURL;
@@ -49,4 +51,13 @@ public final class PipeConfig {
     public void setType(PipeType type) {
         this.type = type;
     }
+
+    public GsonBuilder getGsonBuilder() {
+        return gsonBuilder;
+    }
+
+    public void setGsonBuilder(GsonBuilder gsonBuilder) {
+        this.gsonBuilder = gsonBuilder;
+    }
+
 }
