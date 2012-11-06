@@ -14,44 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.aerogear.android;
 
-package org.aerogear.android.impl.core;
-
-import org.aerogear.android.core.HttpProvider;
-
-import java.net.URL;
-import org.aerogear.android.core.HeaderAndBody;
-
-public class HttpStubProvider implements HttpProvider {
-
-    private final URL url;
-
-    public HttpStubProvider(URL url) {
-        this.url = url;
-    }
-
-    public URL getUrl() {
-        return url;
-    }
-
-    public HeaderAndBody get() {
-        return null;
-    }
-
-    public HeaderAndBody post(String data) {
-        return null;
-    }
-
-    public HeaderAndBody put(String id, String data) {
-        return null;
-    }
-
-    public HeaderAndBody delete(String id) {
-        return null;
-    }
-
-    @Override
-    public void setDefaultHeader(String headerName, String headerValue) {
-    }
-
+/**
+ * Builders offer a different way to create objects which may have
+ * complex construction rules.
+ */
+public interface Builder<T> {
+    
+    /**
+     * 
+     * @return a built instance of T
+     */
+    public T build();
+    
 }

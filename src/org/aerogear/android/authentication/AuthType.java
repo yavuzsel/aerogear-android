@@ -14,44 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.aerogear.android.authentication;
 
-package org.aerogear.android.impl.core;
-
-import org.aerogear.android.core.HttpProvider;
-
-import java.net.URL;
-import org.aerogear.android.core.HeaderAndBody;
-
-public class HttpStubProvider implements HttpProvider {
-
-    private final URL url;
-
-    public HttpStubProvider(URL url) {
-        this.url = url;
+/**
+ * A enum for the types of {@link  AuthenticationModule} {@link Authenticator}
+ * knows how to build.
+ */
+public enum AuthType {
+    REST("Rest");
+   
+    /**
+     * In theory, one day, a developer will be able to add in her own
+     * AuthTypes.  In theory, one day, DefaultAuthenticator will have a map 
+     * of <String, Class> which will server as a lookup.  
+     * 
+     * IE this is future proofing.
+     */
+    private final String key;
+    
+    private AuthType(String key) {
+        this.key = key;
     }
-
-    public URL getUrl() {
-        return url;
+    
+    public String getKey() {
+        return key;
     }
-
-    public HeaderAndBody get() {
-        return null;
-    }
-
-    public HeaderAndBody post(String data) {
-        return null;
-    }
-
-    public HeaderAndBody put(String id, String data) {
-        return null;
-    }
-
-    public HeaderAndBody delete(String id) {
-        return null;
-    }
-
-    @Override
-    public void setDefaultHeader(String headerName, String headerValue) {
-    }
-
 }

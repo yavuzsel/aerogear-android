@@ -40,12 +40,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static junit.framework.Assert.assertEquals;
 import org.aerogear.android.Callback;
+import org.aerogear.android.core.HeaderAndBody;
 
 @RunWith(RobolectricTestRunner.class)
 public class RestAdapterTest {
@@ -79,17 +81,17 @@ public class RestAdapterTest {
 
         HttpStubProvider provider = new HttpStubProvider(url) {
             @Override
-            public byte[] put(String id, String data) {
+            public HeaderAndBody put(String id, String data) {
                 request.delete(0, request.length());
                 request.append(data);
-                return data.getBytes();
+                return new HeaderAndBody(data.getBytes(), new HashMap<String, Object>());
             }
 
             @Override
-            public byte[] post(String data) {
+            public HeaderAndBody post(String data) {
                 request.delete(0, request.length());
                 request.append(data);
-                return data.getBytes();
+                return new HeaderAndBody(data.getBytes(), new HashMap<String, Object>());
             }
         };
 
