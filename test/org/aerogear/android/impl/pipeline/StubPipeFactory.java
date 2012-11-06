@@ -18,6 +18,7 @@
 package org.aerogear.android.impl.pipeline;
 
 import org.aerogear.android.Callback;
+import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeFactory;
 import org.aerogear.android.pipeline.PipeType;
@@ -60,6 +61,10 @@ public class StubPipeFactory implements PipeFactory {
 
             @Override
             public void remove(String id, Callback callback) {
+            }
+
+            @Override
+            public void setAuthenticationModule(AuthenticationModule module) {
             }
         };
     }
