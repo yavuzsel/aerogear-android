@@ -18,6 +18,7 @@
 package org.aerogear.android;
 
 
+import org.aerogear.android.impl.pipeline.DefaultPipeFactory;
 import org.aerogear.android.impl.pipeline.PipeConfig;
 
 import android.util.Log;
@@ -27,6 +28,7 @@ import org.aerogear.android.AdapterFactory;
 import org.aerogear.android.AdapterFactory;
 import org.aerogear.android.impl.pipeline.PipeConfig;
 import org.aerogear.android.pipeline.Pipe;
+import org.aerogear.android.pipeline.PipeFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,6 +44,8 @@ public final class Pipeline {
     private final URL baseURL;
 
     private final Map<String, Pipe> pipes = new HashMap<String, Pipe>();
+
+    private PipeFactory pipeFactory = new DefaultPipeFactory();
 
     /**
      * An initializer method to instantiate the Pipeline,
@@ -67,13 +71,17 @@ public final class Pipeline {
         }
     }
 
+    public void setPipeFactory(PipeFactory pipeFactory) {
+        this.pipeFactory = pipeFactory;
+    }
+
     public Pipe pipe(Class klass) {
         PipeConfig config = new PipeConfig(baseURL, klass);
         return pipe(klass, config);
     }
 
     public Pipe pipe(Class klass, PipeConfig config) {
-        Pipe pipe = AdapterFactory.createPipe(klass, config);
+        Pipe pipe = pipeFactory.createPipe(klass, config);
         pipes.put(config.getName(), pipe);
         return pipe;
     }

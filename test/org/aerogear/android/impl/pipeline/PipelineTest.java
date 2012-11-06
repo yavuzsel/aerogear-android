@@ -42,6 +42,18 @@ public class PipelineTest {
     }
 
     @Test
+    public void testRegisterPipeFactory() throws MalformedURLException {
+        Pipeline pipeline = new Pipeline(url);
+        pipeline.setPipeFactory(new StubPipeFactory());
+
+        Pipe stubPipe = pipeline.pipe(Data.class, new PipeConfig(url, Data.class));
+
+        assertNotNull("received pipe", stubPipe);
+        assertEquals("verifying the given URL", "http://myStubUrl/myStubProject", stubPipe.getUrl().toString());
+        assertEquals("verifying the type", "Stub", stubPipe.getType().getType());
+    }
+
+    @Test
     public void testAddPipe() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
         Pipe newPipe = pipeline.pipe(Data.class);
