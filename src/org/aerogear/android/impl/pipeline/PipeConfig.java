@@ -11,7 +11,7 @@ public final class PipeConfig {
     private String endpoint;
     private PipeType type = Types.REST;
 
-    public PipeConfig(Class klass, URL baseURL) {
+    public PipeConfig(URL baseURL, Class klass) {
         this.url = baseURL;
         this.name = klass.getSimpleName().toLowerCase();
         this.endpoint = name;
