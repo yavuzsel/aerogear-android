@@ -18,7 +18,6 @@
 package org.aerogear.android.pipeline;
 
 import org.aerogear.android.Callback;
-import org.aerogear.android.impl.pipeline.Type;
 
 import java.net.URL;
 import java.util.List;
@@ -36,7 +35,7 @@ public interface Pipe<T> {
      *
      * @return the connection type
      */
-    Type getType();
+    PipeType getType();
 
     /**
      * Returns the {@link URL} to which this {@link Pipe} object points.

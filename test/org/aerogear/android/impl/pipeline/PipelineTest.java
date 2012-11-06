@@ -29,7 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static junit.framework.Assert.*;
-import static org.aerogear.android.impl.pipeline.Type.*;
+import static org.aerogear.android.impl.pipeline.Types.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class PipelineTest {
@@ -44,16 +44,19 @@ public class PipelineTest {
     @Test
     public void testAddPipe() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).buildAndAdd();
+        Pipe newPipe = pipeline.pipe(Data.class);
 
-        assertEquals("verifying the given URL", "http://server.com/context/foo/", newPipe.getUrl().toString());
+        assertEquals("verifying the given URL", "http://server.com/context/data/", newPipe.getUrl().toString());
         assertEquals("verifying the type", REST, newPipe.getType());
     }
 
     @Test
     public void testAddPipeWithEndpoint() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.pipe().name("bad name").useClass(Data.class).endpoint("foo").buildAndAdd();
+        final PipeConfig config = new PipeConfig(Data.class, url);
+        config.setName("bad name");
+        config.setEndpoint("foo");
+        Pipe newPipe = pipeline.pipe(Data.class, config);
 
         assertEquals("verifying the given URL", "http://server.com/context/foo/", newPipe.getUrl().toString());
     }
@@ -61,7 +64,10 @@ public class PipelineTest {
     @Test
     public void testAddPipeWithType() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).type(REST).buildAndAdd();
+        final PipeConfig config = new PipeConfig(Data.class, url);
+        config.setName("foo");
+        config.setType(REST);
+        Pipe newPipe = pipeline.pipe(Data.class, config);
 
         assertEquals("verifying the type", REST, newPipe.getType());
     }
@@ -71,15 +77,22 @@ public class PipelineTest {
         URL otherURL = new URL("http://server.com/otherContext/");
 
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).url(otherURL).buildAndAdd();
+        final PipeConfig config = new PipeConfig(Data.class, otherURL);
+        config.setName("foo");
+        Pipe newPipe = pipeline.pipe(Data.class, config);
 
-        assertEquals("verifying the given URL", "http://server.com/otherContext/foo/", newPipe.getUrl().toString());
+        assertEquals("verifying the given URL", "http://server.com/otherContext/data/", newPipe.getUrl().toString());
     }
+
 
     @Test
     public void testAddPipeWithEndpointAndType() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).type(REST).endpoint("bar").buildAndAdd();
+        final PipeConfig config = new PipeConfig(Data.class, url);
+        config.setName("foo");
+        config.setEndpoint("bar");
+        config.setType(REST);
+        Pipe newPipe = pipeline.pipe(Data.class, config);
 
         assertEquals("verifying the type", REST, newPipe.getType());
         assertEquals("verifying the given URL", "http://server.com/context/bar/", newPipe.getUrl().toString());
@@ -90,7 +103,10 @@ public class PipelineTest {
         URL otherURL = new URL("http://server.com/otherContext/");
 
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.pipe().name("bad name").useClass(Data.class).url(otherURL).endpoint("foo").buildAndAdd();
+        final PipeConfig config = new PipeConfig(Data.class, otherURL);
+        config.setName("bad name");
+        config.setEndpoint("foo");
+        Pipe newPipe = pipeline.pipe(Data.class, config);
 
         assertEquals("verifying the given URL", "http://server.com/otherContext/foo/", newPipe.getUrl().toString());
     }
@@ -100,39 +116,45 @@ public class PipelineTest {
         URL otherURL = new URL("http://server.com/otherContext/");
 
         Pipeline pipeline = new Pipeline(url);
-        Pipe newPipe = pipeline.pipe().name("foo").useClass(Data.class).type(REST).url(otherURL).buildAndAdd();
+        final PipeConfig config = new PipeConfig(Data.class, otherURL);
+        config.setType(REST);
+        Pipe newPipe = pipeline.pipe(Data.class, config);
 
         assertEquals("verifying the type", REST, newPipe.getType());
-        assertEquals("verifying the given URL", "http://server.com/otherContext/foo/", newPipe.getUrl().toString());
+        assertEquals("verifying the given URL", "http://server.com/otherContext/data/", newPipe.getUrl().toString());
     }
 
     @Test
     public void testGetExistingPipe() {
         Pipeline pipeline = new Pipeline(url);
-        pipeline.pipe().name("tasks").useClass(Data.class).buildAndAdd();
+        final PipeConfig config = new PipeConfig(Data.class, url);
+        config.setName("foo");
+        pipeline.pipe(Data.class, config);
 
-        Pipe tasksPipe = pipeline.get("tasks");
-        assertNotNull("received pipe", tasksPipe);
+        Pipe fooPipe = pipeline.get("foo");
+        assertNotNull("received pipe", fooPipe);
     }
 
     @Test
     public void testGetNonExistingPipe() {
         Pipeline pipeline = new Pipeline(url);
 
-        Pipe tasksPipe = pipeline.get("Footasks");
-        assertNull("Not received pipe", tasksPipe);
+        Pipe fooPipe = pipeline.get("Footasks");
+        assertNull("Not received pipe", fooPipe);
     }
 
     @Test
     public void testRemoveExistingPipe() {
         Pipeline pipeline = new Pipeline(url);
-        pipeline.pipe().name("tasks").useClass(Data.class).buildAndAdd();
+        final PipeConfig config = new PipeConfig(Data.class, url);
+        config.setName("foo");
+        pipeline.pipe(Data.class, config);
 
-        Pipe tasksPipe = pipeline.remove("tasks");
-        assertNotNull("deleted pipe", tasksPipe);
+        Pipe fooPipe = pipeline.remove("foo");
+        assertNotNull("deleted pipe", fooPipe);
 
-        tasksPipe = pipeline.get("tasks");
-        assertNull("Not received pipe", tasksPipe);
+        fooPipe = pipeline.get("foo");
+        assertNull("Not received pipe", fooPipe);
     }
 
     @Test

@@ -44,7 +44,7 @@ public class RestAdapterTest {
     @Test
     public void testPipeTypeProperty() {
         Pipe restPipe = new RestAdapter(Data.class, new HttpStubProvider(url));
-        Assert.assertEquals("verifying the (default) type", Type.REST, restPipe.getType());
+        Assert.assertEquals("verifying the (default) type", Types.REST, restPipe.getType());
     }
 
     @Test
