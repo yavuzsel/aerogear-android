@@ -17,6 +17,7 @@
 
 package org.aerogear.android.impl.pipeline;
 
+import org.aerogear.android.authentication.AuthType;
 import org.aerogear.android.pipeline.PipeType;
 
 /**
@@ -25,7 +26,7 @@ import org.aerogear.android.pipeline.PipeType;
 public enum PipeTypes implements PipeType {
 
     REST("REST");
-    private String typeDescription;
+    private String typeName;
 
     PipeTypes(String typeDescription) {
         this.typeDescription = typeDescription;

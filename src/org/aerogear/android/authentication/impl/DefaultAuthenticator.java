@@ -16,14 +16,15 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import org.aerogear.android.authentication.AddAuthBuilder;
-import org.aerogear.android.authentication.AuthType;
+import java.net.MalformedURLException;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.Authenticator;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import org.aerogear.android.authentication.AuthenticationConfig;
+import org.aerogear.android.impl.pipeline.Types;
 
 /**
  * This is the default implementation of Authenticator.
@@ -32,14 +33,18 @@ import java.util.Map;
 public class DefaultAuthenticator implements Authenticator {
 
     private Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
+    private final URL baseURL;
+
+    public DefaultAuthenticator(URL baseURL) {
+        this.baseURL = baseURL;
+    }
     
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public AuthenticationModule add(String name, AuthenticationModule authModule) {
-        modules.put(name, authModule);
-        return modules.get(name);
+    public DefaultAuthenticator(String baseURL) {
+        try {
+            this.baseURL = new URL(baseURL);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
 
@@ -63,17 +68,16 @@ public class DefaultAuthenticator implements Authenticator {
      * {@inheritDoc }
      */
     @Override
-    public AddAuthBuilder<? extends AuthenticationModule> auth( AuthType authType, URL baseURL) {
-        if (authType != AuthType.REST) {
+    public AuthenticationModule auth(String name, AuthenticationConfig config) {
+        
+        assert config != null;
+        
+        if (!Types.REST.equals(config.getAuthType())) {
             throw new IllegalArgumentException("Unsupported Auth Type passed");
         }
+        modules.put(name, new RestAuthenticationModule(baseURL, config));
+        return modules.get(name);
         
-        return new RestAuthenticationModule.Builder(baseURL) {
-            @Override
-            public RestAuthenticationModule add(String name) {
-                return (RestAuthenticationModule) DefaultAuthenticator.this.add(name, build());
-            }
-         };
     }
     
 }

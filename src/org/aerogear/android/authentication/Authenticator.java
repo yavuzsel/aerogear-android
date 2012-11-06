@@ -16,26 +16,12 @@
  */
 package org.aerogear.android.authentication;
 
-import java.net.URL;
-
 /**
  * This is a factory and manager for {@link AuthenticationModule}
  * 
  *  It allows you to add and remove authentication modules.
  */
 public interface Authenticator {
-    
-    /**
-     * 
-     * Creates a new {@link AuthenticationModule } 
-     * 
-     * @param name a key to use to lookup the Module later
-     * @param authModule a configured module to add to the 
-     *        Authenticator
-     * @return 
-     */
-    public AuthenticationModule add(String name, AuthenticationModule authModule);
-   
 
     /**
      * Looks up and returns the AuthenticationModule if it exists.
@@ -62,10 +48,10 @@ public interface Authenticator {
      * Eventually users will be able to add their own AuthTypes, but for now
      * we will restrict them using na Enum
      * 
-     * @param authType  
-     * @param baseURL the base url of a {@link AuthenticationModule}
+     * @param name name of AuthorizationModule object* 
+     * @param config 
      * @return 
      */
-    public AddAuthBuilder<? extends AuthenticationModule> auth(AuthType authType, URL baseURL);
+    public AuthenticationModule auth(String moduleName, AuthenticationConfig config);
     
 }

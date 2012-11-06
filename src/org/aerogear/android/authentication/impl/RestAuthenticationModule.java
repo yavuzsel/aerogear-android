@@ -17,10 +17,10 @@
 package org.aerogear.android.authentication.impl;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.aerogear.android.Callback;
-import org.aerogear.android.authentication.AddAuthBuilder;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.aerogear.android.authentication.AuthenticationConfig;
 
 /**
  * A module for authenticating with restful AG services.
@@ -65,18 +66,29 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     private final String tokenHeaderName;
     
     private boolean isLoggedIn = false;
+    private static final String TAG = "RestAuthenticationModule";
 
-    private RestAuthenticationModule(URL baseURL, String loginEndpoint, String logoutEndpoint, String enrollEndpoint, String tokenHeaderName) throws MalformedURLException {
+    /**
+     * 
+     * @param baseURL
+     * @param config 
+     * @throws IllegalArgumentException if an endpoint can not be appended to 
+     *          baseURL
+     */
+    public RestAuthenticationModule(URL baseURL, AuthenticationConfig config) {
         this.baseURL = baseURL;
-        this.loginEndpoint = loginEndpoint;
-        this.logoutEndpoint = logoutEndpoint;
-        this.enrollEndpoint = enrollEndpoint;
-        this.tokenHeaderName = tokenHeaderName;
+        this.loginEndpoint = config.getLoginEndpoint();
+        this.logoutEndpoint = config.getLogoutEndpoint();
+        this.enrollEndpoint = config.getEnrollEndpoint();
+        if (config instanceof RestAuthenticationConfig) {
+            this.tokenHeaderName = ((RestAuthenticationConfig)config).getTokenHeaderName();
+        } else {
+            this.tokenHeaderName = "Auth-Token";
+        }
         
-        this.loginURL = new URL(baseURL.toString() + loginEndpoint);
-        this.logoutURL = new URL(baseURL.toString() + logoutEndpoint);
-        this.enrollURL = new URL(baseURL.toString() + enrollEndpoint);
-        
+        this.loginURL = appendToBaseURL(loginEndpoint);
+        this.logoutURL = appendToBaseURL(logoutEndpoint);
+        this.enrollURL =  appendToBaseURL(enrollEndpoint);
     }
 
 
@@ -214,90 +226,33 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     }
 
     private String buildLoginData(String username, String password) {
-    	
-    	
     	JsonObject response = new JsonObject();
     	response.addProperty("username", username);
     	response.addProperty("password", password);
-    	return response.toString();
-    	
+    	return response.toString();   	
     }
 
     @Override
     public void applyAuthentication(HttpProvider httpProvider) {
         httpProvider.setDefaultHeader(tokenHeaderName, authToken);
     }
- 
+
     /**
-     * This class extended by {@link DefaultAuthenticator#auth(org.aerogear.android.authentication.AuthType, java.net.URL) }
-     * to creating an adding builder
+     * 
+     * @param endpoint
+     * @return a new url baseUrl + endpoint
+     * @throws IllegalArgumentException if baseUrl+endpoint is not a real url.
      */
-    protected static abstract class Builder implements AddAuthBuilder<RestAuthenticationModule> {
-        private final URL baseURL;
-        private       String tokenHeaderName = "Auth-Token";
-        private       String loginEndpoint   = "/auth/login";
-        private       String logoutEndpoint  = "/auth/logout";
-        private       String enrollEndpoint  = "/auth/enroll";
-
-        public Builder(URL baseURL) {
-            this.baseURL = baseURL;
-        }
-
-        public AddAuthBuilder tokenHeader(String tokenHeaderName) {
-            this.tokenHeaderName = tokenHeaderName;
-            return this;
-        }
-
-        
-        @Override
-        public AddAuthBuilder loginEndpoint(String loginEndpoint) {
-            this.loginEndpoint = loginEndpoint;
-            return this;
-        }
-
-        @Override
-        public AddAuthBuilder logoutEndpoint(String logoutEndpoint) {
-            this.logoutEndpoint = logoutEndpoint;
-            return this;
-        }
-
-        @Override
-        public AddAuthBuilder enrollEndpoint(String enrollEndpoint) {
-            this.enrollEndpoint = enrollEndpoint;
-            return this;
+    private URL appendToBaseURL(String endpoint) {
+        try {
+            return new URL(baseURL.toString() + endpoint);
+        } catch (MalformedURLException ex) {
+            String message = "Could not append " + endpoint + " to " + baseURL.toString();
+            Log.e(TAG, message, ex);
+            throw new IllegalArgumentException(message, ex);
         }
         
-        /**
-         * 
-         * Instantiates a RestAuthenticationModule based on the defaults.
-         * 
-         * Defaults are:
-         * 
-         * private URL baseURL = new URL("http://localhost:80");
-         * private String loginEndpoint = "/login";
-         * private String logoutEndpoint = "/logout";
-         * private String enrollEndpoint = "/enroll";
-         * 
-         * 
-         * @return 
-         * @throws IllegalArgumentException if baseURL + anyEndpoint is not a
-         * valid URL
-         */
-        @Override
-        public RestAuthenticationModule build() {
-            try {
-                return new RestAuthenticationModule(this.baseURL, 
-                                                    this.loginEndpoint, 
-                                                    this.logoutEndpoint,
-                                                    this.enrollEndpoint,
-                                                    this.tokenHeaderName);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(RestAuthenticationModule.class.getName()).log(Level.SEVERE, null, ex);
-                throw new IllegalArgumentException(ex);
-            }
-        }
-
-
+        
     }
-    
+     
 }
