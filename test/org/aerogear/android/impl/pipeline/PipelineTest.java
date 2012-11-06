@@ -19,8 +19,8 @@ package org.aerogear.android.impl.pipeline;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.aerogear.android.Pipeline;
-import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.impl.helper.Data;
+import org.aerogear.android.pipeline.Pipe;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static junit.framework.Assert.*;
-import static org.aerogear.android.impl.pipeline.Types.*;
+import static org.aerogear.android.impl.pipeline.Types.REST;
 
 @RunWith(RobolectricTestRunner.class)
 public class PipelineTest {

@@ -20,13 +20,6 @@ package org.aerogear.android;
 
 import org.aerogear.android.impl.pipeline.DefaultPipeFactory;
 import org.aerogear.android.impl.pipeline.PipeConfig;
-
-import android.util.Log;
-import com.google.gson.GsonBuilder;
-import org.aerogear.android.AdapterFactory;
-
-import org.aerogear.android.AdapterFactory;
-import org.aerogear.android.impl.pipeline.PipeConfig;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeFactory;
 
