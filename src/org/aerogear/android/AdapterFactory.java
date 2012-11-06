@@ -39,7 +39,7 @@ final class AdapterFactory {
 
     public static Pipe createPipe(Class klass, PipeConfig config) {
         if (config.getType().equals(Types.REST)) {
-            return new RestAdapter(klass, new HttpRestProvider(appendEndpoint(config.getUrl(), config.getEndpoint())));
+            return new RestAdapter(klass, new HttpRestProvider(appendEndpoint(config.getBaseURL(), config.getEndpoint())));
         }
         throw new IllegalArgumentException("Type is not supported yet");
     }

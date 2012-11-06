@@ -6,13 +6,13 @@ import java.net.URL;
 
 public final class PipeConfig {
 
-    private URL url;
+    private URL baseURL;
     private String name;
     private String endpoint;
     private PipeType type = Types.REST;
 
     public PipeConfig(URL baseURL, Class klass) {
-        this.url = baseURL;
+        this.baseURL = baseURL;
         this.name = klass.getSimpleName().toLowerCase();
         this.endpoint = name;
         this.type = Types.REST;
@@ -26,12 +26,12 @@ public final class PipeConfig {
         this.name = name;
     }
 
-    public URL getUrl() {
-        return url;
+    public URL getBaseURL() {
+        return baseURL;
     }
 
-    public void setUrl(URL url) {
-        this.url = url;
+    public void setBaseURL(URL baseURL) {
+        this.baseURL = baseURL;
     }
 
     public String getEndpoint() {
