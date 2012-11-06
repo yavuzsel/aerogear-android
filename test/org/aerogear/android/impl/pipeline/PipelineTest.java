@@ -50,7 +50,7 @@ public class PipelineTest {
 
         assertNotNull("received pipe", stubPipe);
         assertEquals("verifying the given URL", "http://myStubUrl/myStubProject", stubPipe.getUrl().toString());
-        assertEquals("verifying the type", "Stub", stubPipe.getType().getType());
+        assertEquals("verifying the type", "Stub", stubPipe.getType().getName());
     }
 
     @Test

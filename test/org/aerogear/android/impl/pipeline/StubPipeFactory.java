@@ -34,7 +34,7 @@ public class StubPipeFactory implements PipeFactory {
             public PipeType getType() {
                 return new PipeType() {
                     @Override
-                    public String getType() {
+                    public String getName() {
                         return "Stub";
                     }
                 };

@@ -32,7 +32,7 @@ public enum Types implements PipeType {
     }
 
     @Override
-    public String getType() {
+    public String getName() {
         return this.typeDescription;
     }
 }

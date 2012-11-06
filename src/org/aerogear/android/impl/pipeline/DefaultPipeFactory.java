@@ -25,7 +25,7 @@ import org.aerogear.android.pipeline.PipeFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class DefaultPipeFactory implements PipeFactory {
+public final class DefaultPipeFactory implements PipeFactory {
 
     @Override
     public Pipe createPipe(Class klass, PipeConfig config) {
