@@ -16,19 +16,9 @@
  */
 package org.aerogear.android.impl.pipeline;
 
-import android.graphics.Point;
-import com.google.gson.*;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
-import junit.framework.Assert;
-import org.aerogear.android.Callback;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.impl.core.HttpStubProvider;
-import org.aerogear.android.impl.helper.Data;
-import org.aerogear.android.pipeline.Pipe;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static junit.framework.Assert.assertEquals;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,7 +29,34 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static junit.framework.Assert.assertEquals;
+import junit.framework.Assert;
+
+import org.aerogear.android.Callback;
+import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.impl.core.HttpStubProvider;
+import org.aerogear.android.impl.helper.Data;
+import org.aerogear.android.impl.pipeline.DefaultPipeFactory;
+import org.aerogear.android.impl.pipeline.PipeConfig;
+import org.aerogear.android.impl.pipeline.PipeTypes;
+import org.aerogear.android.impl.pipeline.RestAdapter;
+import org.aerogear.android.pipeline.Pipe;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import android.graphics.Point;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
 public class RestAdapterTest {
@@ -55,16 +72,34 @@ public class RestAdapterTest {
 
     @Test
     public void testPipeTypeProperty() {
-        Pipe restPipe = new RestAdapter(Data.class, new HttpStubProvider(url));
+        Pipe<Data> restPipe = new RestAdapter<Data>(Data.class, new HttpStubProvider(url));
         Assert.assertEquals("verifying the (default) type", PipeTypes.REST, restPipe.getType());
     }
 
     @Test
     public void testPipeURLProperty() {
-        Pipe restPipe = new RestAdapter(Data.class, new HttpStubProvider(url));
+        Pipe<Data> restPipe = new RestAdapter<Data>(Data.class, new HttpStubProvider(url));
         assertEquals("verifying the given URL", "http://server.com/context/", restPipe.getUrl().toString());
     }
 
+    @Test
+    public void testPipeFactorPipeConfigGson() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
+
+        DefaultPipeFactory factory = new DefaultPipeFactory();
+        PipeConfig pc = new PipeConfig(url, RestAdapterTest.ListClassId.class);
+        
+        pc.setGsonBuilder(builder);
+        Pipe<RestAdapterTest.ListClassId> restPipe = factory.createPipe(RestAdapterTest.ListClassId.class, pc);
+        
+        Field gsonField = restPipe.getClass().getDeclaredField("gson");
+        gsonField.setAccessible(true);
+        Gson gson = (Gson) gsonField.get(restPipe);
+        
+        gson.toJson(new ListClassId());
+        
+    }
+    
     @Test
     public void testGsonBuilderProperty() throws ParseException, InterruptedException {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
