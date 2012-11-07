@@ -15,8 +15,20 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.pipeline;
+package org.aerogear.android.impl.datamanager;
 
-public interface PipeType {
-    public String getName();
+import org.aerogear.android.core.TypeDescriptor;
+import org.aerogear.android.datamanager.IdGenerator;
+import org.aerogear.android.datamanager.Store;
+import org.aerogear.android.datamanager.StoreFactory;
+
+public final class DefaultStoreFactory implements StoreFactory {
+
+    public Store createStore(TypeDescriptor type, IdGenerator idGenerator) {
+        if (type.equals(StoreTypes.MEMORY)) {
+            return new MemoryStorage(idGenerator);
+        }
+        throw new IllegalArgumentException("Type is not supported yet");
+    }
+
 }

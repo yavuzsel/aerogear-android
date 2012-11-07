@@ -17,7 +17,7 @@
 
 package org.aerogear.android.datamanager;
 
-import org.aerogear.android.impl.datamanager.StoreType;
+import org.aerogear.android.core.TypeDescriptor;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -32,7 +32,7 @@ public interface Store<T> {
      *
      * @return StoreType
      */
-    public StoreType getType();
+    public TypeDescriptor getType();
 
     /**
      * Reads all the data from the underlying storage system.

@@ -19,6 +19,7 @@ package org.aerogear.android.pipeline;
 
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
+import org.aerogear.android.core.TypeDescriptor;
 
 import java.net.URL;
 import java.util.List;
@@ -36,7 +37,7 @@ public interface Pipe<T> {
      *
      * @return the connection type
      */
-    PipeType getType();
+    TypeDescriptor getType();
 
     /**
      * Returns the {@link URL} to which this {@link Pipe} object points.

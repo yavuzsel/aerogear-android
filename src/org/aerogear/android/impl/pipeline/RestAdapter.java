@@ -24,8 +24,8 @@ import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.pipeline.Pipe;
-import org.aerogear.android.pipeline.PipeType;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -75,8 +75,8 @@ public final class RestAdapter<T> implements Pipe<T> {
      * {@inheritDoc}
      */
     @Override
-    public PipeType getType() {
-        return Types.REST;
+    public TypeDescriptor getType() {
+        return PipeTypes.REST;
     }
 
 

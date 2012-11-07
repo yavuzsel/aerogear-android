@@ -17,6 +17,7 @@
 
 package org.aerogear.android.impl.datamanager;
 
+import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 
@@ -41,8 +42,8 @@ public class MemoryStorage<T> implements Store<T> {
      * {@inheritDoc}
      */
     @Override
-    public StoreType getType() {
-        return StoreType.MEMORY;
+    public TypeDescriptor getType() {
+        return StoreTypes.MEMORY;
     }
 
     /**

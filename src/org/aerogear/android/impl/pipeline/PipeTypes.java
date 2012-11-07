@@ -15,13 +15,24 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.datamanager;
+package org.aerogear.android.impl.pipeline;
+
+import org.aerogear.android.core.TypeDescriptor;
 
 /**
- * Represents Store Type
+ * Types of pipes
  */
-public enum StoreType {
+public enum PipeTypes implements TypeDescriptor {
 
-    MEMORY
+    REST("REST");
+    private String typeDescription;
 
+    PipeTypes(String typeDescription) {
+        this.typeDescription = typeDescription;
+    }
+
+    @Override
+    public String getName() {
+        return this.typeDescription;
+    }
 }

@@ -29,7 +29,7 @@ public final class DefaultPipeFactory implements PipeFactory {
 
     @Override
     public Pipe createPipe(Class klass, PipeConfig config) {
-        if (config.getType().equals(Types.REST)) {
+        if (config.getType().equals(PipeTypes.REST)) {
             URL url = appendEndpoint(config.getBaseURL(), config.getEndpoint());
             HttpRestProvider httpProvider = new HttpRestProvider(url);
             return new RestAdapter(klass, httpProvider);

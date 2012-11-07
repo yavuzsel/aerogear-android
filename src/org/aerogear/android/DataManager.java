@@ -17,10 +17,13 @@
 
 package org.aerogear.android;
 
+import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
+import org.aerogear.android.datamanager.StoreFactory;
 import org.aerogear.android.impl.datamanager.DefaultIdGenerator;
-import org.aerogear.android.impl.datamanager.StoreType;
+import org.aerogear.android.impl.datamanager.DefaultStoreFactory;
+import org.aerogear.android.impl.datamanager.StoreTypes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +37,8 @@ public final class DataManager {
     private final Map<String, Store> stores = new HashMap<String, Store>();
     private final IdGenerator idGenerator;
 
+    private StoreFactory storeFactory = new DefaultStoreFactory();
+
     public DataManager() {
         this.idGenerator = new DefaultIdGenerator();
     }
@@ -42,13 +47,17 @@ public final class DataManager {
         this.idGenerator = idGenerator;
     }
 
+    public void setStoreFactory(StoreFactory storeFactory) {
+        this.storeFactory = storeFactory;
+    }
+
     /**
      * Creates a new default (in memory) Store implemention.
      *
      * @param storeName The name of the actual data store object.
      */
     public Store add(String storeName) {
-        return add(storeName, StoreType.MEMORY);
+        return add(storeName, StoreTypes.MEMORY);
     }
 
     /**
@@ -57,8 +66,8 @@ public final class DataManager {
      * @param storeName The name of the actual data store object.
      * @param type The type of the new data store object.
      */
-    public Store add(String storeName, StoreType type) {
-        Store store = AdapterFactory.createStore(type, idGenerator);
+    public Store add(String storeName, TypeDescriptor type) {
+        Store store = storeFactory.createStore(type, idGenerator);
         stores.put(storeName, store);
         return store;
     }

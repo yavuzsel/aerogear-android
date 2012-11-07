@@ -29,7 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static junit.framework.Assert.*;
-import static org.aerogear.android.impl.pipeline.Types.REST;
+import static org.aerogear.android.impl.pipeline.PipeTypes.REST;
 
 @RunWith(RobolectricTestRunner.class)
 public class PipelineTest {
