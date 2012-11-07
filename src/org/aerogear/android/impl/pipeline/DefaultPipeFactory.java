@@ -27,29 +27,14 @@ import java.net.URL;
 
 public final class DefaultPipeFactory implements PipeFactory {
 
-
     @Override
-    public <T> Pipe<T> createPipe(Class<T> klass, PipeConfig config) {
-        Pipe<T> createdPipe;
+    public Pipe createPipe(Class klass, PipeConfig config) {
         if (config.getType().equals(PipeTypes.REST)) {
             URL url = appendEndpoint(config.getBaseURL(), config.getEndpoint());
             HttpRestProvider httpProvider = new HttpRestProvider(url);
-            
-            if (config.getGsonBuilder() != null) {
-                createdPipe = new RestAdapter<T>(klass, httpProvider, config.getGsonBuilder());
-            } else {
-                createdPipe = new RestAdapter<T>(klass, httpProvider);
-            }
-            
-        } else {
-            throw new IllegalArgumentException("Type is not supported yet");
+            return new RestAdapter(klass, httpProvider);
         }
-        
-        if (config.getAuthModule() != null) {
-            createdPipe.setAuthenticationModule(config.getAuthModule());
-        }
-        
-        return createdPipe;
+        throw new IllegalArgumentException("Type is not supported yet");
     }
 
     private static URL appendEndpoint(URL baseURL, String endpoint) {

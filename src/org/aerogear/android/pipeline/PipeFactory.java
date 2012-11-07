@@ -21,6 +21,6 @@ import org.aerogear.android.impl.pipeline.PipeConfig;
 
 public interface PipeFactory {
 
-    public <T> Pipe<T> createPipe(Class<T> klass, PipeConfig config);
+    public Pipe createPipe(Class klass, PipeConfig config);
 
 }
