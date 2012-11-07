@@ -15,22 +15,17 @@
  * limitations under the License.
  */
 
-package org.aerogear.android;
+package org.aerogear.android.impl.datamanager;
 
 import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
-import org.aerogear.android.impl.datamanager.MemoryStorage;
+import org.aerogear.android.datamanager.StoreFactory;
 
-import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
+public final class DefaultStoreFactory implements StoreFactory {
 
-final class AdapterFactory {
-
-    private AdapterFactory() {
-    }
-
-    public static Store createStore(TypeDescriptor type, IdGenerator idGenerator) {
-        if (type.equals(MEMORY)) {
+    public Store createStore(TypeDescriptor type, IdGenerator idGenerator) {
+        if (type.equals(StoreTypes.MEMORY)) {
             return new MemoryStorage(idGenerator);
         }
         throw new IllegalArgumentException("Type is not supported yet");

@@ -22,8 +22,10 @@ import org.aerogear.android.datamanager.Store;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.MalformedURLException;
+
 import static junit.framework.Assert.*;
-import static org.aerogear.android.impl.datamanager.StoreType.MEMORY;
+import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
 
 public class DataManagerTest {
 
@@ -32,6 +34,15 @@ public class DataManagerTest {
     @Before
     public void setup() {
         dataManager = new DataManager();
+    }
+
+    @Test
+    public void testRegisterPipeFactory() throws MalformedURLException {
+        dataManager.setStoreFactory(new StubStoreFactory());
+        Store store = dataManager.add("stub store");
+
+        assertNotNull("store could not be null", store);
+        assertEquals("verifying the type", "Stub", store.getType().getName());
     }
 
     @Test

@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.datamanager;
+package org.aerogear.android.datamanager;
 
-/**
- * Represents Store Type
- */
-public enum StoreType {
+import org.aerogear.android.core.TypeDescriptor;
 
-    MEMORY
+public interface StoreFactory {
+
+    public Store createStore(TypeDescriptor type, IdGenerator idGenerator);
 
 }

@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import java.util.Collection;
 
+import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
 import static org.junit.Assert.*;
 
 public class MemoryStorageTest {
@@ -36,7 +37,7 @@ public class MemoryStorageTest {
 
     @Test
     public void testStoreType() {
-        assertEquals("verifying the type", StoreType.MEMORY, store.getType());
+        assertEquals("verifying the type", MEMORY, store.getType());
     }
 
     @Test
