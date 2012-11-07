@@ -17,17 +17,17 @@
 
 package org.aerogear.android.impl.pipeline;
 
-import org.aerogear.android.pipeline.PipeType;
+import org.aerogear.android.core.TypeDescriptor;
 
 /**
  * Types of pipes
  */
-public enum Types implements PipeType {
+public enum PipeTypes implements TypeDescriptor {
 
     REST("REST");
     private String typeDescription;
 
-    Types(String typeDescription) {
+    PipeTypes(String typeDescription) {
         this.typeDescription = typeDescription;
     }
 

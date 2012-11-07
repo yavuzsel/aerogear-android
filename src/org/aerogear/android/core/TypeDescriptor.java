@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.pipeline;
+package org.aerogear.android.core;
 
-public interface PipeType {
+public interface TypeDescriptor {
     public String getName();
 }
