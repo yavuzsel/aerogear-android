@@ -15,24 +15,9 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.pipeline;
+package org.aerogear.android.datamanager;
 
-import org.aerogear.android.pipeline.PipeType;
+import org.aerogear.android.core.TypeDescriptor;
 
-/**
- * Types of pipes
- */
-public enum PipeTypes implements PipeType {
-
-    REST("REST");
-    private String typeDescription;
-
-    PipeTypes(String typeDescription) {
-        this.typeDescription = typeDescription;
-    }
-
-    @Override
-    public String getName() {
-        return this.typeDescription;
-    }
+public interface StoreType extends TypeDescriptor {
 }

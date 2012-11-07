@@ -1,9 +1,9 @@
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.datamanager.StoreFactory;
+import org.aerogear.android.datamanager.StoreType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,11 +11,11 @@ import java.util.Collection;
 
 public class StubStoreFactory implements StoreFactory {
     @Override
-    public Store createStore(TypeDescriptor type, IdGenerator idGenerator) {
+    public Store createStore(StoreType type, IdGenerator idGenerator) {
         return new Store() {
             @Override
-            public TypeDescriptor getType() {
-                return new TypeDescriptor() {
+            public StoreType getType() {
+                return new StoreType() {
                     @Override
                     public String getName() {
                         return "Stub";

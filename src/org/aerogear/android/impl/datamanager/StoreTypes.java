@@ -17,12 +17,12 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.core.TypeDescriptor;
+import org.aerogear.android.datamanager.StoreType;
 
 /**
  * Types of store
  */
-public enum StoreTypes implements TypeDescriptor {
+public enum StoreTypes implements StoreType {
 
     MEMORY("MEMORY");
     private String typeDescription;

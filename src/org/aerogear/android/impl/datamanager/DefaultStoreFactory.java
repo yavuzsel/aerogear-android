@@ -17,14 +17,14 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.datamanager.StoreFactory;
+import org.aerogear.android.datamanager.StoreType;
 
 public final class DefaultStoreFactory implements StoreFactory {
 
-    public Store createStore(TypeDescriptor type, IdGenerator idGenerator) {
+    public Store createStore(StoreType type, IdGenerator idGenerator) {
         if (type.equals(StoreTypes.MEMORY)) {
             return new MemoryStorage(idGenerator);
         }

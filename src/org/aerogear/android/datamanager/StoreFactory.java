@@ -17,10 +17,8 @@
 
 package org.aerogear.android.datamanager;
 
-import org.aerogear.android.core.TypeDescriptor;
-
 public interface StoreFactory {
 
-    public Store createStore(TypeDescriptor type, IdGenerator idGenerator);
+    public Store createStore(StoreType type, IdGenerator idGenerator);
 
 }
