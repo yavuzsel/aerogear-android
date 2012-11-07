@@ -19,6 +19,7 @@ package org.aerogear.android.impl.pipeline;
 import android.graphics.Point;
 import com.google.gson.*;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import java.lang.reflect.Field;
 import junit.framework.Assert;
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HeaderAndBody;
@@ -65,6 +66,24 @@ public class RestAdapterTest {
         assertEquals("verifying the given URL", "http://server.com/context/", restPipe.getUrl().toString());
     }
 
+    @Test
+    public void testPipeFactorPipeConfigGson() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
+
+        DefaultPipeFactory factory = new DefaultPipeFactory();
+        PipeConfig pc = new PipeConfig(url, RestAdapterTest.ListClassId.class);
+        
+        pc.setGsonBuilder(builder);
+        Pipe<RestAdapterTest.ListClassId> restPipe = factory.createPipe(pc.getClass(), pc);
+        
+        Field gsonField = restPipe.getClass().getDeclaredField("gson");
+        gsonField.setAccessible(true);
+        Gson gson = (Gson) gsonField.get(restPipe);
+        
+        gson.toJson(new ListClassId());
+        
+    }
+    
     @Test
     public void testGsonBuilderProperty() throws ParseException, InterruptedException {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
