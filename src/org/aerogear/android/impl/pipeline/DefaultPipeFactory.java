@@ -29,16 +29,16 @@ public final class DefaultPipeFactory implements PipeFactory {
 
 
     @Override
-    public  Pipe createPipe(Class klass, PipeConfig config) {
-        Pipe createdPipe;
+    public <T> Pipe<T> createPipe(Class<T> klass, PipeConfig config) {
+        Pipe<T> createdPipe;
         if (config.getType().equals(PipeTypes.REST)) {
             URL url = appendEndpoint(config.getBaseURL(), config.getEndpoint());
             HttpRestProvider httpProvider = new HttpRestProvider(url);
             
             if (config.getGsonBuilder() != null) {
-                createdPipe = new RestAdapter(klass, httpProvider, config.getGsonBuilder());
+                createdPipe = new RestAdapter<T>(klass, httpProvider, config.getGsonBuilder());
             } else {
-                createdPipe = new RestAdapter(klass, httpProvider);
+                createdPipe = new RestAdapter<T>(klass, httpProvider);
             }
             
         } else {
