@@ -17,10 +17,10 @@
 
 package org.aerogear.android;
 
-import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.datamanager.StoreFactory;
+import org.aerogear.android.datamanager.StoreType;
 import org.aerogear.android.impl.datamanager.DefaultIdGenerator;
 import org.aerogear.android.impl.datamanager.DefaultStoreFactory;
 import org.aerogear.android.impl.datamanager.StoreTypes;
@@ -66,7 +66,7 @@ public final class DataManager {
      * @param storeName The name of the actual data store object.
      * @param type The type of the new data store object.
      */
-    public Store add(String storeName, TypeDescriptor type) {
+    public Store add(String storeName, StoreType type) {
         Store store = storeFactory.createStore(type, idGenerator);
         stores.put(storeName, store);
         return store;
