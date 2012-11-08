@@ -26,7 +26,7 @@ import org.aerogear.android.pipeline.PipeType;
 public enum PipeTypes implements PipeType {
 
     REST("REST");
-    private String typeName;
+    private String typeDescription;
 
     PipeTypes(String typeDescription) {
         this.typeDescription = typeDescription;

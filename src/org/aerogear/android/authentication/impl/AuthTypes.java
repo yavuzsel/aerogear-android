@@ -14,13 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.authentication;
+package org.aerogear.android.authentication.impl;
 
-import org.aerogear.android.core.TypeDescriptor;
+import org.aerogear.android.authentication.AuthType;
 
 /**
- * A enum for the types of {@link  AuthenticationModule} {@link Authenticator}
- * knows how to build.
+ * Enum of internally supported instances of {@link AuthType}
  */
-public interface AuthType extends TypeDescriptor {
+public enum AuthTypes implements AuthType{
+    REST("REST")
+    ;
+
+    private final String typeDescription;
+    
+    private AuthTypes(String typeDescription) {
+        this.typeDescription = typeDescription;
+    }
+    
+    @Override
+    public String getName() {
+        return typeDescription;
+    }
+    
 }

@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.aerogear.android.authentication.AuthenticationConfig;
-import org.aerogear.android.impl.pipeline.Types;
+import org.aerogear.android.authentication.impl.AuthTypes;
 
 /**
  * This is the default implementation of Authenticator.
@@ -72,7 +72,7 @@ public class DefaultAuthenticator implements Authenticator {
         
         assert config != null;
         
-        if (!Types.REST.equals(config.getAuthType())) {
+        if (!AuthTypes.REST.equals(config.getAuthType())) {
             throw new IllegalArgumentException("Unsupported Auth Type passed");
         }
         modules.put(name, new RestAuthenticationModule(baseURL, config));

@@ -21,9 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.aerogear.android.authentication.AuthType;
 import org.aerogear.android.authentication.AuthenticationModule;
-import org.aerogear.android.impl.pipeline.Types;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -65,7 +64,7 @@ public class AuthenticatorTest {
         DefaultAuthenticator authenticator = new DefaultAuthenticator(SIMPLE_URL);
         
         RestAuthenticationConfig config = new RestAuthenticationConfig();
-        config.setAuthType(Types.REST);
+        config.setAuthType(AuthTypes.REST);
         config.setEnrollEndpoint("testEnroill");
         
         AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, config);
