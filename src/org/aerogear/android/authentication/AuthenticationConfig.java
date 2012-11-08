@@ -23,8 +23,6 @@ import org.aerogear.android.authentication.impl.AuthTypes;
  * {@link AuthenticationModule}
  */
 public class AuthenticationConfig {
-    //private final URL baseURL;
-
     
     private String loginEndpoint = "/auth/login";
     private String logoutEndpoint = "/auth/logout";

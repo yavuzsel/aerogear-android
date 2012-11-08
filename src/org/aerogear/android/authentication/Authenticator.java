@@ -48,7 +48,7 @@ public interface Authenticator {
      * Eventually users will be able to add their own AuthTypes, but for now
      * we will restrict them using na Enum
      * 
-     * @param name name of AuthorizationModule object* 
+     * @param name name of AuthorizationModule object
      * @param config 
      * @return 
      */

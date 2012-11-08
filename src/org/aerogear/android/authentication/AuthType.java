@@ -19,7 +19,7 @@ package org.aerogear.android.authentication;
 import org.aerogear.android.core.TypeDescriptor;
 
 /**
- * A enum for the types of {@link  AuthenticationModule} {@link Authenticator}
+ * A interface for the types of {@link  AuthenticationModule} {@link Authenticator}
  * knows how to build.
  */
 public interface AuthType extends TypeDescriptor {
