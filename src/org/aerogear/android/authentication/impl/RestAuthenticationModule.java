@@ -233,7 +233,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public void applyAuthentication(HttpProvider httpProvider) {
+    public void onSecurityApplicationRequested(HttpProvider httpProvider) {
         httpProvider.setDefaultHeader(tokenHeaderName, authToken);
     }
 

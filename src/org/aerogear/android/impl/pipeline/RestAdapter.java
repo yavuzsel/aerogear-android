@@ -252,7 +252,7 @@ public final class RestAdapter<T> implements Pipe<T> {
 	 */
 	private void applyAuthToken() {
 		if (authModule != null && authModule.isLoggedIn()) {
-                    authModule.applyAuthentication(httpProvider);
+                    authModule.onSecurityApplicationRequested(httpProvider);
                 }
 	}
 
