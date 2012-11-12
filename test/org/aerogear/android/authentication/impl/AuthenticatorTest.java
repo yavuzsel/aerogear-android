@@ -21,8 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.aerogear.android.authentication.AuthType;
 import org.aerogear.android.authentication.AuthenticationModule;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -42,24 +42,10 @@ public class AuthenticatorTest {
         }
     }
     
-    private static class RestBuilder extends RestAuthenticationModule.Builder {
-
-        public RestBuilder(URL baseURL) {
-            super(baseURL);
-        }
-
-        
-        
-        @Override
-        public RestAuthenticationModule add(String name) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    }
-    
     @Test
     public void testAddSimpleAuthenticator() {
-        DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestBuilder(SIMPLE_URL).build());
+        DefaultAuthenticator authenticator = new DefaultAuthenticator(SIMPLE_URL);
+        AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, new RestAuthenticationConfig());
         
         assertNotNull(simpleAuthModule);
         
@@ -67,24 +53,28 @@ public class AuthenticatorTest {
     
     @Test
     public void testAddAndGetSimpleAuthenticator() {
-        DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestBuilder(SIMPLE_URL).build());
+        DefaultAuthenticator authenticator = new DefaultAuthenticator(SIMPLE_URL);
+        AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, new RestAuthenticationConfig());
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
 
     
         @Test
     public void testAddAuthenticator() {
-        DefaultAuthenticator authenticator = new DefaultAuthenticator();
-        authenticator.auth(AuthType.REST,  SIMPLE_URL).enrollEndpoint("testEnroill").add(SIMPLE_MODULE_NAME);
-        AuthenticationModule simpleAuthModule = authenticator.add(SIMPLE_MODULE_NAME, new RestBuilder(SIMPLE_URL).build());
+        DefaultAuthenticator authenticator = new DefaultAuthenticator(SIMPLE_URL);
+        
+        RestAuthenticationConfig config = new RestAuthenticationConfig();
+        config.setAuthType(AuthTypes.REST);
+        config.setEnrollEndpoint("testEnroill");
+        
+        AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, config);
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
 
     
     @Test
     public void testGetNullAuthModule() {
-        DefaultAuthenticator authenticator = new DefaultAuthenticator();
+        DefaultAuthenticator authenticator = new DefaultAuthenticator(SIMPLE_URL);
         assertNull(authenticator.get(SIMPLE_MODULE_NAME));
     }
 }

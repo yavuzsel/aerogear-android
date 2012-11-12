@@ -14,24 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.authentication;
+package org.aerogear.android.authentication.impl;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.aerogear.android.authentication.AuthType;
 
 /**
- * Use this Annotation to mark in a {@link AuthenticationModule} a value to 
- * send to the server.
- * 
+ * Enum of internally supported instances of {@link AuthType}
  */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface AuthValue {
+public enum AuthTypes implements AuthType{
+    REST("REST")
+    ;
+
+    private final String typeDescription;
     
-    /**
-     * This is the name of the value to send to the server.
-     * It is assumed that auth tokens are sent as key/value pairs.
-     * 
-     * Ex Http Headers.
-     */
-    String name() default "";
+    private AuthTypes(String typeDescription) {
+        this.typeDescription = typeDescription;
+    }
+    
+    @Override
+    public String getName() {
+        return typeDescription;
+    }
+    
 }

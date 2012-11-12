@@ -40,23 +40,15 @@ import org.junit.runner.RunWith;
 public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     
     private static final String TAG = "RestAuthenticationModuleTest";
-    static final Builder<RestAuthenticationModule> BUILDER;
+    private static final URL SIMPLE_URL;
     
-        static {
-            try {
-                BUILDER  = new RestAuthenticationModule.Builder(new URL("http://localhost:8080/todo-server")) {
-
-                    @Override
-                    public RestAuthenticationModule add(String name) {
-                        throw new UnsupportedOperationException("Not supported yet.");
-                    }
-                };
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(RestAuthenticationModuleTest.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException(ex);
-            }
+    static {
+        try {
+            SIMPLE_URL= new URL("http://localhost:8080/todo-server");
+        } catch (MalformedURLException ex) {
+            throw new IllegalStateException(ex);
         }
-    
+    }
     
     @Before
     public void setup() {
@@ -71,7 +63,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     
     @Test(timeout=5000L)
     public void loginFails() throws IOException {
-        RestAuthenticationModule module = BUILDER.build();
+        RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         SimpleCallback callback = new SimpleCallback();
         module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
         
@@ -85,7 +77,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     
     @Test(timeout=50000L)
     public void loginSucceeds() throws IOException {
-        RestAuthenticationModule module = BUILDER.build();
+        RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         Robolectric.addHttpResponseRule(LOGIN_MATCHER, VALID_LOGIN);
         SimpleCallback callback = new SimpleCallback();
         module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
@@ -101,7 +93,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     
     @Test(timeout=50000L)
     public void enrollSucceeds() throws IOException {
-        RestAuthenticationModule module = BUILDER.build();
+        RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         Robolectric.addHttpResponseRule(ENROLL_PASS_MATCHER, ENROLL_PASS);
         SimpleCallback callback = new SimpleCallback();
         
@@ -132,7 +124,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     
     @Test(timeout=50000L)
     public void enrollFails() throws IOException {
-        RestAuthenticationModule module = BUILDER.build();
+        RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         Robolectric.addHttpResponseRule(ENROLL_FAIL_MATCHER, ENROLL_FAIL);
         SimpleCallback callback = new SimpleCallback();
         
@@ -157,7 +149,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         
     @Test(timeout=50000L)
     public void logoutSucceeds() throws IOException {
-        RestAuthenticationModule module = BUILDER.build();
+        RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         Robolectric.addHttpResponseRule(LOGIN_MATCHER, VALID_LOGIN);
         SimpleCallback callback = new SimpleCallback();
         module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);

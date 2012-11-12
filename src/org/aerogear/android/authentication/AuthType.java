@@ -16,27 +16,11 @@
  */
 package org.aerogear.android.authentication;
 
+import org.aerogear.android.core.TypeDescriptor;
+
 /**
- * A enum for the types of {@link  AuthenticationModule} {@link Authenticator}
+ * A interface for the types of {@link  AuthenticationModule} {@link Authenticator}
  * knows how to build.
  */
-public enum AuthType {
-    REST("Rest");
-   
-    /**
-     * In theory, one day, a developer will be able to add in her own
-     * AuthTypes.  In theory, one day, DefaultAuthenticator will have a map 
-     * of <String, Class> which will server as a lookup.  
-     * 
-     * IE this is future proofing.
-     */
-    private final String key;
-    
-    private AuthType(String key) {
-        this.key = key;
-    }
-    
-    public String getKey() {
-        return key;
-    }
+public interface AuthType extends TypeDescriptor {
 }

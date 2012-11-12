@@ -17,6 +17,7 @@
 
 package org.aerogear.android.impl.pipeline;
 
+import org.aerogear.android.authentication.AuthType;
 import org.aerogear.android.pipeline.PipeType;
 
 /**
