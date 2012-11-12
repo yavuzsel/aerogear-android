@@ -39,8 +39,15 @@ import java.util.Map;
 public class DataManager {
 
     private final Map<String, Store> stores = new HashMap<String, Store>();
+    
+    /**
+     * This will default to {@link DefaultIdGenerator} if not provided.
+     */
     private final IdGenerator idGenerator;
 
+    /**
+     * This will default to {@link DefaultStoreFactory} if not provided.
+     */
     private StoreFactory storeFactory = new DefaultStoreFactory();
 
     public DataManager() {
