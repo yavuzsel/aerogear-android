@@ -18,7 +18,6 @@ package org.aerogear.android.authentication.impl;
 
 import java.net.MalformedURLException;
 import org.aerogear.android.authentication.AuthenticationModule;
-import org.aerogear.android.authentication.Authenticator;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -29,8 +28,13 @@ import org.aerogear.android.authentication.impl.AuthTypes;
 /**
  * This is the default implementation of Authenticator.
  * It uses a HashMap behind the scenes to store its modules.
+ * 
+ * As a note, you should NOT extend this class for production or application 
+ * purposes.  This class is made non-final ONLY for testing/mocking/academic
+ * purposes.
+ * 
  */
-public class DefaultAuthenticator implements Authenticator {
+public class Authenticator {
 
     private Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
     private final URL baseURL;
@@ -39,19 +43,21 @@ public class DefaultAuthenticator implements Authenticator {
         this.baseURL = baseURL;
     }
     
-    public DefaultAuthenticator(String baseURL) {
+
+    public Authenticator(String baseURL) {
         try {
             this.baseURL = new URL(baseURL);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }
+
     }
 
 
     /**
      * {@inheritDoc }
      */
-    @Override
+
     public AuthenticationModule get(String name) {
         return modules.get(name);
     }
@@ -59,7 +65,7 @@ public class DefaultAuthenticator implements Authenticator {
     /**
      * {@inheritDoc }
      */
-    @Override
+
     public AuthenticationModule remove(String name) {
         return modules.remove(name);
     }
@@ -73,10 +79,12 @@ public class DefaultAuthenticator implements Authenticator {
         assert config != null;
         
         if (!AuthTypes.REST.equals(config.getAuthType())) {
+
             throw new IllegalArgumentException("Unsupported Auth Type passed");
         }
         modules.put(name, new RestAuthenticationModule(baseURL, config));
         return modules.get(name);
+        
         
     }
     
