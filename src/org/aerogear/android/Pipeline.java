@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.aerogear.android;
-
 
 import org.aerogear.android.impl.pipeline.DefaultPipeFactory;
 import org.aerogear.android.impl.pipeline.PipeConfig;
@@ -29,16 +27,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s).
- * The {@link Pipeline} contains some simple management APIs to create or remove {@link Pipe}s objects.
+ * A {@link Pipeline} represents a ‘collection’ of server connections (aka
+ * {@link Pipe}s). The {@link Pipeline} contains some simple management APIs to
+ * create or remove {@link Pipe}s objects.
+ *
+ * As a note, you should NOT extend this class for production or application
+ * purposes. This class is made non-final ONLY for testing/mocking/academic
+ * purposes.
+ *
  */
-public final class Pipeline {
+public class Pipeline {
 
     private final URL baseURL;
-
     private final Map<String, Pipe> pipes = new HashMap<String, Pipe>();
-
-    private PipeFactory pipeFactory = new DefaultPipeFactory();
+    /**
+     * This is the factory which will create all pipe types. If not provided in
+     * a constructor, it defaults to an instance of {@link DefaultPipeFactory}
+     */
+    private final PipeFactory pipeFactory;
 
     /**
      * An initializer method to instantiate the Pipeline,
@@ -48,24 +54,45 @@ public final class Pipeline {
      */
     public Pipeline(URL baseURL) {
         this.baseURL = baseURL;
+        pipeFactory = new DefaultPipeFactory();
     }
 
     /**
      * An initializer method to instantiate the Pipeline,
      *
      * @param baseURL the URL of the server
+     * @param pipeFactory
+     */
+    public Pipeline(URL baseURL, PipeFactory pipeFactory) {
+        this.baseURL = baseURL;
+        this.pipeFactory = pipeFactory;
+    }
+
+    /**
+     * An initializer method to instantiate the Pipeline,
      *
+     * @param baseURL the URL of the server
+     * @throws IllegalArgumentException if baseURL is not a valid URL
      */
     public Pipeline(String baseURL) {
+        this(baseURL, new DefaultPipeFactory());
+    }
+
+    /**
+     *
+     * @param baseURL the URL of the server
+     * @param pipeFactory {@link PipeFactory} implementation
+     *
+     * @throws IllegalArgumentException if baseURL is not a valid URL
+     */
+    public Pipeline(String baseURL, PipeFactory pipeFactory) {
+        this.pipeFactory = pipeFactory;
+
         try {
             this.baseURL = new URL(baseURL);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    public void setPipeFactory(PipeFactory pipeFactory) {
-        this.pipeFactory = pipeFactory;
     }
 
     public Pipe pipe(Class klass) {
@@ -100,5 +127,4 @@ public final class Pipeline {
     public Pipe get(String name) {
         return pipes.get(name);
     }
-
 }

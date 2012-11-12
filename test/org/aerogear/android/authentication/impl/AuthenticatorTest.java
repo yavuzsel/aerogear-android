@@ -44,16 +44,17 @@ public class AuthenticatorTest {
     
     @Test
     public void testAddSimpleAuthenticator() {
-        DefaultAuthenticator authenticator = new DefaultAuthenticator(SIMPLE_URL);
+
+        Authenticator authenticator = new Authenticator(SIMPLE_URL);
         AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, new RestAuthenticationConfig());
-        
+
         assertNotNull(simpleAuthModule);
         
     }
     
     @Test
     public void testAddAndGetSimpleAuthenticator() {
-        DefaultAuthenticator authenticator = new DefaultAuthenticator(SIMPLE_URL);
+        Authenticator authenticator = new Authenticator(SIMPLE_URL);
         AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, new RestAuthenticationConfig());
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
@@ -61,20 +62,24 @@ public class AuthenticatorTest {
     
         @Test
     public void testAddAuthenticator() {
-        DefaultAuthenticator authenticator = new DefaultAuthenticator(SIMPLE_URL);
+
+        Authenticator authenticator = new Authenticator(SIMPLE_URL);
         
         RestAuthenticationConfig config = new RestAuthenticationConfig();
         config.setAuthType(AuthTypes.REST);
         config.setEnrollEndpoint("testEnroill");
         
         AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, config);
+
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
 
     
     @Test
     public void testGetNullAuthModule() {
-        DefaultAuthenticator authenticator = new DefaultAuthenticator(SIMPLE_URL);
+
+        Authenticator authenticator = new Authenticator(SIMPLE_URL);
+
         assertNull(authenticator.get(SIMPLE_MODULE_NAME));
     }
 }

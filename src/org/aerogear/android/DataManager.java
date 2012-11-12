@@ -30,25 +30,52 @@ import java.util.Map;
 
 /**
  * Represents an abstraction layer for a storage system.
+ * 
+ * As a note, you should NOT extend this class for production or application 
+ * purposes.  This class is made non-final ONLY for testing/mocking/academic
+ * purposes.
  */
 
-public final class DataManager {
+public class DataManager {
 
     private final Map<String, Store> stores = new HashMap<String, Store>();
+    
+    /**
+     * This will default to {@link DefaultIdGenerator} if not provided.
+     */
     private final IdGenerator idGenerator;
 
-    private StoreFactory storeFactory = new DefaultStoreFactory();
+    /**
+     * This will default to {@link DefaultStoreFactory} if not provided.
+     */
+    private final StoreFactory storeFactory;
 
     public DataManager() {
-        this.idGenerator = new DefaultIdGenerator();
+        this(null, null);
     }
 
     public DataManager(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
+        this(idGenerator, null);
     }
 
-    public void setStoreFactory(StoreFactory storeFactory) {
-        this.storeFactory = storeFactory;
+    public DataManager(StoreFactory storeFactory) {
+        this(null, storeFactory);
+    }
+    
+    public DataManager(IdGenerator idGenerator, StoreFactory storeFactory) {
+        if (idGenerator == null) {
+            this.idGenerator = new DefaultIdGenerator();
+        } else {
+            this.idGenerator = idGenerator;
+        }
+        
+        
+        if (storeFactory == null) {
+            this.storeFactory = new DefaultStoreFactory();
+        } else {
+            this.storeFactory = storeFactory;
+        }
+        
     }
 
     /**
@@ -56,8 +83,8 @@ public final class DataManager {
      *
      * @param storeName The name of the actual data store object.
      */
-    public Store add(String storeName) {
-        return add(storeName, StoreTypes.MEMORY);
+    public Store store(String storeName) {
+        return store(storeName, StoreTypes.MEMORY);
     }
 
     /**
@@ -66,7 +93,7 @@ public final class DataManager {
      * @param storeName The name of the actual data store object.
      * @param type The type of the new data store object.
      */
-    public Store add(String storeName, StoreType type) {
+    public Store store(String storeName, StoreType type) {
         Store store = storeFactory.createStore(type, idGenerator);
         stores.put(storeName, store);
         return store;

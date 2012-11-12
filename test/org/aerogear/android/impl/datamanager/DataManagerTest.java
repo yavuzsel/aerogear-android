@@ -38,8 +38,10 @@ public class DataManagerTest {
 
     @Test
     public void testRegisterPipeFactory() throws MalformedURLException {
-        dataManager.setStoreFactory(new StubStoreFactory());
-        Store store = dataManager.add("stub store");
+        @SuppressWarnings("LocalVariableHidesMemberVariable")
+        DataManager dataManager = new DataManager(new StubStoreFactory());
+        
+        Store store = dataManager.store("stub store");
 
         assertNotNull("store could not be null", store);
         assertEquals("verifying the type", "Stub", store.getType().getName());
@@ -47,7 +49,7 @@ public class DataManagerTest {
 
     @Test
     public void testCreateStoreWithDefaulType() {
-        Store store = dataManager.add("foo");
+        Store store = dataManager.store("foo");
 
         assertNotNull("store could not be null", store);
         assertEquals("verifying the type", MEMORY, store.getType());
@@ -55,14 +57,14 @@ public class DataManagerTest {
 
     @Test
     public void testCreateStoreWithMemoryType() {
-        Store store = dataManager.add("foo", MEMORY);
+        Store store = dataManager.store("foo", MEMORY);
 
         assertNotNull("store could not be null", store);
         assertEquals("verifying the type", MEMORY, store.getType());
     }
     @Test
     public void testAddStoreWithDefaulType() {
-        dataManager.add("foo");
+        dataManager.store("foo");
         Store store = dataManager.get("foo");
 
         assertNotNull("store could not be null", store);
@@ -71,7 +73,7 @@ public class DataManagerTest {
 
     @Test
     public void testAddStoreWithMemoryType() {
-        dataManager.add("foo", MEMORY);
+        dataManager.store("foo", MEMORY);
         Store store = dataManager.get("foo");
 
         assertNotNull("foo store could not be null", store);
@@ -80,8 +82,8 @@ public class DataManagerTest {
 
     @Test 
     public void testAndAddAndRemoveStores() {
-        dataManager.add("foo", MEMORY);
-        dataManager.add("bar");
+        dataManager.store("foo", MEMORY);
+        dataManager.store("bar");
 
         Store fooStore = dataManager.get("foo");
         assertNotNull("foo store could not be null", fooStore);
