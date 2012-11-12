@@ -86,8 +86,11 @@ public interface AuthenticationModule {
     public boolean isLoggedIn();
     
     /**
-     * Applies any necessary security to a HttpProvider
+     * This method is called be {@link Pipe} implementations when they need
+     * security applied to their {@link HttpProvider}.  This is usually done
+     * directly before a request is made.  
+     * 
      * @param httpProvider 
      */
-    public void applyAuthentication(HttpProvider httpProvider);
+    public void onSecurityApplicationRequested(HttpProvider httpProvider);
 }
