@@ -39,7 +39,7 @@ public class Authenticator {
     private Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
     private final URL baseURL;
 
-    public DefaultAuthenticator(URL baseURL) {
+    public Authenticator(URL baseURL) {
         this.baseURL = baseURL;
     }
     
@@ -73,7 +73,6 @@ public class Authenticator {
       /**
      * {@inheritDoc }
      */
-    @Override
     public AuthenticationModule auth(String name, AuthenticationConfig config) {
         
         assert config != null;

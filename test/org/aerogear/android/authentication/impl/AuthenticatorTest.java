@@ -45,7 +45,7 @@ public class AuthenticatorTest {
     @Test
     public void testAddSimpleAuthenticator() {
 
-        Authenticator authenticator = new Authenticator();
+        Authenticator authenticator = new Authenticator(SIMPLE_URL);
         AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, new RestAuthenticationConfig());
 
         assertNotNull(simpleAuthModule);
@@ -54,7 +54,7 @@ public class AuthenticatorTest {
     
     @Test
     public void testAddAndGetSimpleAuthenticator() {
-        Authenticator authenticator = new Authenticator();
+        Authenticator authenticator = new Authenticator(SIMPLE_URL);
         AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, new RestAuthenticationConfig());
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
@@ -78,7 +78,7 @@ public class AuthenticatorTest {
     @Test
     public void testGetNullAuthModule() {
 
-        Authenticator authenticator = new Authenticator();
+        Authenticator authenticator = new Authenticator(SIMPLE_URL);
 
         assertNull(authenticator.get(SIMPLE_MODULE_NAME));
     }
