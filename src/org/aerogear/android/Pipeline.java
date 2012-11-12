@@ -31,8 +31,13 @@ import java.util.Map;
 /**
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka {@link Pipe}s).
  * The {@link Pipeline} contains some simple management APIs to create or remove {@link Pipe}s objects.
+ * 
+ * As a note, you should NOT extend this class for production or application 
+ * purposes.  This class is made non-final ONLY for testing/mocking/academic
+ * purposes.
+ * 
  */
-public final class Pipeline {
+public class Pipeline {
 
     private final URL baseURL;
 

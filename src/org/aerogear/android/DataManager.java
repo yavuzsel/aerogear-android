@@ -30,9 +30,13 @@ import java.util.Map;
 
 /**
  * Represents an abstraction layer for a storage system.
+ * 
+ * As a note, you should NOT extend this class for production or application 
+ * purposes.  This class is made non-final ONLY for testing/mocking/academic
+ * purposes.
  */
 
-public final class DataManager {
+public class DataManager {
 
     private final Map<String, Store> stores = new HashMap<String, Store>();
     private final IdGenerator idGenerator;
