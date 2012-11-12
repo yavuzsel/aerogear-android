@@ -48,18 +48,34 @@ public class DataManager {
     /**
      * This will default to {@link DefaultStoreFactory} if not provided.
      */
-    private StoreFactory storeFactory = new DefaultStoreFactory();
+    private final StoreFactory storeFactory;
 
     public DataManager() {
-        this.idGenerator = new DefaultIdGenerator();
+        this(null, null);
     }
 
     public DataManager(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
+        this(idGenerator, null);
     }
 
-    public void setStoreFactory(StoreFactory storeFactory) {
-        this.storeFactory = storeFactory;
+    public DataManager(StoreFactory storeFactory) {
+        this(null, storeFactory);
+    }
+    
+    public DataManager(IdGenerator idGenerator, StoreFactory storeFactory) {
+        if (idGenerator == null) {
+            this.idGenerator = new DefaultIdGenerator();
+        } else {
+            this.idGenerator = idGenerator;
+        }
+        
+        
+        if (storeFactory == null) {
+            this.storeFactory = new DefaultStoreFactory();
+        } else {
+            this.storeFactory = storeFactory;
+        }
+        
     }
 
     /**
