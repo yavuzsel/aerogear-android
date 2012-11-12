@@ -83,8 +83,8 @@ public class DataManager {
      *
      * @param storeName The name of the actual data store object.
      */
-    public Store add(String storeName) {
-        return add(storeName, StoreTypes.MEMORY);
+    public Store store(String storeName) {
+        return store(storeName, StoreTypes.MEMORY);
     }
 
     /**
@@ -93,7 +93,7 @@ public class DataManager {
      * @param storeName The name of the actual data store object.
      * @param type The type of the new data store object.
      */
-    public Store add(String storeName, StoreType type) {
+    public Store store(String storeName, StoreType type) {
         Store store = storeFactory.createStore(type, idGenerator);
         stores.put(storeName, store);
         return store;
