@@ -43,8 +43,7 @@ public class PipelineTest {
 
     @Test
     public void testRegisterPipeFactory() throws MalformedURLException {
-        Pipeline pipeline = new Pipeline(url);
-        pipeline.setPipeFactory(new StubPipeFactory());
+        Pipeline pipeline = new Pipeline(url, new StubPipeFactory());
 
         Pipe stubPipe = pipeline.pipe(Data.class, new PipeConfig(url, Data.class));
 
