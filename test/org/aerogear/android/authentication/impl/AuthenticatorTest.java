@@ -60,7 +60,7 @@ public class AuthenticatorTest {
     }
 
     
-        @Test
+    @Test
     public void testAddAuthenticator() {
 
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
