@@ -45,7 +45,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      * This is used by GSON for deserializing.
      */
     private final Class<T> klass;
-    
+
     /**
      * A class of the Generic collection type this pipe wraps.
      * This is used by JSON for deserializing collections.
@@ -70,7 +70,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.httpProvider = httpProvider;
         this.gson = gsonBuilder.create();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -110,7 +110,7 @@ public final class RestAdapter<T> implements Pipe<T> {
 
             @Override
             protected void onPostExecute(AsyncTaskResult<List<T>> asyncTaskResult) {
-                if ( asyncTaskResult.getError() != null ) {
+                if (asyncTaskResult.getError() != null) {
                     callback.onFailure(asyncTaskResult.getError());
                 } else {
                     callback.onSuccess(asyncTaskResult.getResult());
@@ -144,23 +144,23 @@ public final class RestAdapter<T> implements Pipe<T> {
                     String body = gson.toJson(data);
                     applyAuthToken();
 
-                                        
+
                     HeaderAndBody result = null;
                     if (id == null || id.length() == 0) {
                         result = httpProvider.post(body);
                     } else {
                         result = httpProvider.put(id, body);
                     }
-                    
+
                     /*Deseralize the result and return it, or pass null.*/
-                    
+
                     if (result != null) {
                         return new AsyncTaskResult(gson.fromJson(new String(result.getBody(), "UTF-8"), klass));
                     } else {
-                        return new AsyncTaskResult((T)null);
+                        return new AsyncTaskResult((T) null);
 
                     }
-                    
+
                 } catch (Exception e) {
                     return new AsyncTaskResult(e);
                 }
@@ -168,7 +168,7 @@ public final class RestAdapter<T> implements Pipe<T> {
 
             @Override
             protected void onPostExecute(AsyncTaskResult<T> asyncTaskResult) {
-                if ( asyncTaskResult.getError() != null ) {
+                if (asyncTaskResult.getError() != null) {
                     callback.onFailure(asyncTaskResult.getError());
                 } else {
                     callback.onSuccess(asyncTaskResult.getResult());
@@ -187,7 +187,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                	applyAuthToken();
+                    applyAuthToken();
                     return new AsyncTaskResult(httpProvider.delete(id));
                 } catch (Exception e) {
                     return new AsyncTaskResult(e);
@@ -196,7 +196,7 @@ public final class RestAdapter<T> implements Pipe<T> {
 
             @Override
             protected void onPostExecute(AsyncTaskResult<byte[]> asyncTaskResult) {
-                if ( asyncTaskResult.getError() != null ) {
+                if (asyncTaskResult.getError() != null) {
                     callback.onFailure(asyncTaskResult.getError());
                 } else {
                     callback.onSuccess(null);
@@ -207,16 +207,15 @@ public final class RestAdapter<T> implements Pipe<T> {
 
 
     /**
-     * 
      * This will return a class of the type T[] from a given class.
-     * When we read from the AG pipe, Java needs a reference to a 
+     * When we read from the AG pipe, Java needs a reference to a
      * generic array type.
-     * 
+     *
      * @param klass
-     * @return 
+     * @return
      */
     private Class<T[]> asArrayClass(Class<T> klass) {
-        return (Class<T[]>) ((T[])Array.newInstance(klass, 1)).getClass();
+        return (Class<T[]>) ((T[]) Array.newInstance(klass, 1)).getClass();
     }
 
     private class AsyncTaskResult<T> {
@@ -242,18 +241,18 @@ public final class RestAdapter<T> implements Pipe<T> {
 
     }
 
-	@Override
-	public void setAuthenticationModule(AuthenticationModule module) {
-		this.authModule = module;
-	}
-	
-	/**
-	 * Apply authentication if the token is present
-	 */
-	private void applyAuthToken() {
-		if (authModule != null && authModule.isLoggedIn()) {
-                    authModule.onSecurityApplicationRequested(httpProvider);
-                }
-	}
+    @Override
+    public void setAuthenticationModule(AuthenticationModule module) {
+        this.authModule = module;
+    }
+
+    /**
+     * Apply authentication if the token is present
+     */
+    private void applyAuthToken() {
+        if (authModule != null && authModule.isLoggedIn()) {
+            authModule.onSecurityApplicationRequested(httpProvider);
+        }
+    }
 
 }

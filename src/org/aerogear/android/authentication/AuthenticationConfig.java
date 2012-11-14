@@ -19,11 +19,11 @@ package org.aerogear.android.authentication;
 import org.aerogear.android.authentication.impl.AuthTypes;
 
 /**
- * This is the minimum (hopefully) necessary parameters for an 
+ * This is the minimum (hopefully) necessary parameters for an
  * {@link AuthenticationModule}
  */
 public class AuthenticationConfig {
-    
+
     private String loginEndpoint = "/auth/login";
     private String logoutEndpoint = "/auth/logout";
     private String enrollEndpoint = "/auth/enroll";
@@ -59,6 +59,6 @@ public class AuthenticationConfig {
 
     public void setAuthType(AuthType authType) {
         this.authType = authType;
-    }    
-    
+    }
+
 }

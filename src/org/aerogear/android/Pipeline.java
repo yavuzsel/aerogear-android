@@ -30,11 +30,10 @@ import java.util.Map;
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka
  * {@link Pipe}s). The {@link Pipeline} contains some simple management APIs to
  * create or remove {@link Pipe}s objects.
- *
+ * <p/>
  * As a note, you should NOT extend this class for production or application
  * purposes. This class is made non-final ONLY for testing/mocking/academic
  * purposes.
- *
  */
 public class Pipeline {
 
@@ -50,7 +49,6 @@ public class Pipeline {
      * An initializer method to instantiate the Pipeline,
      *
      * @param baseURL the URL of the server
-     *
      */
     public Pipeline(URL baseURL) {
         this.baseURL = baseURL;
@@ -60,7 +58,7 @@ public class Pipeline {
     /**
      * An initializer method to instantiate the Pipeline,
      *
-     * @param baseURL the URL of the server
+     * @param baseURL     the URL of the server
      * @param pipeFactory
      */
     public Pipeline(URL baseURL, PipeFactory pipeFactory) {
@@ -79,10 +77,8 @@ public class Pipeline {
     }
 
     /**
-     *
-     * @param baseURL the URL of the server
+     * @param baseURL     the URL of the server
      * @param pipeFactory {@link PipeFactory} implementation
-     *
      * @throws IllegalArgumentException if baseURL is not a valid URL
      */
     public Pipeline(String baseURL, PipeFactory pipeFactory) {
@@ -110,7 +106,6 @@ public class Pipeline {
      * Removes a pipe from the Pipeline object
      *
      * @param name the name of the actual pipe
-     *
      * @return the new created Pipe object
      */
     public Pipe remove(String name) {
@@ -121,7 +116,6 @@ public class Pipeline {
      * Look up for a pipe object.
      *
      * @param name the name of the actual pipe
-     *
      * @return the new created Pipe object
      */
     public Pipe get(String name) {

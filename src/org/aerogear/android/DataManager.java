@@ -30,8 +30,8 @@ import java.util.Map;
 
 /**
  * Represents an abstraction layer for a storage system.
- * 
- * As a note, you should NOT extend this class for production or application 
+ * <p/>
+ * As a note, you should NOT extend this class for production or application
  * purposes.  This class is made non-final ONLY for testing/mocking/academic
  * purposes.
  */
@@ -39,7 +39,7 @@ import java.util.Map;
 public class DataManager {
 
     private final Map<String, Store> stores = new HashMap<String, Store>();
-    
+
     /**
      * This will default to {@link DefaultIdGenerator} if not provided.
      */
@@ -61,21 +61,21 @@ public class DataManager {
     public DataManager(StoreFactory storeFactory) {
         this(null, storeFactory);
     }
-    
+
     public DataManager(IdGenerator idGenerator, StoreFactory storeFactory) {
         if (idGenerator == null) {
             this.idGenerator = new DefaultIdGenerator();
         } else {
             this.idGenerator = idGenerator;
         }
-        
-        
+
+
         if (storeFactory == null) {
             this.storeFactory = new DefaultStoreFactory();
         } else {
             this.storeFactory = storeFactory;
         }
-        
+
     }
 
     /**
@@ -91,7 +91,7 @@ public class DataManager {
      * Creates a new Store implemention. The actual type is determined by the type argument.
      *
      * @param storeName The name of the actual data store object.
-     * @param type The type of the new data store object.
+     * @param type      The type of the new data store object.
      */
     public Store store(String storeName, StoreType type) {
         Store store = storeFactory.createStore(type, idGenerator);

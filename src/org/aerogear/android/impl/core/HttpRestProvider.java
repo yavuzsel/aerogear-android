@@ -24,7 +24,12 @@ import org.aerogear.android.core.HttpProvider;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -37,13 +42,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * 
- * 
- * 
  * These are tuned for Aerogear, assume the body is String data, and that
  * the headers don't do anything funny.
- * 
-
  */
 public final class HttpRestProvider implements HttpProvider {
 
@@ -137,33 +137,33 @@ public final class HttpRestProvider implements HttpProvider {
     private HeaderAndBody execute(HttpRequestBase method) throws IOException {
         method.setHeader("Accept", "application/json");
         method.setHeader("Content-type", "application/json");
-        
-        for (Entry<String, String> entry : defaultHeaders.entrySet() ) {
-        	method.setHeader(entry.getKey(), entry.getValue());	
+
+        for (Entry<String, String> entry : defaultHeaders.entrySet()) {
+            method.setHeader(entry.getKey(), entry.getValue());
         }
-        
+
         HttpResponse response = client.execute(method);
-        
+
         int statusCode = response.getStatusLine().getStatusCode();
         byte[] data = EntityUtils.toByteArray(response.getEntity());
         response.getEntity().consumeContent();
         if (statusCode != 200) {
             throw new HttpException(data, statusCode);
         }
-        
+
         Header[] headers = response.getAllHeaders();
         HeaderAndBody result = new HeaderAndBody(data, new HashMap<String, Object>(headers.length));
-        
+
         for (Header header : headers) {
             result.setHeader(header.getName(), header.getValue());
         }
-        
+
         return result;
     }
 
     private String appendIdToURL(String id) {
         StringBuilder newUrl = new StringBuilder(url.toString());
-        if( !url.toString().endsWith("/")) {
+        if (!url.toString().endsWith("/")) {
             newUrl.append("/");
         }
         newUrl.append(id);
@@ -171,9 +171,9 @@ public final class HttpRestProvider implements HttpProvider {
     }
 
 
-	@Override
-	public void setDefaultHeader(String headerName, String headerValue) {
-		defaultHeaders.put(headerName, headerValue);
-	}
+    @Override
+    public void setDefaultHeader(String headerName, String headerValue) {
+        defaultHeaders.put(headerName, headerValue);
+    }
 
 }

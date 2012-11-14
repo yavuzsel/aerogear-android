@@ -16,23 +16,21 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import java.net.MalformedURLException;
+import org.aerogear.android.authentication.AuthenticationConfig;
 import org.aerogear.android.authentication.AuthenticationModule;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import org.aerogear.android.authentication.AuthenticationConfig;
-import org.aerogear.android.authentication.impl.AuthTypes;
 
 /**
  * This is the default implementation of Authenticator.
  * It uses a HashMap behind the scenes to store its modules.
- * 
- * As a note, you should NOT extend this class for production or application 
+ * <p/>
+ * As a note, you should NOT extend this class for production or application
  * purposes.  This class is made non-final ONLY for testing/mocking/academic
  * purposes.
- * 
  */
 public class Authenticator {
 
@@ -42,7 +40,7 @@ public class Authenticator {
     public Authenticator(URL baseURL) {
         this.baseURL = baseURL;
     }
-    
+
 
     public Authenticator(String baseURL) {
         try {
@@ -70,21 +68,21 @@ public class Authenticator {
         return modules.remove(name);
     }
 
-      /**
+    /**
      * {@inheritDoc }
      */
     public AuthenticationModule auth(String name, AuthenticationConfig config) {
-        
+
         assert config != null;
-        
+
         if (!AuthTypes.REST.equals(config.getAuthType())) {
 
             throw new IllegalArgumentException("Unsupported Auth Type passed");
         }
         modules.put(name, new RestAuthenticationModule(baseURL, config));
         return modules.get(name);
-        
-        
+
+
     }
-    
+
 }

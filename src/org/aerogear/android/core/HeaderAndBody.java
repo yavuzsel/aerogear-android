@@ -21,30 +21,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This is a convenience to wrap up headers from a 
+ * This is a convenience to wrap up headers from a
  * HTTPResponse with its entity.
  */
 public class HeaderAndBody {
-    
+
     private final byte[] body;
 
     private final Map<String, Object> headers;
-    
-    public HeaderAndBody(byte[] body, Map<String, Object> headers) {        
+
+    public HeaderAndBody(byte[] body, Map<String, Object> headers) {
         this.body = Arrays.copyOf(body, body.length);
-        this.headers = new HashMap<String,  Object>(headers);
+        this.headers = new HashMap<String, Object>(headers);
     }
-    
+
     public byte[] getBody() {
-        return Arrays.copyOf(body, body.length);    
+        return Arrays.copyOf(body, body.length);
     }
-    
+
     public Object getHeader(String headerName) {
         return headers.get(headerName);
     }
-    
+
     public void setHeader(String headerName, Object headerValue) {
         headers.put(headerName, headerValue);
     }
-    
+
 }

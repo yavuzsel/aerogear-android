@@ -22,51 +22,50 @@ import java.net.URL;
 /**
  * A suite a convenience functions which wrap and clean up
  * common HTTP request operations.
- * 
  */
 public interface HttpProvider {
 
     public URL getUrl();
-    
+
     /**
-     * Issues an HTTP request, consumes the content, and cleans up 
+     * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
+     *
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
     public HeaderAndBody get() throws HttpException, Exception;
-    
+
     /**
-     * Issues an HTTP request, consumes the content, and cleans up 
+     * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
-     * 
+     *
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
     public HeaderAndBody post(String data) throws RuntimeException;
-    
+
     /**
-     * Issues an HTTP request, consumes the content, and cleans up 
+     * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
-     * 
+     *
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
     public HeaderAndBody put(String id, String data) throws RuntimeException;
-    
+
     /**
-     * Issues an HTTP request, consumes the content, and cleans up 
+     * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
-     * 
+     *
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
     public HeaderAndBody delete(String id) throws RuntimeException;
 
     /**
-     * 
      * Will set a default header value to be used on all calls
-     * 
+     *
      * @param header Name
      * @param header Value
      */

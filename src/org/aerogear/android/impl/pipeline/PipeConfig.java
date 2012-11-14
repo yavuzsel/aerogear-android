@@ -19,7 +19,6 @@ package org.aerogear.android.impl.pipeline;
 
 import com.google.gson.GsonBuilder;
 import org.aerogear.android.authentication.AuthenticationModule;
-import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.pipeline.PipeType;
 
 import java.net.URL;
@@ -79,11 +78,11 @@ public final class PipeConfig {
     public void setGsonBuilder(GsonBuilder gsonBuilder) {
         this.gsonBuilder = gsonBuilder;
     }
-    
-    public AuthenticationModule getAuthModule(){
+
+    public AuthenticationModule getAuthModule() {
         return authModule;
     }
-    
+
     public void setAuthModule(AuthenticationModule authModule) {
         this.authModule = authModule;
     }

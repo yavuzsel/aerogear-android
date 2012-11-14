@@ -57,7 +57,7 @@ public interface Store<T> {
     public void save(T item);
 
     /**
-     *  Resets the entire storage system.
+     * Resets the entire storage system.
      */
     public void reset();
 

@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * A {@link Pipe} represents a server connection. An object of this class is responsible to communicate
  * with the server in order to perfom read/write operations.
- * 
+ *
  * @param <T> The data type of the {@link Pipe} operation
  */
 public interface Pipe<T> {
@@ -56,7 +56,7 @@ public interface Pipe<T> {
     /**
      * Saves or updates a given object on the server.
      *
-     * @param item the item to save or update
+     * @param item     the item to save or update
      * @param callback The callback for consuming the result from the {@link Pipe} invocation.
      */
     void save(T item, Callback<T> callback);
@@ -64,14 +64,15 @@ public interface Pipe<T> {
     /**
      * Removes an object from the underlying server connection. The given key argument is used as the objects ID.
      *
-     * @param id representing the ‘id’ of the object to be removed
+     * @param id       representing the ‘id’ of the object to be removed
      * @param callback The callback for consuming the result from the {@link Pipe} invocation.
      */
     void remove(String id, Callback<Void> callback);
-    
+
     /**
      * Sets the authentication module for the Pipe.
      * It should already be logged in.
+     *
      * @param module
      */
     void setAuthenticationModule(AuthenticationModule module);

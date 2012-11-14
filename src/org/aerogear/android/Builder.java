@@ -21,11 +21,10 @@ package org.aerogear.android;
  * complex construction rules.
  */
 public interface Builder<T> {
-    
+
     /**
-     * 
      * @return a built instance of T
      */
     public T build();
-    
+
 }

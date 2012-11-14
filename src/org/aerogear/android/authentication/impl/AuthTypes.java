@@ -21,19 +21,18 @@ import org.aerogear.android.authentication.AuthType;
 /**
  * Enum of internally supported instances of {@link AuthType}
  */
-public enum AuthTypes implements AuthType{
-    REST("REST")
-    ;
+public enum AuthTypes implements AuthType {
+    REST("REST");
 
     private final String typeDescription;
-    
+
     private AuthTypes(String typeDescription) {
         this.typeDescription = typeDescription;
     }
-    
+
     @Override
     public String getName() {
         return typeDescription;
     }
-    
+
 }

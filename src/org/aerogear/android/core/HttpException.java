@@ -19,18 +19,16 @@ package org.aerogear.android.core;
 import java.util.Arrays;
 
 /**
- *
- * If an HTTP Request does not return status code 200 then this will 
+ * If an HTTP Request does not return status code 200 then this will
  * be thrown.
- * 
  */
 public class HttpException extends RuntimeException {
-   
+
     /**
      * The body of the http response.
      */
     private byte[] data;
-    
+
     /**
      * The returned status code
      */
@@ -59,8 +57,7 @@ public class HttpException extends RuntimeException {
         this.statusCode = statusCode;
     }
 
-    
-    
+
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);
     }

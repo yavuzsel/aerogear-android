@@ -25,72 +25,68 @@ import java.net.URL;
 import java.util.Map;
 
 /**
- *
- * A module which can authenticate a user.  It also provides the 
- * necessary tools to log a user in, out, and modify requests from a 
- * {@link Pipe} so they are seen as authenticated.             
- * 
+ * A module which can authenticate a user.  It also provides the
+ * necessary tools to log a user in, out, and modify requests from a
+ * {@link Pipe} so they are seen as authenticated.
+ * <p/>
  * If you have fields which need to be passed as tokens to the server,
  * annotate them with {@link AuthValue}
- * 
  */
 public interface AuthenticationModule {
-    
+
     public URL getbaseURL();
+
     public String getLoginEndpoint();
+
     public String getLogoutEndpoint();
+
     public String getEnrollEndpoint();
 
-    
-    
+
     /**
-     * 
      * Will try to register a user with a service using userData.
-     * 
-     * It will call the callbacks onSuccess with a parameter of a Map of the 
+     * <p/>
+     * It will call the callbacks onSuccess with a parameter of a Map of the
      * values returned by the enroll service or onFailure if there is an error
-     * 
+     *
      * @param userData
-     * @param callback 
+     * @param callback
      */
     public void enroll(Map<String, String> userData, Callback<HeaderAndBody> callback);
-    
+
     /**
-     * 
      * Will try to log in a user using username and password.
-     * 
-     * It will call the callbacks onSuccess with a parameter of a Map of the 
+     * <p/>
+     * It will call the callbacks onSuccess with a parameter of a Map of the
      * values returned by the enroll service or onFailure if there is an error
-     * 
-     * @param username 
-     * @param password 
-     * @param callback 
+     *
+     * @param username
+     * @param password
+     * @param callback
      */
     public void login(String username, String password, Callback<HeaderAndBody> callback);
-    
+
     /**
-     * 
      * Performs a logout of the current user.
-     * 
-     * It will call callback.onSuccess with no value on success and 
+     * <p/>
+     * It will call callback.onSuccess with no value on success and
      * callback.onFailure if there is an error.
-     * 
-     * @param callback 
+     *
+     * @param callback
      */
-    public void logout(Callback<Void> callback);	
-    
+    public void logout(Callback<Void> callback);
+
     /**
-     * 
      * @return true if the module has been logged in successfully
      */
     public boolean isLoggedIn();
-    
+
     /**
      * This method is called be {@link Pipe} implementations when they need
      * security applied to their {@link HttpProvider}.  This is usually done
-     * directly before a request is made.  
-     * 
-     * @param httpProvider 
+     * directly before a request is made.
+     *
+     * @param httpProvider
      */
     public void onSecurityApplicationRequested(HttpProvider httpProvider);
 }

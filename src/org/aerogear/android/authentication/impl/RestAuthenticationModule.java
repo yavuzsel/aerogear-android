@@ -21,59 +21,54 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.aerogear.android.Callback;
+import org.aerogear.android.authentication.AuthenticationConfig;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.json.JSONObject;
 
-
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.aerogear.android.authentication.AuthenticationConfig;
 
 /**
  * A module for authenticating with restful AG services.
  */
 public final class RestAuthenticationModule implements AuthenticationModule {
-    
+
     private final URL baseURL;
 
     private final static Gson gson = new Gson();
-    
+
     private final String loginEndpoint;
     private final URL loginURL;
-    
+
     private final String logoutEndpoint;
     private final URL logoutURL;
-    
+
     private final String enrollEndpoint;
     private final URL enrollURL;
 
-        
+
     /**
      * This is the field which stores the AG security token.
      */
     private String authToken = "";
-    
+
     /**
      * This is the name of the header to set for the token.
      */
     private final String tokenHeaderName;
-    
+
     private boolean isLoggedIn = false;
     private static final String TAG = "RestAuthenticationModule";
 
     /**
-     * 
      * @param baseURL
-     * @param config 
-     * @throws IllegalArgumentException if an endpoint can not be appended to 
-     *          baseURL
+     * @param config
+     * @throws IllegalArgumentException if an endpoint can not be appended to
+     *                                  baseURL
      */
     public RestAuthenticationModule(URL baseURL, AuthenticationConfig config) {
         this.baseURL = baseURL;
@@ -81,16 +76,15 @@ public final class RestAuthenticationModule implements AuthenticationModule {
         this.logoutEndpoint = config.getLogoutEndpoint();
         this.enrollEndpoint = config.getEnrollEndpoint();
         if (config instanceof RestAuthenticationConfig) {
-            this.tokenHeaderName = ((RestAuthenticationConfig)config).getTokenHeaderName();
+            this.tokenHeaderName = ((RestAuthenticationConfig) config).getTokenHeaderName();
         } else {
             this.tokenHeaderName = "Auth-Token";
         }
-        
+
         this.loginURL = appendToBaseURL(loginEndpoint);
         this.logoutURL = appendToBaseURL(logoutEndpoint);
-        this.enrollURL =  appendToBaseURL(enrollEndpoint);
+        this.enrollURL = appendToBaseURL(enrollEndpoint);
     }
-
 
 
     @Override
@@ -114,12 +108,12 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public void enroll(final Map<String, String> userData,final Callback<HeaderAndBody> callback) {
+    public void enroll(final Map<String, String> userData, final Callback<HeaderAndBody> callback) {
         new AsyncTask<Void, Void, Void>() {
 
             HeaderAndBody result = null;
             Exception exception = null;
-            
+
             @Override
             protected Void doInBackground(Void... params) {
                 HttpRestProvider provider = new HttpRestProvider(enrollURL);
@@ -128,7 +122,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                     result = provider.post(enrollData);
                     authToken = result.getHeader(tokenHeaderName).toString();
                     isLoggedIn = true;
-                    
+
                 } catch (Exception e) {
                     exception = e;
                 }
@@ -144,10 +138,9 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                     callback.onFailure(exception);
                 }
             }
-            
-            
-            
-        }.execute((Void)null);    
+
+
+        }.execute((Void) null);
     }
 
     @Override
@@ -169,7 +162,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                 }
                 return null;
             }
-            
+
             @Override
             protected void onPostExecute(Void ignore) {
                 super.onPostExecute(ignore);
@@ -179,9 +172,9 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                     callback.onFailure(exception);
                 }
             }
-            
-        }.execute((Void)null);
-        
+
+        }.execute((Void) null);
+
     }
 
     @Override
@@ -196,14 +189,14 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                     provider.post("");
                     authToken = "";
                     isLoggedIn = false;
-                    
+
                 } catch (Exception e) {
                     exception = e;
                 }
                 return null;
             }
-            
-              @Override
+
+            @Override
             protected void onPostExecute(Void ignore) {
                 super.onPostExecute(ignore);
                 if (exception == null) {
@@ -212,24 +205,24 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                     callback.onFailure(exception);
                 }
             }
-            
-        }.execute((Void)null);    
+
+        }.execute((Void) null);
     }
 
     @Override
     public boolean isLoggedIn() {
         return isLoggedIn;
     }
-    
+
     protected String getAuthToken() {
         return authToken;
     }
 
     private String buildLoginData(String username, String password) {
-    	JsonObject response = new JsonObject();
-    	response.addProperty("username", username);
-    	response.addProperty("password", password);
-    	return response.toString();   	
+        JsonObject response = new JsonObject();
+        response.addProperty("username", username);
+        response.addProperty("password", password);
+        return response.toString();
     }
 
     @Override
@@ -238,7 +231,6 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     }
 
     /**
-     * 
      * @param endpoint
      * @return a new url baseUrl + endpoint
      * @throws IllegalArgumentException if baseUrl+endpoint is not a real url.
@@ -251,8 +243,8 @@ public final class RestAuthenticationModule implements AuthenticationModule {
             Log.e(TAG, message, ex);
             throw new IllegalArgumentException(message, ex);
         }
-        
-        
+
+
     }
-     
+
 }
