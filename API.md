@@ -95,16 +95,31 @@ The 'read' method allows to (currently) read _all_ data from the server, of the 
 
 Since we are pointing to a RESTful endpoint, the API issues a HTTP GET request. The raw response of the above call looks like this:
 
-	/*
-            TODO put that in.
-        */
+           /* TODO put that in. */
+        
+Authentication API's
+================
+AeroGear Android has support for the AeroGear security and authentication system.
+
+## Usage
+The [TODO](http://todo-aerogear.rhcloud.com/) application has a working demo of the Authentication system.  You can fine examples of how the APIs work and how they are called in the ToDoApplication class of that project.
+
+## API Walk through
+API.md has a walk through of the API with inline examples.
+
+## Interfaces and Implementation
+This package contains the core interfaces of AG Security.  Anything written using them will work with any of our concrete classes.  This is excellent for testing, mocking, etc as our implementation classes are final.
+
+## Builders
+As with the rest of *AeroGear Android*, the authentication package makes use of the Builder pattern.
+
 
 Authentication and User enrollment
 ==================================
 
 ## Creating an authenticator with an authentication module
 
-To create an authenticator, you need to use the DefaultAuthenticator class. Below is an example: 
+To create an authenticator, you need to use the *DefaultAuthenticator* class. Below is an example: 
 
     // create an authenticator object
     Authenticator authenticator = new DefaultAuthenticator();
@@ -117,11 +132,11 @@ To create an authenticator, you need to use the DefaultAuthenticator class. Belo
    
     Authenticationmodule authMod = Authenticator.auth(AuthType.REST, baseURL).add();
 
-The DefaultAuthenticator class offers some simple 'management' APIs to work with containing RestAuthenticationmodule objects. The API provides an authentication and enrollment API. The default implementation uses REST as the auth transport. Similar to the pipe API technical details of the underlying system are not exposed.
+The *DefaultAuthenticator* class offers some simple 'management' APIs to work with containing *RestAuthenticationModule* objects. The API provides an authentication and enrollment API. The default implementation uses REST as the auth transport. Similar to the pipe API technical details of the underlying system are not exposed.
 
 ## Register a user
 
-The _enroll_ function of the AuthenticationModule interface is used to register new users with the backend:
+The _enroll_ function of the *AuthenticationModule* interface is used to register new users with the backend:
 
     // assemble the dictionary that has all the data for THIS particular user:
     Map<String, String> userData = new HashMap<String, String>();
