@@ -32,7 +32,7 @@ public interface Store<T> {
      *
      * @return StoreType
      */
-    public TypeDescriptor getType();
+    public StoreType getType();
 
     /**
      * Reads all the data from the underlying storage system.
