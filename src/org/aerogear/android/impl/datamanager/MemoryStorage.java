@@ -17,14 +17,14 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.datamanager.IdGenerator;
-import org.aerogear.android.datamanager.Store;
-import org.aerogear.android.datamanager.StoreType;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.aerogear.android.core.TypeDescriptor;
+import org.aerogear.android.datamanager.IdGenerator;
+import org.aerogear.android.datamanager.Store;
 
 /**
  * Memory implementation of Store {@link Store}.

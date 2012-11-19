@@ -16,13 +16,13 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import org.aerogear.android.authentication.AuthenticationConfig;
-import org.aerogear.android.authentication.AuthenticationModule;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.aerogear.android.authentication.AuthenticationConfig;
+import org.aerogear.android.authentication.AuthenticationModule;
 
 /**
  * This is the default implementation of Authenticator.

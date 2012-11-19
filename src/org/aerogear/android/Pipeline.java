@@ -16,15 +16,15 @@
  */
 package org.aerogear.android;
 
-import org.aerogear.android.impl.pipeline.DefaultPipeFactory;
-import org.aerogear.android.impl.pipeline.PipeConfig;
-import org.aerogear.android.pipeline.Pipe;
-import org.aerogear.android.pipeline.PipeFactory;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.aerogear.android.impl.pipeline.DefaultPipeFactory;
+import org.aerogear.android.impl.pipeline.PipeConfig;
+import org.aerogear.android.pipeline.Pipe;
+import org.aerogear.android.pipeline.PipeFactory;
 
 /**
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka

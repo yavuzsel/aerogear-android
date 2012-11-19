@@ -17,12 +17,12 @@
 
 package org.aerogear.android.pipeline;
 
+import java.net.URL;
+import java.util.List;
+
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.TypeDescriptor;
-
-import java.net.URL;
-import java.util.List;
 
 /**
  * A {@link Pipe} represents a server connection. An object of this class is responsible to communicate

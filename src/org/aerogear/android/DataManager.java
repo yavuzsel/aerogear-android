@@ -17,6 +17,9 @@
 
 package org.aerogear.android;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.datamanager.StoreFactory;
@@ -24,9 +27,6 @@ import org.aerogear.android.datamanager.StoreType;
 import org.aerogear.android.impl.datamanager.DefaultIdGenerator;
 import org.aerogear.android.impl.datamanager.DefaultStoreFactory;
 import org.aerogear.android.impl.datamanager.StoreTypes;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Represents an abstraction layer for a storage system.

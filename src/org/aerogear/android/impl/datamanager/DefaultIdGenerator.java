@@ -17,9 +17,9 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.datamanager.IdGenerator;
-
 import java.util.UUID;
+
+import org.aerogear.android.datamanager.IdGenerator;
 
 /**
  * Id Generate using a Universally Unique IDentifier (UUID).
