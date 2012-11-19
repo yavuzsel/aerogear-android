@@ -20,6 +20,7 @@ package org.aerogear.android.impl.pipeline;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +63,8 @@ public final class RestAdapter<T> implements Pipe<T> {
     private AuthenticationModule authModule;
     private static final String TAG = "RestAdapter";
 
+    private Charset encoding = Charset.forName("UTF-8");
+    
     public RestAdapter(Class<T> klass, HttpProvider httpProvider) {
         this.klass = klass;
         this.arrayKlass = asArrayClass(klass);
@@ -104,7 +107,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                 try {
                     applyAuthToken();
                     byte[] responseBody = httpProvider.get().getBody();
-                    String responseAsString = new String(responseBody, "utf-8");
+                    String responseAsString = new String(responseBody, encoding);
                     JsonParser parser = new JsonParser();
                     JsonElement result = parser.parse(responseAsString);
                     if (result.isJsonArray()) {
@@ -169,7 +172,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                     /*Deseralize the result and return it, or pass null.*/
 
                     if (result != null) {
-                        return new AsyncTaskResult(gson.fromJson(new String(result.getBody(), "UTF-8"), klass));
+                        return new AsyncTaskResult(gson.fromJson(new String(result.getBody(), encoding), klass));
                     } else {
                         return new AsyncTaskResult((T) null);
 
