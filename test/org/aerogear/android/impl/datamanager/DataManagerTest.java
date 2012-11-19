@@ -37,7 +37,7 @@ public class DataManagerTest {
     }
 
     @Test
-    public void testRegisterPipeFactory() throws MalformedURLException {
+    public void testRegisterStoreFactory() throws MalformedURLException {
         @SuppressWarnings("LocalVariableHidesMemberVariable")
         DataManager dataManager = new DataManager(new StubStoreFactory());
 
