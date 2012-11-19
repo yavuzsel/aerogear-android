@@ -22,6 +22,7 @@ import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeFactory;
+import org.aerogear.android.pipeline.PipeType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,8 +33,8 @@ public class StubPipeFactory implements PipeFactory {
     public Pipe createPipe(Class klass, PipeConfig config) {
         return new Pipe() {
             @Override
-            public TypeDescriptor getType() {
-                return new TypeDescriptor() {
+            public PipeType getType() {
+                return new PipeType() {
                     @Override
                     public String getName() {
                         return "Stub";
