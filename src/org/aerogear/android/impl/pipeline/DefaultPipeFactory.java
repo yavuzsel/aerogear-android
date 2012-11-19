@@ -41,7 +41,9 @@ public final class DefaultPipeFactory implements PipeFactory {
             } else {
                 createdPipe = new RestAdapter<T>(klass, httpProvider);
             }
-
+            
+            ((RestAdapter<T>)createdPipe).setEncoding(config.getEncoding());
+            
         } else {
             throw new IllegalArgumentException("Type is not supported yet");
         }

@@ -18,6 +18,7 @@
 package org.aerogear.android.pipeline;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.aerogear.android.Callback;
@@ -75,5 +76,6 @@ public interface Pipe<T> {
      * @param module
      */
     void setAuthenticationModule(AuthenticationModule module);
+
 
 }

@@ -272,4 +272,15 @@ public final class RestAdapter<T> implements Pipe<T> {
         }
     }
 
+	    /**
+     * Sets the encoding of the Pipe.
+     * May not be null.
+     * 
+     * @param encoding
+     * @throws IllegalArgumentException if encoding is null
+     */
+	public void setEncoding(Charset encoding) {
+		this.encoding = encoding;
+	}
+	
 }
