@@ -15,25 +15,14 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.core;
+package org.aerogear.android.impl.reflection;
 
-import org.aerogear.android.impl.datamanager.RecordId;
+import org.aerogear.android.RecordId;
 
-import java.lang.reflect.Field;
+public class RecordIdNotFoundException extends RuntimeException {
 
-public final class Scan {
-
-    public static Field recordIdFieldIn(Class klass) {
-        for (Field field : klass.getDeclaredFields()) {
-            if (field.isAnnotationPresent(RecordId.class)) {
-                return field;
-            }
-        }
-        throw new RecordIdNotFoundException(klass);
-    }
-
-    public static String recordIdFieldNameIn(Class klass) {
-        return recordIdFieldIn(klass).getName();
+    public RecordIdNotFoundException(Class klass) {
+        super("@" + RecordId.class.getSimpleName() + " not found on " + klass.getSimpleName());
     }
 
 }

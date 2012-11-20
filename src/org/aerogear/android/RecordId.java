@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.core;
+package org.aerogear.android;
 
-public class PropertyNotFoundException extends RuntimeException {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    public PropertyNotFoundException(Class klass, String property) {
-        super("Cannot find get/set " + property + " on " + klass.getSimpleName());
-    }
-
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RecordId {
 }

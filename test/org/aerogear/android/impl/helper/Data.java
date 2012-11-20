@@ -17,7 +17,7 @@
 
 package org.aerogear.android.impl.helper;
 
-import org.aerogear.android.impl.datamanager.RecordId;
+import org.aerogear.android.RecordId;
 
 public class Data {
 

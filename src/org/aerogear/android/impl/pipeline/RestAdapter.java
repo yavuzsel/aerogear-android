@@ -25,12 +25,12 @@ import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
-import org.aerogear.android.impl.core.Scan;
+import org.aerogear.android.impl.reflection.Property;
+import org.aerogear.android.impl.reflection.Scan;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeType;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -128,19 +128,14 @@ public final class RestAdapter<T> implements Pipe<T> {
         }.execute();
     }
 
-    private String capitalize(String name) {
-        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
-    }
-
     @Override
     public void save(final T data, final Callback<T> callback) {
 
         final String id;
 
         try {
-            String recordId = Scan.recordIdFieldNameIn(data.getClass());
-            Method getMethod = data.getClass().getMethod("get" + capitalize(recordId));
-            Object result = getMethod.invoke(data);
+            String recordIdFieldName = Scan.recordIdFieldNameIn(data.getClass());
+            Object result = new Property(data.getClass(), recordIdFieldName).getValue(data);
             id = result == null ? null : result.toString();
         } catch (Exception e) {
             callback.onFailure(e);

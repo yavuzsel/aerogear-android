@@ -15,14 +15,16 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.core;
+package org.aerogear.android.impl.reflection;
 
-import org.aerogear.android.impl.datamanager.RecordId;
+public class PropertyNotFoundException extends RuntimeException {
 
-public class RecordIdNotFoundException extends RuntimeException {
+    public PropertyNotFoundException(Class klass) {
+        super("Cannot find get/set on " + klass.getSimpleName());
+    }
 
-    public RecordIdNotFoundException(Class klass) {
-        super("@" + RecordId.class.getSimpleName() + " not found on " + klass.getSimpleName());
+    public PropertyNotFoundException(Class klass, String property) {
+        super("Cannot find " + property + " on " + klass.getSimpleName());
     }
 
 }

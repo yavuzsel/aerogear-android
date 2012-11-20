@@ -15,14 +15,25 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.datamanager;
+package org.aerogear.android.impl.reflection;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.aerogear.android.RecordId;
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface RecordId {
+import java.lang.reflect.Field;
+
+public final class Scan {
+
+    public static Field recordIdFieldIn(Class klass) {
+        for (Field field : klass.getDeclaredFields()) {
+            if (field.isAnnotationPresent(RecordId.class)) {
+                return field;
+            }
+        }
+        throw new RecordIdNotFoundException(klass);
+    }
+
+    public static String recordIdFieldNameIn(Class klass) {
+        return recordIdFieldIn(klass).getName();
+    }
+
 }

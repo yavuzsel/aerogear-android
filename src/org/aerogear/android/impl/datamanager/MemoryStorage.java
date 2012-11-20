@@ -19,12 +19,10 @@ package org.aerogear.android.impl.datamanager;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.datamanager.StoreType;
-import org.aerogear.android.impl.core.PropertyNotFoundException;
-import org.aerogear.android.impl.core.Scan;
+import org.aerogear.android.impl.reflection.Property;
+import org.aerogear.android.impl.reflection.Scan;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,28 +68,19 @@ public class MemoryStorage<T> implements Store<T> {
      */
     @Override
     public void save(T item) {
-        Serializable idValue;
 
-        Field recordId = Scan.recordIdFieldIn(item.getClass());
+        String recordIdFieldName = Scan.recordIdFieldNameIn(item.getClass());
 
-        try {
-            Method getMethod = item.getClass().getMethod("get" + capitalize(recordId.getName()));
-            idValue = (Serializable) getMethod.invoke(item);
+        Property property = new Property(item.getClass(), recordIdFieldName);
 
-            if( idValue == null ) {
-                idValue = idGenerator.generate();
-                Method setMethod = item.getClass().getMethod("set" + capitalize(recordId.getName()), recordId.getType());
-                setMethod.invoke(item, idValue);
-            }
-        } catch (Exception e) {
-            throw new PropertyNotFoundException(item.getClass(), recordId.getName());
+        Serializable idValue = (Serializable) property.getValue(item);
+
+        if( idValue == null ) {
+            idValue = idGenerator.generate();
+            property.setValue(item, idValue);
         }
 
         data.put(idValue, item);
-    }
-
-    private String capitalize(String name) {
-        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
 
     /**

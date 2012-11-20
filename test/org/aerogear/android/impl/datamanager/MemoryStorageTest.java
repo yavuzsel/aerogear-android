@@ -17,8 +17,8 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.impl.core.PropertyNotFoundException;
-import org.aerogear.android.impl.core.RecordIdNotFoundException;
+import org.aerogear.android.impl.reflection.PropertyNotFoundException;
+import org.aerogear.android.impl.reflection.RecordIdNotFoundException;
 import org.aerogear.android.impl.helper.Data;
 import org.aerogear.android.impl.helper.DataWithNoIdConfigured;
 import org.aerogear.android.impl.helper.DataWithNoPropertyId;
