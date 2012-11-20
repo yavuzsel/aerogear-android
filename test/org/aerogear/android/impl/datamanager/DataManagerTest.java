@@ -17,15 +17,17 @@
 
 package org.aerogear.android.impl.datamanager;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
+
+import java.net.MalformedURLException;
+
 import org.aerogear.android.DataManager;
 import org.aerogear.android.datamanager.Store;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.net.MalformedURLException;
-
-import static junit.framework.Assert.*;
-import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
 
 public class DataManagerTest {
 

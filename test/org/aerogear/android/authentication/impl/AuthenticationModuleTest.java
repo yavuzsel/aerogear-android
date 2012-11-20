@@ -16,10 +16,9 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import com.xtremelabs.robolectric.shadows.StatusLineStub;
-import com.xtremelabs.robolectric.tester.org.apache.http.RequestMatcher;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+
 import org.aerogear.android.Callback;
 import org.aerogear.android.core.HeaderAndBody;
 import org.apache.http.Header;
@@ -35,6 +34,9 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
+
+import com.xtremelabs.robolectric.shadows.StatusLineStub;
+import com.xtremelabs.robolectric.tester.org.apache.http.RequestMatcher;
 
 /**
  * This interface sets up all of the static values for 

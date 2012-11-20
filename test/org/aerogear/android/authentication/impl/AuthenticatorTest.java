@@ -16,16 +16,20 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.aerogear.android.authentication.AuthenticationModule;
 
+import org.aerogear.android.authentication.AuthenticationModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
+
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthenticatorTest {

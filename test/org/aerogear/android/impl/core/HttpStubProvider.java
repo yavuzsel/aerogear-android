@@ -17,10 +17,10 @@
 
 package org.aerogear.android.impl.core;
 
-import org.aerogear.android.core.HttpProvider;
-
 import java.net.URL;
+
 import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.core.HttpProvider;
 
 public class HttpStubProvider implements HttpProvider {
 

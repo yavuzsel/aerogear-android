@@ -20,8 +20,6 @@ package org.aerogear.android.datamanager;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.aerogear.android.core.TypeDescriptor;
-
 /**
  * Represents an abstraction layer for a storage system.
  */

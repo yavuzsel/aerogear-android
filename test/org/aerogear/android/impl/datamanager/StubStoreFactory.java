@@ -1,13 +1,13 @@
 package org.aerogear.android.impl.datamanager;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
 import org.aerogear.android.datamanager.StoreFactory;
 import org.aerogear.android.datamanager.StoreType;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class StubStoreFactory implements StoreFactory {
     @Override

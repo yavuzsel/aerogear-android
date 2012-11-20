@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.aerogear.android.impl.datamanager;
 
 import java.io.Serializable;
@@ -22,9 +21,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.datamanager.IdGenerator;
 import org.aerogear.android.datamanager.Store;
+import org.aerogear.android.datamanager.StoreType;
 
 /**
  * Memory implementation of Store {@link Store}.
@@ -87,5 +86,4 @@ public class MemoryStorage<T> implements Store<T> {
     public void remove(Serializable id) {
         data.remove(id);
     }
-
 }

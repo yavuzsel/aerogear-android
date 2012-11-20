@@ -17,15 +17,14 @@
 
 package org.aerogear.android.impl.pipeline;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
-import org.aerogear.android.core.TypeDescriptor;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeFactory;
 import org.aerogear.android.pipeline.PipeType;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class StubPipeFactory implements PipeFactory {
 
