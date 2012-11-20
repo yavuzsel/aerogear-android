@@ -17,22 +17,28 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import java.util.Collection;
-import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
+import org.aerogear.android.impl.core.PropertyNotFoundException;
+import org.aerogear.android.impl.core.RecordIdNotFoundException;
 import org.aerogear.android.impl.helper.Data;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.aerogear.android.impl.helper.DataWithNoIdConfigured;
+import org.aerogear.android.impl.helper.DataWithNoPropertyId;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collection;
+
+import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
+import static org.junit.Assert.*;
 
 public class MemoryStorageTest {
 
     private MemoryStorage<Data> store;
+    private StubIdGenerator stubIdGenerator;
 
     @Before
     public void setup() {
-        store = new MemoryStorage<Data>(new StubIdGenerator());
+        stubIdGenerator = new StubIdGenerator();
+        store = new MemoryStorage<Data>(stubIdGenerator);
     }
 
     @Test
@@ -58,8 +64,38 @@ public class MemoryStorageTest {
     }
 
     @Test
-    public void testSave() {
-        store.save(new Data("foo", "desc of foo"));
+    public void testSaveNoExistRecord() {
+        Data data = new Data("foo", "desc of foo");
+        store.save(data);
+        assertEquals(Integer.valueOf(1), data.getId());
+    }
+
+    @Test
+    public void testSaveExistRecord() {
+        Data data = new Data("foo", "desc of foo");
+        store.save(data);
+
+        // Simulate sending the same id but not necessarily the same instance
+        data = new Data(1, "bar", "desc of bar");
+        store.save(data);
+
+        data = store.read(1);
+
+        assertEquals(Integer.valueOf(1), data.getId());
+        assertEquals("bar", data.getName());
+        assertEquals("desc of bar", data.getDescription());
+    }
+
+    @Test(expected = RecordIdNotFoundException.class)
+    public void testSaveWithAnnotationNotConfigured() {
+        MemoryStorage<DataWithNoIdConfigured> memoryStorage = new MemoryStorage<DataWithNoIdConfigured>(stubIdGenerator);
+        memoryStorage.save(new DataWithNoIdConfigured());
+    }
+
+    @Test(expected = PropertyNotFoundException.class)
+    public void testSaveWithNoPropertyToSetId() {
+        MemoryStorage<DataWithNoPropertyId> memoryStorage = new MemoryStorage<DataWithNoPropertyId>(stubIdGenerator);
+        memoryStorage.save(new DataWithNoPropertyId());
     }
 
     @Test

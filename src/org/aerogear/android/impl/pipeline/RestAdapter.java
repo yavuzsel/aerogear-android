@@ -21,6 +21,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import org.aerogear.android.Callback;
+import org.aerogear.android.authentication.AuthenticationModule;
+import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.impl.core.Scan;
+import org.aerogear.android.pipeline.Pipe;
+import org.aerogear.android.pipeline.PipeType;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -28,12 +36,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.aerogear.android.Callback;
-import org.aerogear.android.authentication.AuthenticationModule;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpProvider;
-import org.aerogear.android.pipeline.Pipe;
-import org.aerogear.android.pipeline.PipeType;
 
 /**
  * Rest implementation of {@link Pipe}.
@@ -126,15 +128,19 @@ public final class RestAdapter<T> implements Pipe<T> {
         }.execute();
     }
 
+    private String capitalize(String name) {
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+    }
+
     @Override
     public void save(final T data, final Callback<T> callback) {
 
         final String id;
 
-        // TODO: Make "id" field configurable
         try {
-            Method idGetter = data.getClass().getMethod("getId");
-            Object result = idGetter.invoke(data);
+            String recordId = Scan.recordIdFieldNameIn(data.getClass());
+            Method getMethod = data.getClass().getMethod("get" + capitalize(recordId));
+            Object result = getMethod.invoke(data);
             id = result == null ? null : result.toString();
         } catch (Exception e) {
             callback.onFailure(e);

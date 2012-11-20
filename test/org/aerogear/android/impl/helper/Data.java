@@ -17,9 +17,12 @@
 
 package org.aerogear.android.impl.helper;
 
+import org.aerogear.android.impl.datamanager.RecordId;
+
 public class Data {
 
-    private Long id;
+    @RecordId
+    private Integer id;
     private String name;
     private String description;
 
@@ -28,17 +31,17 @@ public class Data {
         this.description = description;
     }
 
-    public Data(Long id, String name, String description) {
+    public Data(Integer id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
