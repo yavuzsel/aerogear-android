@@ -21,8 +21,17 @@ import org.aerogear.android.RecordId;
 
 import java.lang.reflect.Field;
 
+/**
+ * Helper to search annotations
+ */
 public final class Scan {
 
+    /**
+     * Search field with @RecordId
+     *
+     * @param klass Class to search @RecordId
+     * @return Field with @RecordId
+     */
     public static Field recordIdFieldIn(Class klass) {
         for (Field field : klass.getDeclaredFields()) {
             if (field.isAnnotationPresent(RecordId.class)) {
@@ -32,6 +41,12 @@ public final class Scan {
         throw new RecordIdNotFoundException(klass);
     }
 
+    /**
+     * Search field with @RecordId
+     *
+     * @param klass Class to search @RecordId
+     * @return Name Field name with the @RecordId
+     */
     public static String recordIdFieldNameIn(Class klass) {
         return recordIdFieldIn(klass).getName();
     }

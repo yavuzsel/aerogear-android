@@ -17,14 +17,19 @@
 
 package org.aerogear.android.impl.reflection;
 
+/**
+ * Thrown when a property cannot be found.
+ */
 public class PropertyNotFoundException extends RuntimeException {
 
-    public PropertyNotFoundException(Class klass) {
-        super("Cannot find get/set on " + klass.getSimpleName());
-    }
-
-    public PropertyNotFoundException(Class klass, String property) {
-        super("Cannot find " + property + " on " + klass.getSimpleName());
+    /**
+     * Constructs with class and fieldName cannot be found.
+     *
+     * @param klass Class where field cannot be found.
+     * @param fieldName field cannot be found property.
+     */
+    public PropertyNotFoundException(Class klass, String fieldName) {
+        super("Cannot find get/set to field " + fieldName + " on " + klass.getSimpleName());
     }
 
 }

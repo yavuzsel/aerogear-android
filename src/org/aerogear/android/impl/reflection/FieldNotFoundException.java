@@ -17,8 +17,17 @@
 
 package org.aerogear.android.impl.reflection;
 
+/**
+ * Thrown when a particular field cannot be found.
+ */
 public class FieldNotFoundException extends RuntimeException {
 
+    /**
+     * Constructs with class and fieldName cannot be found.
+     *
+     * @param klass Class where field cannot be found.
+     * @param fieldName field cannot be found.
+     */
     public FieldNotFoundException(Class klass, String fieldName) {
         super("Cannot find field " + fieldName + " on " + klass.getSimpleName());
     }

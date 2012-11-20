@@ -19,6 +19,9 @@ package org.aerogear.android.impl.reflection;
 
 import java.lang.reflect.Method;
 
+/**
+ * Helper to access property with reflection
+ */
 public class Property {
 
     private final Class klass;
@@ -29,6 +32,12 @@ public class Property {
     private Method getMethod;
     private Method setMethod;
 
+    /**
+     * Constructor to access field with get/set
+     *
+     * @param klass Class to be manipulated
+     * @param fieldName Field to be accessed
+     */
     public Property(Class klass, String fieldName) {
         if (klass == null) {
             throw new IllegalArgumentException("Class could not be null");
@@ -57,7 +66,7 @@ public class Property {
             getMethod = klass.getMethod(getMethodName());
             setMethod = klass.getMethod(setMethodName(), type);
         } catch (Exception e) {
-            throw new PropertyNotFoundException(klass);
+            throw new PropertyNotFoundException(klass, fieldName);
         }
 
     }
@@ -78,20 +87,32 @@ public class Property {
         return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
 
+    /**
+     * Get value
+     *
+     * @param instance Instance to get value
+     * @return Value
+     */
     public Object getValue(Object instance) {
         try {
             return getMethod.invoke(instance);
         } catch (Exception e) {
-            throw new PropertyNotFoundException(klass, getMethodName());
+            throw new PropertyNotFoundException(klass, fieldName);
         }
 
     }
 
+    /**
+     * Set new value
+     *
+     * @param instance Instante to set new value
+     * @param value new value
+     */
     public void setValue(Object instance, Object value) {
         try {
             setMethod.invoke(instance, value);
         } catch (Exception e) {
-            throw new PropertyNotFoundException(klass, setMethodName());
+            throw new PropertyNotFoundException(klass, fieldName);
         }
 
     }

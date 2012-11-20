@@ -19,8 +19,16 @@ package org.aerogear.android.impl.reflection;
 
 import org.aerogear.android.RecordId;
 
+/**
+ * Thrown when a @RecordId cannot be found.
+ */
 public class RecordIdNotFoundException extends RuntimeException {
 
+    /**
+     * Constructs with class cannot be found.
+     *
+     * @param klass Class where @RecordId cannot be found.
+     */
     public RecordIdNotFoundException(Class klass) {
         super("@" + RecordId.class.getSimpleName() + " not found on " + klass.getSimpleName());
     }
