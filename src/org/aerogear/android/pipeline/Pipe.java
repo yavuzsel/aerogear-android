@@ -18,9 +18,7 @@
 package org.aerogear.android.pipeline;
 
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.List;
-
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
 

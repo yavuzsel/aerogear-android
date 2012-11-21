@@ -16,10 +16,13 @@
  */
 package org.aerogear.android.authentication.impl;
 
+import android.os.AsyncTask;
+import android.util.Log;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationConfig;
 import org.aerogear.android.authentication.AuthenticationModule;
@@ -27,12 +30,6 @@ import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.json.JSONObject;
-
-import android.os.AsyncTask;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 /**
  * A module for authenticating with restful AG services.

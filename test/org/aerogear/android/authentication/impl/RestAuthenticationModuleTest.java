@@ -16,23 +16,21 @@
  */
 package org.aerogear.android.authentication.impl;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.xtremelabs.robolectric.Robolectric;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.aerogear.android.core.HttpException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 
 @RunWith(RobolectricTestRunner.class)

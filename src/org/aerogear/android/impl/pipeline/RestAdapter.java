@@ -14,9 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.aerogear.android.impl.pipeline;
 
+import android.os.AsyncTask;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -24,7 +28,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBody;
@@ -32,39 +35,27 @@ import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeType;
 
-import android.os.AsyncTask;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-
 /**
  * Rest implementation of {@link Pipe}.
  */
 public final class RestAdapter<T> implements Pipe<T> {
 
     private final Gson gson;
-
     /**
-     * A class of the Generic type this pipe wraps.
-     * This is used by GSON for deserializing.
+     * A class of the Generic type this pipe wraps. This is used by GSON for
+     * deserializing.
      */
     private final Class<T> klass;
-
     /**
-     * A class of the Generic collection type this pipe wraps.
-     * This is used by JSON for deserializing collections.
+     * A class of the Generic collection type this pipe wraps. This is used by
+     * JSON for deserializing collections.
      */
     private final Class<T[]> arrayKlass;
-
-
     private final HttpProvider httpProvider;
     private AuthenticationModule authModule;
     private static final String TAG = "RestAdapter";
-
     private Charset encoding = Charset.forName("UTF-8");
-    
+
     public RestAdapter(Class<T> klass, HttpProvider httpProvider) {
         this.klass = klass;
         this.arrayKlass = asArrayClass(klass);
@@ -87,7 +78,6 @@ public final class RestAdapter<T> implements Pipe<T> {
         return PipeTypes.REST;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -96,10 +86,10 @@ public final class RestAdapter<T> implements Pipe<T> {
         return httpProvider.getUrl();
     }
 
-    @Override
     /**
      * {@inheritDoc}
      */
+    @Override
     public void read(final Callback<List<T>> callback) {
         new AsyncTask<Void, Void, AsyncTaskResult<List<T>>>() {
             @Override
@@ -111,14 +101,14 @@ public final class RestAdapter<T> implements Pipe<T> {
                     JsonParser parser = new JsonParser();
                     JsonElement result = parser.parse(responseAsString);
                     if (result.isJsonArray()) {
-                    	T[] resultArray = gson.fromJson(responseAsString, arrayKlass);
-                    	return new AsyncTaskResult(Arrays.asList(resultArray));
+                        T[] resultArray = gson.fromJson(responseAsString, arrayKlass);
+                        return new AsyncTaskResult(Arrays.asList(resultArray));
                     } else {
-                    	T resultObject = gson.fromJson(responseAsString, klass);
-                    	List<T> resultList = new ArrayList<T>(1);
-                    	resultList.add(resultObject);
-                    	return new AsyncTaskResult(resultList);
-                    	
+                        T resultObject = gson.fromJson(responseAsString, klass);
+                        List<T> resultList = new ArrayList<T>(1);
+                        resultList.add(resultObject);
+                        return new AsyncTaskResult(resultList);
+
                     }
                 } catch (Exception e) {
                     return new AsyncTaskResult(e);
@@ -135,7 +125,6 @@ public final class RestAdapter<T> implements Pipe<T> {
             }
         }.execute();
     }
-
 
     @Override
     public void save(final T data, final Callback<T> callback) {
@@ -222,11 +211,9 @@ public final class RestAdapter<T> implements Pipe<T> {
         }.execute();
     }
 
-
     /**
-     * This will return a class of the type T[] from a given class.
-     * When we read from the AG pipe, Java needs a reference to a
-     * generic array type.
+     * This will return a class of the type T[] from a given class. When we read
+     * from the AG pipe, Java needs a reference to a generic array type.
      *
      * @param klass
      * @return
@@ -255,7 +242,6 @@ public final class RestAdapter<T> implements Pipe<T> {
         public Exception getError() {
             return error;
         }
-
     }
 
     @Override
@@ -272,15 +258,13 @@ public final class RestAdapter<T> implements Pipe<T> {
         }
     }
 
-	    /**
-     * Sets the encoding of the Pipe.
-     * May not be null.
-     * 
+    /**
+     * Sets the encoding of the Pipe. May not be null.
+     *
      * @param encoding
      * @throws IllegalArgumentException if encoding is null
      */
-	public void setEncoding(Charset encoding) {
-		this.encoding = encoding;
-	}
-	
+    public void setEncoding(Charset encoding) {
+        this.encoding = encoding;
+    }
 }
