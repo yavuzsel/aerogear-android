@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.aerogear.android.impl.pipeline;
 
+import com.google.gson.GsonBuilder;
 import java.net.URL;
-
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.pipeline.PipeType;
-
-import com.google.gson.GsonBuilder;
 
 public final class PipeConfig {
 
@@ -32,6 +31,7 @@ public final class PipeConfig {
     private PipeType type = PipeTypes.REST;
     private GsonBuilder gsonBuilder;
     private AuthenticationModule authModule;
+    private Charset encoding = Charset.forName("UTF-8");
 
     public PipeConfig(URL baseURL, Class klass) {
         this.baseURL = baseURL;
@@ -86,5 +86,31 @@ public final class PipeConfig {
 
     public void setAuthModule(AuthenticationModule authModule) {
         this.authModule = authModule;
+    }
+
+    /**
+     * @return the current encoding, will not be null.
+     */
+    public Charset getEncoding() {
+        return encoding;
+    }
+
+    /**
+     * @param encoding a not null encoding
+     * @throws IllegalArgumentException if encoding is null
+     */
+    public void setEncoding(Charset encoding) {
+        if (encoding == null) {
+            throw new IllegalArgumentException("Encoding may not be null");
+        }
+        this.encoding = encoding;
+    }
+
+    /**
+     * @param charsetName a string for the encoding to be used
+     * @throws UnsupportedCharsetException if charSet is not supported
+     */
+    public void setEncoding(String charsetName) {
+        this.encoding = Charset.forName(charsetName);
     }
 }

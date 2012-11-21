@@ -17,14 +17,12 @@
 
 package org.aerogear.android.impl.pipeline;
 
+import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeFactory;
-
-import android.util.Log;
 
 public final class DefaultPipeFactory implements PipeFactory {
 
@@ -41,7 +39,9 @@ public final class DefaultPipeFactory implements PipeFactory {
             } else {
                 createdPipe = new RestAdapter<T>(klass, httpProvider);
             }
-
+            
+            ((RestAdapter<T>)createdPipe).setEncoding(config.getEncoding());
+            
         } else {
             throw new IllegalArgumentException("Type is not supported yet");
         }

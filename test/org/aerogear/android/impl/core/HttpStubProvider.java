@@ -18,16 +18,23 @@
 package org.aerogear.android.impl.core;
 
 import java.net.URL;
-
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
 
 public class HttpStubProvider implements HttpProvider {
 
     private final URL url;
-
+    private final HeaderAndBody response;
+    
+    
     public HttpStubProvider(URL url) {
         this.url = url;
+        response = null;
+    }
+
+    public HttpStubProvider(URL url, HeaderAndBody response) {
+        this.url = url;
+        this.response = response;
     }
 
     public URL getUrl() {
@@ -35,19 +42,19 @@ public class HttpStubProvider implements HttpProvider {
     }
 
     public HeaderAndBody get() {
-        return null;
+        return response;
     }
 
     public HeaderAndBody post(String data) {
-        return null;
+        return response;
     }
 
     public HeaderAndBody put(String id, String data) {
-        return null;
+        return response;
     }
 
     public HeaderAndBody delete(String id) {
-        return null;
+        return response;
     }
 
     @Override
