@@ -16,8 +16,7 @@
  */
 package org.aerogear.android.authentication;
 
-import org.aerogear.android.authentication.impl.Authenticator;
-import org.aerogear.android.core.TypeDescriptor;
+import org.aerogear.android.TypeDescriptor;
 
 /**
  * A interface for the types of {@link  AuthenticationModule} {@link Authenticator}

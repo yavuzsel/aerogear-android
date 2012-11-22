@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.core;
+package org.aerogear.android;
 
 public interface TypeDescriptor {
     public String getName();
