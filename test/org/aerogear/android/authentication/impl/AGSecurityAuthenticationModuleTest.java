@@ -17,22 +17,23 @@
 package org.aerogear.android.authentication.impl;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.aerogear.android.Provider;
+import org.aerogear.android.authentication.AuthorizationFields;
+import org.aerogear.android.http.HeaderAndBody;
+import org.aerogear.android.http.HttpException;
+import org.aerogear.android.http.HttpProvider;
+import org.aerogear.android.impl.helper.TestUtil;
+import org.aerogear.android.impl.http.HttpStubProvider;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import org.aerogear.android.Provider;
-import org.aerogear.android.authentication.AuthorizationFields;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpException;
-import org.aerogear.android.core.HttpProvider;
-import org.aerogear.android.impl.helper.HttpStubProvider;
-import org.aerogear.android.impl.helper.TestUtil;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 @RunWith(RobolectricTestRunner.class)
 public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleTest {

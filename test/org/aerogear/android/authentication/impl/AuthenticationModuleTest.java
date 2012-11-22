@@ -17,7 +17,8 @@
 package org.aerogear.android.authentication.impl;
 
 import org.aerogear.android.Callback;
-import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.http.HeaderAndBody;
+
 
 /**
  * This interface sets up all of the static values for 

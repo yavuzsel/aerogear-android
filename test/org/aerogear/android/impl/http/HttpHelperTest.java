@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.impl.core;
+package org.aerogear.android.impl.http;
+
+import org.aerogear.android.http.HeaderAndBody;
+import org.aerogear.android.http.HttpException;
+import org.junit.Test;
 
 import java.util.HashMap;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpException;
+
 import static org.junit.Assert.*;
-import org.junit.Test;
 
 public class HttpHelperTest {
     private static final byte[] SIMPLE_DATA = { 8, 6, 7, 5, 3, 0, 9 };

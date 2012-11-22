@@ -17,17 +17,23 @@
 package org.aerogear.android.impl.pipeline;
 
 import android.graphics.Point;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.InstanceCreator;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import junit.framework.Assert;
+import org.aerogear.android.Callback;
+import org.aerogear.android.Pipeline;
+import org.aerogear.android.Provider;
+import org.aerogear.android.RecordId;
+import org.aerogear.android.http.HeaderAndBody;
+import org.aerogear.android.http.HttpProvider;
+import org.aerogear.android.impl.helper.Data;
+import org.aerogear.android.impl.helper.TestUtil;
+import org.aerogear.android.impl.http.HttpStubProvider;
+import org.aerogear.android.pipeline.Pipe;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
@@ -39,21 +45,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import junit.framework.Assert;
+
 import static junit.framework.Assert.assertEquals;
-import org.aerogear.android.Callback;
-import org.aerogear.android.Pipeline;
-import org.aerogear.android.Provider;
-import org.aerogear.android.RecordId;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpProvider;
-import org.aerogear.android.impl.helper.Data;
-import org.aerogear.android.impl.helper.HttpStubProvider;
-import org.aerogear.android.impl.helper.TestUtil;
-import org.aerogear.android.pipeline.Pipe;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 @RunWith(RobolectricTestRunner.class)
 public class RestAdapterTest {

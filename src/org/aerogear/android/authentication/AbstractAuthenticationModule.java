@@ -17,9 +17,10 @@
 package org.aerogear.android.authentication;
 
 import android.os.AsyncTask;
-import java.util.Map;
 import org.aerogear.android.Callback;
-import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.http.HeaderAndBody;
+
+import java.util.Map;
 
 /**
  * This class stubs out the enroll, login, and logout methods. If you call these

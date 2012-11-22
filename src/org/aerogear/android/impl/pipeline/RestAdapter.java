@@ -23,28 +23,25 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.aerogear.android.Callback;
 import org.aerogear.android.Provider;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.AuthorizationFields;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.http.HeaderAndBody;
+import org.aerogear.android.http.HttpProvider;
 import org.aerogear.android.impl.core.HttpProviderFactory;
 import org.aerogear.android.impl.reflection.Property;
 import org.aerogear.android.impl.reflection.Scan;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeType;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.net.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Rest implementation of {@link Pipe}.

@@ -20,7 +20,7 @@ package org.aerogear.android.impl.pipeline;
 import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.aerogear.android.impl.core.HttpRestProvider;
+import org.aerogear.android.impl.http.HttpRestProvider;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeFactory;
 

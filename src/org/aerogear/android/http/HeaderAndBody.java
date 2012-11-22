@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.core;
+package org.aerogear.android.http;
 
 import java.util.Arrays;
 import java.util.HashMap;

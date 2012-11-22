@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.impl.core;
+
+package org.aerogear.android.impl.http;
 
 import android.util.Log;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.aerogear.android.Provider;
+import org.aerogear.android.http.HeaderAndBody;
+import org.aerogear.android.http.HttpException;
+import org.aerogear.android.http.HttpProvider;
+import org.apache.http.HttpStatus;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,11 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.aerogear.android.Provider;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpException;
-import org.aerogear.android.core.HttpProvider;
-import org.apache.http.HttpStatus;
+
 
 /**
  * These are tuned for AeroGear, assume the body is String data, and that the

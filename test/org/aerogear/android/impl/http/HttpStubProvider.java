@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.aerogear.android.impl.helper;
+package org.aerogear.android.impl.http;
 
 import java.net.URL;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.http.HeaderAndBody;
+import org.aerogear.android.http.HttpProvider;
 
 public class HttpStubProvider implements HttpProvider {
 
