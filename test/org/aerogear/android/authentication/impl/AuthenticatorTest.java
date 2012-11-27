@@ -31,10 +31,10 @@ import org.junit.runner.RunWith;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthenticatorTest {
-    
+
     private static final URL SIMPLE_URL;
-    private static String SIMPLE_MODULE_NAME  = "simple";
-    
+    private static String SIMPLE_MODULE_NAME = "simple";
+
     static {
         try {
             SIMPLE_URL = new URL("http", "localhost", 80, "/");
@@ -43,7 +43,7 @@ public class AuthenticatorTest {
             throw new RuntimeException(ex);
         }
     }
-    
+
     @Test
     public void testAddSimpleAuthenticator() {
 
@@ -51,9 +51,9 @@ public class AuthenticatorTest {
         AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, new RestAuthenticationConfig());
 
         assertNotNull(simpleAuthModule);
-        
+
     }
-    
+
     @Test
     public void testAddAndGetSimpleAuthenticator() {
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
@@ -61,22 +61,20 @@ public class AuthenticatorTest {
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
 
-    
     @Test
     public void testAddAuthenticator() {
 
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
-        
+
         RestAuthenticationConfig config = new RestAuthenticationConfig();
         config.setAuthType(AuthTypes.REST);
         config.setEnrollEndpoint("testEnroill");
-        
+
         AuthenticationModule simpleAuthModule = authenticator.auth(SIMPLE_MODULE_NAME, config);
 
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
     }
 
-    
     @Test
     public void testGetNullAuthModule() {
 

@@ -40,7 +40,6 @@ public class Authenticator {
         this.baseURL = baseURL;
     }
 
-
     public Authenticator(String baseURL) {
         try {
             this.baseURL = new URL(baseURL);
@@ -49,7 +48,6 @@ public class Authenticator {
         }
 
     }
-
 
     /**
      * {@inheritDoc }
@@ -80,7 +78,6 @@ public class Authenticator {
         }
         modules.put(name, new RestAuthenticationModule(baseURL, config));
         return modules.get(name);
-
 
     }
 

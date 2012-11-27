@@ -58,7 +58,6 @@ public final class HttpRestProvider implements HttpProvider {
         this.client = new DefaultHttpClient();
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -96,7 +95,6 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -111,7 +109,6 @@ public final class HttpRestProvider implements HttpProvider {
             throw new RuntimeException(e);
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -168,7 +165,6 @@ public final class HttpRestProvider implements HttpProvider {
         newUrl.append(id);
         return newUrl.toString();
     }
-
 
     @Override
     public void setDefaultHeader(String headerName, String headerValue) {

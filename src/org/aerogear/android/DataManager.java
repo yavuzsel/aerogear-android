@@ -68,7 +68,6 @@ public class DataManager {
             this.idGenerator = idGenerator;
         }
 
-
         if (storeFactory == null) {
             this.storeFactory = new DefaultStoreFactory();
         } else {

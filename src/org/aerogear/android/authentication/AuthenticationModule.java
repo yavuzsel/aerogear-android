@@ -41,7 +41,6 @@ public interface AuthenticationModule {
 
     public String getEnrollEndpoint();
 
-
     /**
      * Will try to register a user with a service using userData.
      * <p/>

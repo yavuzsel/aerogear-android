@@ -46,12 +46,12 @@ public interface AuthenticationModuleTest {
      * Default AUTH Token
      */
     static final String TOKEN = "a016b29b-da74-4833-aa50-43c55788c528";
-    
+
     static final String PASSING_USERNAME = "spittman";
     static final String FAILING_USERNAME = "fail";
     static final String LOGIN_PASSWORD = "password";
     static final String ENROLL_PASSWORD = "spittman";
-    
+
     static final RequestMatcher LOGIN_MATCHER = new RequestMatcher() {
         @Override
         public boolean matches(HttpRequest request) {
@@ -61,12 +61,12 @@ public interface AuthenticationModuleTest {
                     JSONObject data = new JSONObject(EntityUtils.toString(entity));
                     return (data.getString("username").equalsIgnoreCase(PASSING_USERNAME)
                             && data.getString("password").equalsIgnoreCase(LOGIN_PASSWORD));
-                } catch (Throwable t) {
+                        } catch (Throwable t) {
+                            return false;
+                        }
+                    }
                     return false;
                 }
-            }
-            return false;
-        }
     };
     static final RequestMatcher ENROLL_PASS_MATCHER = new RequestMatcher() {
         @Override
@@ -77,14 +77,14 @@ public interface AuthenticationModuleTest {
                     JSONObject data = new JSONObject(EntityUtils.toString(entity));
                     return (data.getString("username").equalsIgnoreCase(PASSING_USERNAME)
                             && data.getString("password").equalsIgnoreCase(ENROLL_PASSWORD));
-                } catch (Throwable t) {
+                        } catch (Throwable t) {
+                            return false;
+                        }
+                    }
                     return false;
                 }
-            }
-            return false;
-        }
     };
-    
+
     static final RequestMatcher ENROLL_FAIL_MATCHER = new RequestMatcher() {
         @Override
         public boolean matches(HttpRequest request) {
@@ -94,16 +94,17 @@ public interface AuthenticationModuleTest {
                     JSONObject data = new JSONObject(EntityUtils.toString(entity));
                     return (data.getString("username").equalsIgnoreCase(FAILING_USERNAME)
                             && data.getString("password").equalsIgnoreCase(ENROLL_PASSWORD));
-                } catch (Throwable t) {
+                        } catch (Throwable t) {
+                            return false;
+                        }
+                    }
                     return false;
                 }
-            }
-            return false;
-        }
     };
-    
+
     static final HttpResponse VALID_LOGIN = new BasicHttpResponse(new StatusLineStub()) {
-        private String  TOKEN_HEADER = "Auth-Token";
+        private String TOKEN_HEADER = "Auth-Token";
+
         @Override
         public Header getFirstHeader(String name) {
             if (name.equals(TOKEN_HEADER)) {
@@ -116,10 +117,10 @@ public interface AuthenticationModuleTest {
 
         @Override
         public Header[] getAllHeaders() {
-            return new Header[]{
+            return new Header[] {
                         new BasicHeader(TOKEN_HEADER, TOKEN)
                     };
-        }
+                }
 
         @Override
         public HttpEntity getEntity() {
@@ -140,16 +141,16 @@ public interface AuthenticationModuleTest {
     };
 
     static final HttpResponse ENROLL_PASS = VALID_LOGIN;
-    
+
     static final HttpResponse ENROLL_FAIL = new BasicHttpResponse(new StatusLineStub()) {
         @Override
         public Header getFirstHeader(String name) {
-                return new BasicHeader("","");
+            return new BasicHeader("", "");
         }
 
         @Override
         public Header[] getAllHeaders() {
-            return new Header[]{};
+            return new Header[] {};
         }
 
         @Override
@@ -167,7 +168,7 @@ public interface AuthenticationModuleTest {
             return new BasicStatusLine(new ProtocolVersion("http", 1, 1), 400, "");
         }
     };
-    
+
     final class SimpleCallback implements Callback<HeaderAndBody> {
 
         HeaderAndBody data;
@@ -183,15 +184,14 @@ public interface AuthenticationModuleTest {
             this.exception = e;
         }
     }
-    
+
     final class VoidCallback implements Callback<Void> {
 
-        
         Exception exception;
 
         @Override
         public void onSuccess(Void data) {
-            
+
         }
 
         @Override

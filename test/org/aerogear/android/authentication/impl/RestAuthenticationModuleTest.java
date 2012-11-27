@@ -32,145 +32,141 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 @RunWith(RobolectricTestRunner.class)
 public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
-    
+
     private static final String TAG = "RestAuthenticationModuleTest";
     private static final URL SIMPLE_URL;
-    
+
     static {
         try {
-            SIMPLE_URL= new URL("http://localhost:8080/todo-server");
+            SIMPLE_URL = new URL("http://localhost:8080/todo-server");
         } catch (MalformedURLException ex) {
             throw new IllegalStateException(ex);
         }
     }
-    
+
     @Before
     public void setup() {
         Robolectric.setDefaultHttpResponse(401, "Unauthorized");
     }
-    
+
     @After
     public void cleaRules() {
-        Robolectric.clearHttpResponseRules();  
+        Robolectric.clearHttpResponseRules();
         Robolectric.clearPendingHttpResponses();
     }
-    
-    @Test(timeout=5000L)
+
+    @Test(timeout = 5000L)
     public void loginFails() throws IOException {
         RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         SimpleCallback callback = new SimpleCallback();
         module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
-        
-        while(!Robolectric.httpRequestWasMade()) {
-        
-        };
+
+        while (!Robolectric.httpRequestWasMade()) {
+
+        }
+        ;
         Assert.assertNotNull(callback.exception);
         Assert.assertFalse(module.isLoggedIn());
     }
-    
-    
-    @Test(timeout=50000L)
+
+    @Test(timeout = 50000L)
     public void loginSucceeds() throws IOException {
         RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         Robolectric.addHttpResponseRule(LOGIN_MATCHER, VALID_LOGIN);
         SimpleCallback callback = new SimpleCallback();
         module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
-        
-        while(!Robolectric.httpRequestWasMade()) {
-        
-        };
+
+        while (!Robolectric.httpRequestWasMade()) {
+
+        }
+        ;
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
         Assert.assertTrue(module.isLoggedIn());
         Assert.assertEquals(TOKEN, module.getAuthToken());
     }
-    
-    @Test(timeout=50000L)
+
+    @Test(timeout = 50000L)
     public void enrollSucceeds() throws IOException {
         RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         Robolectric.addHttpResponseRule(ENROLL_PASS_MATCHER, ENROLL_PASS);
         SimpleCallback callback = new SimpleCallback();
-        
+
         Map<String, String> userData = new HashMap<String, String>();
         userData.put("username", PASSING_USERNAME);
         userData.put("password", ENROLL_PASSWORD);
         userData.put("firstname", "Summers");
         userData.put("lastname", "Pittman");
         userData.put("role", "admin");
-        
+
         module.enroll(userData, callback);
-        
-        while(!Robolectric.httpRequestWasMade()) {
-        
-        };
+
+        while (!Robolectric.httpRequestWasMade()) {
+
+        }
+        ;
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
-        
+
         String result = new String(callback.data.getBody(), "UTF-8");
         JsonParser parser = new JsonParser();
         JsonObject resultObject = (JsonObject) parser.parse(result);
         Assert.assertEquals(PASSING_USERNAME, resultObject.get("username").getAsString());
-        
+
         Assert.assertTrue(module.isLoggedIn());
         Assert.assertEquals(TOKEN, module.getAuthToken());
     }
-    
-    
-    @Test(timeout=50000L)
+
+    @Test(timeout = 50000L)
     public void enrollFails() throws IOException {
         RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         Robolectric.addHttpResponseRule(ENROLL_FAIL_MATCHER, ENROLL_FAIL);
         SimpleCallback callback = new SimpleCallback();
-        
+
         Map<String, String> userData = new HashMap<String, String>();
         userData.put("username", FAILING_USERNAME);
         userData.put("password", ENROLL_PASSWORD);
         userData.put("firstname", "Summers");
         userData.put("lastname", "Pittman");
         userData.put("role", "admin");
-        
+
         module.enroll(userData, callback);
-        
-        while(!Robolectric.httpRequestWasMade()) {
-        
-        };
+
+        while (!Robolectric.httpRequestWasMade()) {
+
+        }
+        ;
         Assert.assertNotNull(callback.exception);
         Assert.assertNull(callback.data);
         Assert.assertFalse(module.isLoggedIn());
-        Assert.assertEquals(400, ((HttpException)callback.exception).getStatusCode());
+        Assert.assertEquals(400, ((HttpException) callback.exception).getStatusCode());
     }
-    
-        
-    @Test(timeout=50000L)
+
+    @Test(timeout = 50000L)
     public void logoutSucceeds() throws IOException {
         RestAuthenticationModule module = new RestAuthenticationModule(SIMPLE_URL, new RestAuthenticationConfig());
         Robolectric.addHttpResponseRule(LOGIN_MATCHER, VALID_LOGIN);
         SimpleCallback callback = new SimpleCallback();
         module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
-        
+
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
         Assert.assertTrue(module.isLoggedIn());
         Assert.assertEquals(TOKEN, module.getAuthToken());
-        
+
         //Reset
         Robolectric.clearHttpResponseRules();
         Robolectric.setDefaultHttpResponse(200, "");
         VoidCallback voidCallback = new VoidCallback();
-        
-        
+
         module.logout(voidCallback);
         Assert.assertNull(voidCallback.exception);
-        
+
         Assert.assertFalse(module.isLoggedIn());
         Assert.assertEquals("", module.getAuthToken());
-        
-        
+
     }
 
-    
-    
 }
