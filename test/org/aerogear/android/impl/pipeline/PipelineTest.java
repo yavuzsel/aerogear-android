@@ -95,7 +95,6 @@ public class PipelineTest {
         assertEquals("verifying the given URL", "http://server.com/otherContext/data", newPipe.getUrl().toString());
     }
 
-
     @Test
     public void testAddPipeWithEndpointAndType() throws MalformedURLException {
         Pipeline pipeline = new Pipeline(url);
@@ -182,8 +181,8 @@ public class PipelineTest {
         PipeConfig pipeConfig = new PipeConfig(url, Data.class);
         pipeConfig.setEndpoint("EndPoint");
         Pipe<Data> pipe = pipeline.pipe(Data.class, pipeConfig);
-        assertEquals("http://server.com/context/EndPoint",pipe.getUrl().toString());
-                
+        assertEquals("http://server.com/context/EndPoint", pipe.getUrl().toString());
+
     }
-    
+
 }

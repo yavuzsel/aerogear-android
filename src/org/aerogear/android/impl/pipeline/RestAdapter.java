@@ -150,7 +150,6 @@ public final class RestAdapter<T> implements Pipe<T> {
                     String body = gson.toJson(data);
                     applyAuthToken();
 
-
                     HeaderAndBody result = null;
                     if (id == null || id.length() == 0) {
                         result = httpProvider.post(body);

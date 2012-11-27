@@ -97,7 +97,15 @@
                     </artifactItems>
                     <outputDirectory>${basedir}/libs</outputDirectory>
                 </configuration>
-
+            </plugin>
+            <plugin>
+                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                <artifactId>maven-java-formatter-plugin</artifactId>
+                <version>0.3.1</version>
+                <configuration>
+                    <configFile>${project.basedir}/support/eclipse-formatting.xml</configFile>
+                    <lineEnding>LF</lineEnding>
+                </configuration>
             </plugin>
         </plugins>
     </build>

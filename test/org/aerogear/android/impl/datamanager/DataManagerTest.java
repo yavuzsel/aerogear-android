@@ -40,7 +40,7 @@ public class DataManagerTest {
     public void testRegisterPipeFactory() throws MalformedURLException {
         @SuppressWarnings("LocalVariableHidesMemberVariable")
         DataManager dataManager = new DataManager(new StubStoreFactory());
-        
+
         Store store = dataManager.store("stub store");
 
         assertNotNull("store could not be null", store);
@@ -62,6 +62,7 @@ public class DataManagerTest {
         assertNotNull("store could not be null", store);
         assertEquals("verifying the type", MEMORY, store.getType());
     }
+
     @Test
     public void testAddStoreWithDefaulType() {
         dataManager.store("foo");
@@ -80,14 +81,14 @@ public class DataManagerTest {
         assertEquals("verifying the type", MEMORY, store.getType());
     }
 
-    @Test 
+    @Test
     public void testAndAddAndRemoveStores() {
         dataManager.store("foo", MEMORY);
         dataManager.store("bar");
 
         Store fooStore = dataManager.get("foo");
         assertNotNull("foo store could not be null", fooStore);
-        
+
         Store barStore = dataManager.get("bar");
         assertNotNull("bar store could not be null", barStore);
 

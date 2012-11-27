@@ -26,7 +26,6 @@ import org.aerogear.android.pipeline.PipeFactory;
 
 public final class DefaultPipeFactory implements PipeFactory {
 
-
     @Override
     public <T> Pipe<T> createPipe(Class<T> klass, PipeConfig config) {
         Pipe<T> createdPipe;
@@ -39,9 +38,9 @@ public final class DefaultPipeFactory implements PipeFactory {
             } else {
                 createdPipe = new RestAdapter<T>(klass, httpProvider);
             }
-            
-            ((RestAdapter<T>)createdPipe).setEncoding(config.getEncoding());
-            
+
+            ((RestAdapter<T>) createdPipe).setEncoding(config.getEncoding());
+
         } else {
             throw new IllegalArgumentException("Type is not supported yet");
         }
@@ -58,7 +57,7 @@ public final class DefaultPipeFactory implements PipeFactory {
             if (!baseURL.toString().endsWith("/")) {
                 endpoint = "/" + endpoint;
             }
-            return new URL(baseURL + endpoint );
+            return new URL(baseURL + endpoint);
         } catch (MalformedURLException e) {
             Log.e("AeroGear", e.getMessage());
             return null;

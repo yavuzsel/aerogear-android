@@ -71,5 +71,4 @@ public interface HttpProvider {
      */
     public void setDefaultHeader(String headerName, String headerValue);
 
-
 }

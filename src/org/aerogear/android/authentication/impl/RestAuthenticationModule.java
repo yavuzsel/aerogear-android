@@ -49,7 +49,6 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     private final String enrollEndpoint;
     private final URL enrollURL;
 
-
     /**
      * This is the field which stores the AG security token.
      */
@@ -84,7 +83,6 @@ public final class RestAuthenticationModule implements AuthenticationModule {
         this.logoutURL = appendToBaseURL(logoutEndpoint);
         this.enrollURL = appendToBaseURL(enrollEndpoint);
     }
-
 
     @Override
     public URL getbaseURL() {
@@ -137,7 +135,6 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                     callback.onFailure(exception);
                 }
             }
-
 
         }.execute((Void) null);
     }
@@ -242,7 +239,6 @@ public final class RestAuthenticationModule implements AuthenticationModule {
             Log.e(TAG, message, ex);
             throw new IllegalArgumentException(message, ex);
         }
-
 
     }
 

@@ -25,8 +25,7 @@ public class HttpStubProvider implements HttpProvider {
 
     private final URL url;
     private final HeaderAndBody response;
-    
-    
+
     public HttpStubProvider(URL url) {
         this.url = url;
         response = null;

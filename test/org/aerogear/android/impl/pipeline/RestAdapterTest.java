@@ -98,10 +98,10 @@ public class RestAdapterTest {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
         final Charset utf_16 = Charset.forName("UTF-16");
         HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(utf_16), new HashMap<String, Object>()));
-        
+
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, provider, builder);
         restPipe.setEncoding(utf_16);
-        
+
         runRead(restPipe);
 
     }
@@ -112,9 +112,9 @@ public class RestAdapterTest {
         HeaderAndBody response = new HeaderAndBody(SERIALIZED_POINTS.getBytes(), new HashMap<String, Object>());
         HttpStubProvider provider = new HttpStubProvider(url, response);
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, provider, builder);
-        
+
         List<ListClassId> result = runRead(restPipe);
-        
+
         List<Point> returnedPoints = result.get(0).points;
         assertEquals(10, returnedPoints.size());
 
@@ -147,7 +147,6 @@ public class RestAdapterTest {
         final ListClassId listClass = new ListClassId();
         final List<Point> returnedPoints = new ArrayList<Point>(10);
 
-
         restPipe.save(listClass, new Callback<ListClassId>() {
             @Override
             public void onSuccess(ListClassId data) {
@@ -160,7 +159,6 @@ public class RestAdapterTest {
                 throw new RuntimeException(e);
             }
         });
-
 
         latch.await(2, TimeUnit.SECONDS);
         assertEquals(SERIALIZED_POINTS, request.toString());
@@ -192,10 +190,9 @@ public class RestAdapterTest {
             }
         });
 
-
         latch.await(2, TimeUnit.SECONDS);
         Assert.assertFalse(hasException.get());
-        
+
         return returnedData;
     }
 
