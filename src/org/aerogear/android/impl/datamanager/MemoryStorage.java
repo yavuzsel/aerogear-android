@@ -16,13 +16,16 @@
  */
 package org.aerogear.android.impl.datamanager;
 
+import org.aerogear.android.datamanager.IdGenerator;
+import org.aerogear.android.datamanager.Store;
+import org.aerogear.android.datamanager.StoreType;
+import org.aerogear.android.impl.reflection.Property;
+import org.aerogear.android.impl.reflection.Scan;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.aerogear.android.datamanager.IdGenerator;
-import org.aerogear.android.datamanager.Store;
-import org.aerogear.android.datamanager.StoreType;
 
 /**
  * Memory implementation of Store {@link Store}.
@@ -60,14 +63,24 @@ public class MemoryStorage<T> implements Store<T> {
         return data.get(id);
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     @Override
     public void save(T item) {
-        Serializable newId = idGenerator.generate();
-        // TODO Put newId on item
-        data.put(newId, item);
+
+        String recordIdFieldName = Scan.recordIdFieldNameIn(item.getClass());
+
+        Property property = new Property(item.getClass(), recordIdFieldName);
+
+        Serializable idValue = (Serializable) property.getValue(item);
+
+        if( idValue == null ) {
+            idValue = idGenerator.generate();
+            property.setValue(item, idValue);
+        }
+
+        data.put(idValue, item);
     }
 
     /**

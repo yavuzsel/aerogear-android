@@ -44,6 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import junit.framework.Assert;
 import static junit.framework.Assert.assertEquals;
 import org.aerogear.android.Callback;
+import org.aerogear.android.RecordId;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.impl.core.HttpStubProvider;
 import org.aerogear.android.impl.helper.Data;
@@ -199,6 +200,8 @@ public class RestAdapterTest {
     public final static class ListClassId {
 
         List<Point> points = new ArrayList<Point>(10);
+
+        @RecordId
         String id = "1";
 
         public ListClassId() {
@@ -209,6 +212,10 @@ public class RestAdapterTest {
 
         public String getId() {
             return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
 
         @Override
