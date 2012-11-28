@@ -34,7 +34,7 @@ public interface HttpProvider {
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody get() throws HttpException, Exception;
+    public HeaderAndBody get() throws HttpException;
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up
@@ -43,7 +43,7 @@ public interface HttpProvider {
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody post(String data) throws RuntimeException;
+    public HeaderAndBody post(String data) throws HttpException;
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up
@@ -52,7 +52,7 @@ public interface HttpProvider {
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody put(String id, String data) throws RuntimeException;
+    public HeaderAndBody put(String id, String data) throws HttpException;
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up
@@ -61,13 +61,13 @@ public interface HttpProvider {
      * @return
      * @throws HttpException if the http request doesn't return status 200
      */
-    public HeaderAndBody delete(String id) throws RuntimeException;
+    public HeaderAndBody delete(String id) throws HttpException;
 
     /**
      * Will set a default header value to be used on all calls
      *
-     * @param header Name
-     * @param header Value
+     * @param headerName name
+     * @param headerValue value
      */
     public void setDefaultHeader(String headerName, String headerValue);
 

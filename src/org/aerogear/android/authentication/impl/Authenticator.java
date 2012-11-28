@@ -33,7 +33,7 @@ import org.aerogear.android.authentication.AuthenticationModule;
  */
 public class Authenticator {
 
-    private Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
+    private final Map<String, AuthenticationModule> modules = new HashMap<String, AuthenticationModule>();
     private final URL baseURL;
 
     public Authenticator(URL baseURL) {

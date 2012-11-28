@@ -14,48 +14,94 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.aerogear.android.impl.core;
 
 import android.util.Log;
-import java.io.ByteArrayInputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.aerogear.android.Provider;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpException;
 import org.aerogear.android.core.HttpProvider;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.HttpStatus;
 
 /**
- * These are tuned for Aerogear, assume the body is String data, and that
- * the headers don't do anything funny.
+ *
+ *
+ *
+ * These are tuned for Aerogear, assume the body is String data, and that the
+ * headers don't do anything funny.
+ *
+ *
+
  */
 public final class HttpRestProvider implements HttpProvider {
 
-    private static final String TAG = "AeroGear";
-
+    private static final String TAG = HttpRestProvider.class.getSimpleName();
     private final URL url;
-    private final HttpClient client;
+    private final Map<String, String> defaultHeaders = new HashMap<String, String>();
 
-    private Map<String, String> defaultHeaders = new HashMap<String, String>();
+    /**
+     * Set at the bottom of this 
+     */
+    private Provider<HttpURLConnection> connectionPreparer = new Provider<HttpURLConnection>() {
+        @Override
+        public HttpURLConnection get(Object... in) {
+            String id = null;
+
+            if (in != null) {
+                id = (String) in[0];
+            }
+
+            URL resourceURL = HttpRestProvider.this.url;
+
+            if (id != null) {
+                try {
+                    resourceURL = new URL(HttpRestProvider.this
+                            .appendIdToURL(id));
+                } catch (MalformedURLException ex) {
+                    Log.e(TAG, String.format("Failed to append %s to %s", id,
+                            resourceURL.toString()), ex);
+                    throw new RuntimeException(ex);
+                }
+            }
+
+            HttpURLConnection urlConnection;
+            try {
+                urlConnection = (HttpURLConnection) resourceURL
+                        .openConnection();
+            } catch (IOException ex) {
+                Log.e(TAG, String.format("Failed to open %s", resourceURL
+                        .toString()), ex);
+                throw new RuntimeException(ex);
+            }
+
+            urlConnection
+                    .setRequestProperty("Content-Type", "application/json");
+
+            for (Entry<String, String> entry : defaultHeaders.entrySet()) {
+                urlConnection.setRequestProperty(entry.getKey(), entry
+                        .getValue());
+            }
+
+            return urlConnection;
+
+        }
+    };
 
     public HttpRestProvider(URL url) {
         this.url = url;
-        this.client = new DefaultHttpClient();
     }
 
     /**
@@ -70,12 +116,19 @@ public final class HttpRestProvider implements HttpProvider {
      * {@inheritDoc}
      */
     @Override
-    public HeaderAndBody get() throws RuntimeException {
+    public HeaderAndBody get() throws HttpException {
+        HttpURLConnection urlConnection = null;
         try {
-            return execute(new HttpGet(url.toString()));
+            urlConnection = prepareConnection();
+            return getHeaderAndBody(urlConnection);
+
         } catch (IOException e) {
             Log.e(TAG, "Error on GET of " + url, e);
             throw new RuntimeException(e);
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
     }
 
@@ -84,14 +137,20 @@ public final class HttpRestProvider implements HttpProvider {
      */
     @Override
     public HeaderAndBody post(String data) throws RuntimeException {
+        HttpURLConnection urlConnection = null;
 
-        HttpPost post = new HttpPost(url.toString());
-        addBodyRequest(post, data);
         try {
-            return execute(post);
+            urlConnection = prepareConnection();
+            addBodyRequest(urlConnection, data);
+            return getHeaderAndBody(urlConnection);
+
         } catch (IOException e) {
             Log.e(TAG, "Error on POST of " + url, e);
             throw new RuntimeException(e);
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
     }
 
@@ -100,13 +159,20 @@ public final class HttpRestProvider implements HttpProvider {
      */
     @Override
     public HeaderAndBody put(String id, String data) throws RuntimeException {
-        HttpPut put = new HttpPut(appendIdToURL(id));
-        addBodyRequest(put, data);
+        HttpURLConnection urlConnection = null;
+
         try {
-            return execute(put);
+            urlConnection = prepareConnection(id);
+            addBodyRequest(urlConnection, data);
+            urlConnection.setRequestMethod("PUT");
+            return getHeaderAndBody(urlConnection);
         } catch (IOException e) {
             Log.e(TAG, "Error on PUT of " + url, e);
             throw new RuntimeException(e);
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
     }
 
@@ -115,46 +181,43 @@ public final class HttpRestProvider implements HttpProvider {
      */
     @Override
     public HeaderAndBody delete(String id) throws RuntimeException {
-        HttpDelete delete = new HttpDelete(appendIdToURL(id));
+
+        HttpURLConnection urlConnection = null;
         try {
-            return execute(delete);
+            urlConnection = prepareConnection(id);
+            urlConnection.setRequestMethod("DELETE");
+            return getHeaderAndBody(urlConnection);
         } catch (IOException e) {
             Log.e(TAG, "Error on DELETE of " + url, e);
             throw new RuntimeException(e);
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
     }
 
-    private void addBodyRequest(HttpEntityEnclosingRequestBase requestBase, String data) {
-        BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(new ByteArrayInputStream(data.getBytes()));
-        requestBase.setEntity(entity);
+    private void addBodyRequest(HttpURLConnection urlConnection, String data)
+            throws IOException {
+
+        urlConnection.setDoOutput(true);
+        urlConnection.setRequestMethod("POST");
+
+        if (data != null) {
+            OutputStream out = new BufferedOutputStream(urlConnection
+                    .getOutputStream());
+            out.write(data.getBytes());
+            out.flush();
+        }
+
     }
 
-    private HeaderAndBody execute(HttpRequestBase method) throws IOException {
-        method.setHeader("Accept", "application/json");
-        method.setHeader("Content-type", "application/json");
+    private HttpURLConnection prepareConnection() throws IOException {
+        return prepareConnection(null);
+    }
 
-        for (Entry<String, String> entry : defaultHeaders.entrySet()) {
-            method.setHeader(entry.getKey(), entry.getValue());
-        }
-
-        HttpResponse response = client.execute(method);
-
-        int statusCode = response.getStatusLine().getStatusCode();
-        byte[] data = EntityUtils.toByteArray(response.getEntity());
-        response.getEntity().consumeContent();
-        if (statusCode != 200) {
-            throw new HttpException(data, statusCode);
-        }
-
-        Header[] headers = response.getAllHeaders();
-        HeaderAndBody result = new HeaderAndBody(data, new HashMap<String, Object>(headers.length));
-
-        for (Header header : headers) {
-            result.setHeader(header.getName(), header.getValue());
-        }
-
-        return result;
+    private HttpURLConnection prepareConnection(String id) throws IOException {
+        return connectionPreparer.get(id);
     }
 
     private String appendIdToURL(String id) {
@@ -169,6 +232,68 @@ public final class HttpRestProvider implements HttpProvider {
     @Override
     public void setDefaultHeader(String headerName, String headerValue) {
         defaultHeaders.put(headerName, headerValue);
+    }
+
+    private HeaderAndBody getHeaderAndBody(HttpURLConnection urlConnection)
+            throws IOException {
+
+        int statusCode = urlConnection.getResponseCode();
+        HeaderAndBody result;
+        Map<String, List<String>> headers;
+        byte[] responseData;
+
+        switch (statusCode) {
+        case HttpStatus.SC_OK:
+            InputStream in = new BufferedInputStream(urlConnection
+                        .getInputStream());
+
+            responseData = readBytes(in);
+
+            break;
+
+        case HttpStatus.SC_NO_CONTENT:
+            responseData = new byte[0];
+
+            break;
+
+        default:
+            InputStream err = new BufferedInputStream(urlConnection
+                        .getErrorStream());
+
+            byte[] errData = readBytes(err);
+
+            throw new HttpException(errData, statusCode);
+
+        }
+
+        headers = urlConnection.getHeaderFields();
+        result = new HeaderAndBody(responseData, new HashMap<String, Object>(
+                headers.size()));
+
+        for (Map.Entry<String, List<String>> header : headers.entrySet()) {
+            result.setHeader(header.getKey(), header.getValue().get(0));
+        }
+
+        return result;
+
+    }
+
+    private byte[] readBytes(InputStream inputStream) throws IOException {
+        // this dynamically extends to take the bytes you read
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+
+        // this is storage overwritten on each iteration with bytes
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        // we need to know how may bytes were read to write them to the byteBuffer
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+
+        // and then we can return your byte array.
+        return byteBuffer.toByteArray();
     }
 
 }

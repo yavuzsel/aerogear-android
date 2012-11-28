@@ -17,18 +17,18 @@
 
 package org.aerogear.android.impl.datamanager;
 
-import org.aerogear.android.impl.reflection.PropertyNotFoundException;
-import org.aerogear.android.impl.reflection.RecordIdNotFoundException;
+import java.util.Collection;
+
+import org.aerogear.android.datamanager.StoreType;
+import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
 import org.aerogear.android.impl.helper.Data;
 import org.aerogear.android.impl.helper.DataWithNoIdConfigured;
 import org.aerogear.android.impl.helper.DataWithNoPropertyId;
+import org.aerogear.android.impl.reflection.PropertyNotFoundException;
+import org.aerogear.android.impl.reflection.RecordIdNotFoundException;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Collection;
-
-import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
-import static org.junit.Assert.*;
 
 public class MemoryStorageTest {
 
@@ -44,6 +44,12 @@ public class MemoryStorageTest {
     @Test
     public void testStoreType() {
         assertEquals("verifying the type", MEMORY, store.getType());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testStoreTypeThrowsException() {
+        DefaultStoreFactory factory = new DefaultStoreFactory();
+        factory.createStore(new FakeStoreType(), null);
     }
 
     @Test
@@ -136,6 +142,14 @@ public class MemoryStorageTest {
 
         bar = store.read(2);
         assertNull("bar should be null", bar);
+    }
+
+    private static class FakeStoreType implements StoreType {
+
+        @Override
+        public String getName() {
+            return "FAKE";
+        }
     }
 
 }

@@ -18,7 +18,6 @@ package org.aerogear.android.impl.pipeline;
 
 import android.graphics.Point;
 import com.google.gson.Gson;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
 import com.google.gson.JsonDeserializationContext;
@@ -44,10 +43,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import junit.framework.Assert;
 import static junit.framework.Assert.assertEquals;
 import org.aerogear.android.Callback;
+import org.aerogear.android.Pipeline;
 import org.aerogear.android.RecordId;
 import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.impl.core.HttpStubProvider;
 import org.aerogear.android.impl.helper.Data;
+import org.aerogear.android.impl.helper.HttpStubProvider;
+import org.aerogear.android.impl.helper.TestUtil;
 import org.aerogear.android.pipeline.Pipe;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,8 +77,16 @@ public class RestAdapterTest {
         assertEquals("verifying the given URL", "http://server.com/context/", restPipe.getUrl().toString());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testPipeFactoryPipeConfigEncoding() {
+        PipeConfig config = new PipeConfig(url, Data.class);
+        config.setEncoding("UTF-16");
+        assertEquals(Charset.forName("UTF-16"), config.getEncoding());
+        config.setEncoding((Charset) null);
+    }
+
     @Test
-    public void testPipeFactorPipeConfigGson() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    public void testPipeFactoryPipeConfigGson() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
 
         DefaultPipeFactory factory = new DefaultPipeFactory();
@@ -95,7 +104,7 @@ public class RestAdapterTest {
     }
 
     @Test(timeout = 500L)
-    public void setEncoding() throws InterruptedException {
+    public void testEncoding() throws InterruptedException {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
         final Charset utf_16 = Charset.forName("UTF-16");
         HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(utf_16), new HashMap<String, Object>()));
@@ -104,6 +113,24 @@ public class RestAdapterTest {
         restPipe.setEncoding(utf_16);
 
         runRead(restPipe);
+
+    }
+
+    @Test(timeout = 500L)
+    public void testConfigSetEncoding() throws Exception {
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(
+                Point.class, new RestAdapterTest.PointTypeAdapter());
+        final Charset utf_16 = Charset.forName("UTF-16");
+
+        Pipeline pipeline = new Pipeline(url);
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setEncoding(utf_16);
+        config.setGsonBuilder(builder);
+
+        RestAdapter<ListClassId> restPipe = (RestAdapter<ListClassId>) pipeline
+                .pipe(ListClassId.class, config);
+
+        assertEquals(utf_16, TestUtil.getPrivateField(restPipe, "encoding"));
 
     }
 
@@ -167,8 +194,8 @@ public class RestAdapterTest {
     }
 
     /**
-     * Runs a read method, returns the result of the call back
-     * and makes sure no exceptions are thrown
+     * Runs a read method, returns the result of the call back and makes sure no
+     * exceptions are thrown
      *
      * @param restPipe
      */
@@ -200,7 +227,6 @@ public class RestAdapterTest {
     public final static class ListClassId {
 
         List<Point> points = new ArrayList<Point>(10);
-
         @RecordId
         String id = "1";
 

@@ -35,24 +35,11 @@ public class HttpException extends RuntimeException {
     private int statusCode;
 
     public HttpException(byte[] data, int statusCode) {
-        this.data = data;
-        this.statusCode = statusCode;
+        this(data, statusCode, null);
     }
 
     public HttpException(byte[] data, int statusCode, String message) {
         super(message);
-        this.data = data;
-        this.statusCode = statusCode;
-    }
-
-    public HttpException(byte[] data, int statusCode, String message, Throwable cause) {
-        super(message, cause);
-        this.data = data;
-        this.statusCode = statusCode;
-    }
-
-    public HttpException(byte[] data, int statusCode, Throwable cause) {
-        super(cause);
         this.data = data;
         this.statusCode = statusCode;
     }

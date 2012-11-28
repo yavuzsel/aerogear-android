@@ -16,15 +16,15 @@
  */
 package org.aerogear.android;
 
-/**
- * Builders offer a different way to create objects which may have
- * complex construction rules.
- */
-public interface Builder<T> {
+public interface Provider<T> {
 
     /**
-     * @return a built instance of T
+     * 
+     * Constructs and returns an object of type T
+     * 
+     * @param in a variable number of parameters to pass to the constructor
+     * @return 
      */
-    public T build();
+    public T get(Object... in);
 
 }

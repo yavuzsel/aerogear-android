@@ -21,6 +21,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import java.lang.reflect.Array;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBody;
@@ -29,13 +35,6 @@ import org.aerogear.android.impl.reflection.Property;
 import org.aerogear.android.impl.reflection.Scan;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeType;
-
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Rest implementation of {@link Pipe}.
@@ -55,7 +54,6 @@ public final class RestAdapter<T> implements Pipe<T> {
     private final Class<T[]> arrayKlass;
     private final HttpProvider httpProvider;
     private AuthenticationModule authModule;
-    private static final String TAG = "RestAdapter";
     private Charset encoding = Charset.forName("UTF-8");
 
     public RestAdapter(Class<T> klass, HttpProvider httpProvider) {
@@ -65,7 +63,8 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.gson = new Gson();
     }
 
-    public RestAdapter(Class<T> klass, HttpProvider httpProvider, GsonBuilder gsonBuilder) {
+    public RestAdapter(Class<T> klass, HttpProvider httpProvider,
+            GsonBuilder gsonBuilder) {
         this.klass = klass;
         this.arrayKlass = asArrayClass(klass);
         this.httpProvider = httpProvider;
@@ -103,7 +102,8 @@ public final class RestAdapter<T> implements Pipe<T> {
                     JsonParser parser = new JsonParser();
                     JsonElement result = parser.parse(responseAsString);
                     if (result.isJsonArray()) {
-                        T[] resultArray = gson.fromJson(responseAsString, arrayKlass);
+                        T[] resultArray = gson.fromJson(responseAsString,
+                                arrayKlass);
                         return new AsyncTaskResult(Arrays.asList(resultArray));
                     } else {
                         T resultObject = gson.fromJson(responseAsString, klass);
@@ -118,7 +118,8 @@ public final class RestAdapter<T> implements Pipe<T> {
             }
 
             @Override
-            protected void onPostExecute(AsyncTaskResult<List<T>> asyncTaskResult) {
+            protected void onPostExecute(
+                    AsyncTaskResult<List<T>> asyncTaskResult) {
                 if (asyncTaskResult.getError() != null) {
                     callback.onFailure(asyncTaskResult.getError());
                 } else {

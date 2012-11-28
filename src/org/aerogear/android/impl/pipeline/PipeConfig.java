@@ -113,4 +113,5 @@ public final class PipeConfig {
     public void setEncoding(String charsetName) {
         this.encoding = Charset.forName(charsetName);
     }
+
 }

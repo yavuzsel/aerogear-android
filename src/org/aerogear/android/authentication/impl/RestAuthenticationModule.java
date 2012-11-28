@@ -18,12 +18,12 @@ package org.aerogear.android.authentication.impl;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import org.aerogear.android.Callback;
+import org.aerogear.android.Provider;
 import org.aerogear.android.authentication.AuthenticationConfig;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBody;
@@ -36,9 +36,15 @@ import org.json.JSONObject;
  */
 public final class RestAuthenticationModule implements AuthenticationModule {
 
-    private final URL baseURL;
+    private final Provider<HttpProvider> httpProviderProvider = new Provider<HttpProvider>() {
+        @Override
+        public HttpProvider get(Object... in) {
 
-    private final static Gson gson = new Gson();
+            return new HttpRestProvider((URL) in[0]);
+        }
+    };
+
+    private final URL baseURL;
 
     private final String loginEndpoint;
     private final URL loginURL;
@@ -60,13 +66,15 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     private final String tokenHeaderName;
 
     private boolean isLoggedIn = false;
-    private static final String TAG = "RestAuthenticationModule";
+    private static final String TAG = RestAuthenticationModule.class
+            .getSimpleName();
 
     /**
+     *
      * @param baseURL
      * @param config
      * @throws IllegalArgumentException if an endpoint can not be appended to
-     *                                  baseURL
+     * baseURL
      */
     public RestAuthenticationModule(URL baseURL, AuthenticationConfig config) {
         this.baseURL = baseURL;
@@ -74,7 +82,8 @@ public final class RestAuthenticationModule implements AuthenticationModule {
         this.logoutEndpoint = config.getLogoutEndpoint();
         this.enrollEndpoint = config.getEnrollEndpoint();
         if (config instanceof RestAuthenticationConfig) {
-            this.tokenHeaderName = ((RestAuthenticationConfig) config).getTokenHeaderName();
+            this.tokenHeaderName = ((RestAuthenticationConfig) config)
+                    .getTokenHeaderName();
         } else {
             this.tokenHeaderName = "Auth-Token";
         }
@@ -85,7 +94,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public URL getbaseURL() {
+    public URL getBaseURL() {
         return baseURL;
     }
 
@@ -105,15 +114,15 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public void enroll(final Map<String, String> userData, final Callback<HeaderAndBody> callback) {
+    public void enroll(final Map<String, String> userData,
+            final Callback<HeaderAndBody> callback) {
         new AsyncTask<Void, Void, Void>() {
-
             HeaderAndBody result = null;
             Exception exception = null;
 
             @Override
             protected Void doInBackground(Void... params) {
-                HttpRestProvider provider = new HttpRestProvider(enrollURL);
+                HttpProvider provider = httpProviderProvider.get(enrollURL);
                 String enrollData = new JSONObject(userData).toString();
                 try {
                     result = provider.post(enrollData);
@@ -121,6 +130,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
                     isLoggedIn = true;
 
                 } catch (Exception e) {
+                    Log.e(TAG, "error enrolling", e);
                     exception = e;
                 }
                 return null;
@@ -140,20 +150,22 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public void login(final String username, final String password, final Callback<HeaderAndBody> callback) {
+    public void login(final String username, final String password,
+            final Callback<HeaderAndBody> callback) {
         new AsyncTask<Void, Void, Void>() {
             private Exception exception;
             private HeaderAndBody result;
 
             @Override
             protected Void doInBackground(Void... params) {
-                HttpRestProvider provider = new HttpRestProvider(loginURL);
+                HttpProvider provider = httpProviderProvider.get(loginURL);
                 String loginData = buildLoginData(username, password);
                 try {
                     result = provider.post(loginData);
                     authToken = result.getHeader(tokenHeaderName).toString();
                     isLoggedIn = true;
                 } catch (Exception e) {
+                    Log.e(TAG, "Error with Login", e);
                     exception = e;
                 }
                 return null;
@@ -180,7 +192,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
 
             @Override
             protected Void doInBackground(Void... params) {
-                HttpRestProvider provider = new HttpRestProvider(logoutURL);
+                HttpProvider provider = httpProviderProvider.get(logoutURL);
                 try {
                     provider.post("");
                     authToken = "";
@@ -227,6 +239,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     }
 
     /**
+     * 
      * @param endpoint
      * @return a new url baseUrl + endpoint
      * @throws IllegalArgumentException if baseUrl+endpoint is not a real url.
@@ -235,7 +248,8 @@ public final class RestAuthenticationModule implements AuthenticationModule {
         try {
             return new URL(baseURL.toString() + endpoint);
         } catch (MalformedURLException ex) {
-            String message = "Could not append " + endpoint + " to " + baseURL.toString();
+            String message = "Could not append " + endpoint + " to "
+                    + baseURL.toString();
             Log.e(TAG, message, ex);
             throw new IllegalArgumentException(message, ex);
         }
