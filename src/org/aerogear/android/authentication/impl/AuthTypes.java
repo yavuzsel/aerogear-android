@@ -22,7 +22,8 @@ import org.aerogear.android.authentication.AuthType;
  * Enum of internally supported instances of {@link AuthType}
  */
 public enum AuthTypes implements AuthType {
-    REST("REST");
+    AG_SECURITY("AG_SECURITY"),
+    ;
 
     private final String typeDescription;
 

@@ -72,11 +72,11 @@ public class Authenticator {
 
         assert config != null;
 
-        if (!AuthTypes.REST.equals(config.getAuthType())) {
+        if (!AuthTypes.AG_SECURITY.equals(config.getAuthType())) {
 
             throw new IllegalArgumentException("Unsupported Auth Type passed");
         }
-        modules.put(name, new RestAuthenticationModule(baseURL, config));
+        modules.put(name, new AGSecurityAuthenticationModule(baseURL, config));
         return modules.get(name);
 
     }

@@ -56,7 +56,7 @@ public class AuthenticatorTest {
     public void testAddAuthenticatorFailsWithUnsupportedType() {
 
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
-        RestAuthenticationConfig config = new RestAuthenticationConfig();
+        AGSecurityAuthenticationConfig config = new AGSecurityAuthenticationConfig();
         config.setAuthType(null);
         AuthenticationModule simpleAuthModule = authenticator.auth(
                 SIMPLE_MODULE_NAME, config);
@@ -70,7 +70,7 @@ public class AuthenticatorTest {
 
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
         AuthenticationModule simpleAuthModule = authenticator.auth(
-                SIMPLE_MODULE_NAME, new RestAuthenticationConfig());
+                SIMPLE_MODULE_NAME, new AGSecurityAuthenticationConfig());
 
         assertNotNull(simpleAuthModule);
 
@@ -80,7 +80,7 @@ public class AuthenticatorTest {
     public void testAddAndGetSimpleAuthenticator() {
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
         AuthenticationModule simpleAuthModule = authenticator.auth(
-                SIMPLE_MODULE_NAME, new RestAuthenticationConfig());
+                SIMPLE_MODULE_NAME, new AGSecurityAuthenticationConfig());
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
         authenticator.remove(SIMPLE_MODULE_NAME);
         assertNull(authenticator.get(SIMPLE_MODULE_NAME));
@@ -91,8 +91,8 @@ public class AuthenticatorTest {
 
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
 
-        RestAuthenticationConfig config = new RestAuthenticationConfig();
-        config.setAuthType(AuthTypes.REST);
+        AGSecurityAuthenticationConfig config = new AGSecurityAuthenticationConfig();
+        config.setAuthType(AuthTypes.AG_SECURITY);
         config.setEnrollEndpoint("testEnroll");
         config.setLoginEndpoint("testLogin");
         config.setLogoutEndpoint("testLogout");

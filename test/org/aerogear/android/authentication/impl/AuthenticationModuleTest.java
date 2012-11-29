@@ -35,6 +35,7 @@ public interface AuthenticationModuleTest {
     static final String LOGIN_PASSWORD = "password";
     static final String ENROLL_PASSWORD = "spittman";
 
+    
     final class SimpleCallback implements Callback<HeaderAndBody> {
 
         HeaderAndBody data;

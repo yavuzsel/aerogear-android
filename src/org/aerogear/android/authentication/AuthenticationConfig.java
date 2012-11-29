@@ -27,7 +27,7 @@ public class AuthenticationConfig {
     private String loginEndpoint = "/auth/login";
     private String logoutEndpoint = "/auth/logout";
     private String enrollEndpoint = "/auth/enroll";
-    private AuthType authType = AuthTypes.REST;
+    private AuthType authType = AuthTypes.AG_SECURITY;
 
     public String getLoginEndpoint() {
         return loginEndpoint;

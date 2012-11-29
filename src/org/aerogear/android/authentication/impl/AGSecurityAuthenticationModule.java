@@ -33,8 +33,9 @@ import org.json.JSONObject;
 
 /**
  * A module for authenticating with restful AG services.
+ * @see <a href="https://github.com/aerogear/aerogear-security#endpoints-definition">AG Security Endpoint Doc</a>
  */
-public final class RestAuthenticationModule implements AuthenticationModule {
+public final class AGSecurityAuthenticationModule implements AuthenticationModule {
 
     private final Provider<HttpProvider> httpProviderProvider = new Provider<HttpProvider>() {
         @Override
@@ -66,7 +67,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     private final String tokenHeaderName;
 
     private boolean isLoggedIn = false;
-    private static final String TAG = RestAuthenticationModule.class
+    private static final String TAG = AGSecurityAuthenticationModule.class
             .getSimpleName();
 
     /**
@@ -76,13 +77,13 @@ public final class RestAuthenticationModule implements AuthenticationModule {
      * @throws IllegalArgumentException if an endpoint can not be appended to
      * baseURL
      */
-    public RestAuthenticationModule(URL baseURL, AuthenticationConfig config) {
+    public AGSecurityAuthenticationModule(URL baseURL, AuthenticationConfig config) {
         this.baseURL = baseURL;
         this.loginEndpoint = config.getLoginEndpoint();
         this.logoutEndpoint = config.getLogoutEndpoint();
         this.enrollEndpoint = config.getEnrollEndpoint();
-        if (config instanceof RestAuthenticationConfig) {
-            this.tokenHeaderName = ((RestAuthenticationConfig) config)
+        if (config instanceof AGSecurityAuthenticationConfig) {
+            this.tokenHeaderName = ((AGSecurityAuthenticationConfig) config)
                     .getTokenHeaderName();
         } else {
             this.tokenHeaderName = "Auth-Token";
