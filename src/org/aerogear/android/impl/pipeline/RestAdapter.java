@@ -54,24 +54,25 @@ public final class RestAdapter<T> implements Pipe<T> {
      * JSON for deserializing collections.
      */
     private final Class<T[]> arrayKlass;
-    private final HttpProvider httpProvider;
+    private final URL baseURL;
+    private final Provider<HttpProvider> httpProviderFactory = new HttpProviderFactory();
     
     private AuthenticationModule authModule;
     private Charset encoding = Charset.forName("UTF-8");
     
 
-    public RestAdapter(Class<T> klass, HttpProvider httpProvider) {
+    public RestAdapter(Class<T> klass, URL baseURL) {
         this.klass = klass;
         this.arrayKlass = asArrayClass(klass);
-        this.httpProvider = httpProvider;
+        this.baseURL = baseURL;
         this.gson = new Gson();
     }
 
-    public RestAdapter(Class<T> klass, HttpProvider httpProvider,
+    public RestAdapter(Class<T> klass, URL baseURL,
             GsonBuilder gsonBuilder) {
         this.klass = klass;
         this.arrayKlass = asArrayClass(klass);
-        this.httpProvider = httpProvider;
+        this.baseURL = baseURL;
         this.gson = gsonBuilder.create();
     }
 
@@ -88,7 +89,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     @Override
     public URL getUrl() {
-        return httpProvider.getUrl();
+        return baseURL;
     }
 
     /**
@@ -96,6 +97,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     @Override
     public void read(final Callback<List<T>> callback) {
+        final HttpProvider httpProvider = httpProviderFactory.get(baseURL);
         new AsyncTask<Void, Void, AsyncTaskResult<List<T>>>() {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
@@ -135,7 +137,7 @@ public final class RestAdapter<T> implements Pipe<T> {
 
     @Override
     public void save(final T data, final Callback<T> callback) {
-
+        final HttpProvider httpProvider = httpProviderFactory.get(baseURL);
         final String id;
 
         try {
@@ -194,6 +196,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     @Override
     public void remove(final String id, final Callback<Void> callback) {
+        final HttpProvider httpProvider = httpProviderFactory.get(baseURL);
         new AsyncTask<Void, Void, AsyncTaskResult<byte[]>>() {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
@@ -258,6 +261,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      * Apply authentication if the token is present
      */
     private void applyAuthToken() {
+        final HttpProvider httpProvider = httpProviderFactory.get(baseURL);
         if (authModule != null && authModule.isLoggedIn()) {
             authModule.onSecurityApplicationRequested(httpProvider);
         }

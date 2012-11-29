@@ -34,9 +34,9 @@ public final class DefaultPipeFactory implements PipeFactory {
             HttpRestProvider httpProvider = new HttpRestProvider(url);
 
             if (config.getGsonBuilder() != null) {
-                createdPipe = new RestAdapter<T>(klass, httpProvider, config.getGsonBuilder());
+                createdPipe = new RestAdapter<T>(klass, url, config.getGsonBuilder());
             } else {
-                createdPipe = new RestAdapter<T>(klass, httpProvider);
+                createdPipe = new RestAdapter<T>(klass, url);
             }
 
             ((RestAdapter<T>) createdPipe).setEncoding(config.getEncoding());
