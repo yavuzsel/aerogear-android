@@ -28,9 +28,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.aerogear.android.Callback;
+import org.aerogear.android.Provider;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.impl.core.HttpProviderFactory;
 import org.aerogear.android.impl.reflection.Property;
 import org.aerogear.android.impl.reflection.Scan;
 import org.aerogear.android.pipeline.Pipe;
@@ -53,8 +55,10 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     private final Class<T[]> arrayKlass;
     private final HttpProvider httpProvider;
+    
     private AuthenticationModule authModule;
     private Charset encoding = Charset.forName("UTF-8");
+    
 
     public RestAdapter(Class<T> klass, HttpProvider httpProvider) {
         this.klass = klass;

@@ -28,6 +28,7 @@ import org.aerogear.android.authentication.AuthenticationConfig;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.impl.core.HttpProviderFactory;
 import org.aerogear.android.impl.core.HttpRestProvider;
 import org.json.JSONObject;
 
@@ -37,13 +38,7 @@ import org.json.JSONObject;
  */
 public final class AGSecurityAuthenticationModule implements AuthenticationModule {
 
-    private final Provider<HttpProvider> httpProviderProvider = new Provider<HttpProvider>() {
-        @Override
-        public HttpProvider get(Object... in) {
-
-            return new HttpRestProvider((URL) in[0]);
-        }
-    };
+    private final Provider<HttpProvider> httpProviderFactory = new HttpProviderFactory();
 
     private final URL baseURL;
 
@@ -123,7 +118,7 @@ public final class AGSecurityAuthenticationModule implements AuthenticationModul
 
             @Override
             protected Void doInBackground(Void... params) {
-                HttpProvider provider = httpProviderProvider.get(enrollURL);
+                HttpProvider provider = httpProviderFactory.get(enrollURL);
                 String enrollData = new JSONObject(userData).toString();
                 try {
                     result = provider.post(enrollData);
@@ -159,7 +154,7 @@ public final class AGSecurityAuthenticationModule implements AuthenticationModul
 
             @Override
             protected Void doInBackground(Void... params) {
-                HttpProvider provider = httpProviderProvider.get(loginURL);
+                HttpProvider provider = httpProviderFactory.get(loginURL);
                 String loginData = buildLoginData(username, password);
                 try {
                     result = provider.post(loginData);
@@ -193,7 +188,7 @@ public final class AGSecurityAuthenticationModule implements AuthenticationModul
 
             @Override
             protected Void doInBackground(Void... params) {
-                HttpProvider provider = httpProviderProvider.get(logoutURL);
+                HttpProvider provider = httpProviderFactory.get(logoutURL);
                 try {
                     provider.post("");
                     authToken = "";
@@ -234,7 +229,7 @@ public final class AGSecurityAuthenticationModule implements AuthenticationModul
         return response.toString();
     }
 
-    @Override
+    @Override  
     public void onSecurityApplicationRequested(HttpProvider httpProvider) {
         httpProvider.setDefaultHeader(tokenHeaderName, authToken);
     }

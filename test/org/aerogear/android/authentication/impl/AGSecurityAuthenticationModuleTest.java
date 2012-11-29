@@ -52,7 +52,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                 SIMPLE_URL, new AGSecurityAuthenticationConfig());
 
         HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
-                "httpProviderProvider", Provider.class).get(SIMPLE_URL);
+                "httpProviderFactory", Provider.class).get(SIMPLE_URL);
         Assert.assertEquals(SIMPLE_URL, provider.getUrl());
 
         Assert.assertEquals(SIMPLE_URL, module.getBaseURL());
@@ -71,7 +71,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         TestUtil.setPrivateField(module, "authToken", TOKEN);
 
         HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
-                "httpProviderProvider", Provider.class).get(SIMPLE_URL);
+                "httpProviderFactory", Provider.class).get(SIMPLE_URL);
 
         module.onSecurityApplicationRequested(provider);
         Map<String, String> defaultHeaders = TestUtil.getPrivateField(provider,
@@ -88,7 +88,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AGSecurityAuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
@@ -119,7 +119,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AGSecurityAuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
@@ -155,7 +155,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AGSecurityAuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
@@ -200,7 +200,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         SimpleCallback callback = new SimpleCallback();
 
         final CountDownLatch latch = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
@@ -233,7 +233,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         VoidCallback voidCallback = new VoidCallback();
 
         final CountDownLatch latch2 = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
