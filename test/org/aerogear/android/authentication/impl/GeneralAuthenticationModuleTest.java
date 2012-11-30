@@ -16,23 +16,29 @@
  */
 package org.aerogear.android.authentication.impl;
 
-import org.aerogear.android.authentication.AuthType;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-/**
- * Enum of internally supported instances of {@link AuthType}
- */
-public enum AuthTypes implements AuthType {
-    AG_SECURITY("AG_SECURITY"), ;
+@RunWith(RobolectricTestRunner.class)
+public class GeneralAuthenticationModuleTest implements AuthenticationModuleTest {
 
-    private final String typeDescription;
+    private static final URL SIMPLE_URL;
 
-    private AuthTypes(String typeDescription) {
-        this.typeDescription = typeDescription;
+    static {
+        try {
+            SIMPLE_URL = new URL("http://localhost:8080/todo-server");
+        } catch (MalformedURLException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
-    @Override
-    public String getName() {
-        return typeDescription;
+    @Test
+    public void applySecurityTokenOnURL() throws Exception {
+        throw new IllegalStateException("Not implemented");
+
     }
 
 }

@@ -17,12 +17,19 @@
 package org.aerogear.android.impl.pipeline;
 
 import android.os.AsyncTask;
+import android.util.Log;
+import android.util.Pair;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +37,7 @@ import java.util.List;
 import org.aerogear.android.Callback;
 import org.aerogear.android.Provider;
 import org.aerogear.android.authentication.AuthenticationModule;
+import org.aerogear.android.authentication.AuthorizationFields;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.impl.core.HttpProviderFactory;
@@ -43,6 +51,7 @@ import org.aerogear.android.pipeline.PipeType;
  */
 public final class RestAdapter<T> implements Pipe<T> {
 
+    private static final String TAG = RestAdapter.class.getSimpleName();
     private final Gson gson;
     /**
      * A class of the Generic type this pipe wraps. This is used by GSON for
@@ -56,10 +65,8 @@ public final class RestAdapter<T> implements Pipe<T> {
     private final Class<T[]> arrayKlass;
     private final URL baseURL;
     private final Provider<HttpProvider> httpProviderFactory = new HttpProviderFactory();
-    
     private AuthenticationModule authModule;
     private Charset encoding = Charset.forName("UTF-8");
-    
 
     public RestAdapter(Class<T> klass, URL baseURL) {
         this.klass = klass;
@@ -97,12 +104,12 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     @Override
     public void read(final Callback<List<T>> callback) {
-        final HttpProvider httpProvider = httpProviderFactory.get(baseURL);
+
         new AsyncTask<Void, Void, AsyncTaskResult<List<T>>>() {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                    applyAuthToken();
+                    HttpProvider httpProvider = getHttpProvider();
                     byte[] responseBody = httpProvider.get().getBody();
                     String responseAsString = new String(responseBody, encoding);
                     JsonParser parser = new JsonParser();
@@ -137,7 +144,6 @@ public final class RestAdapter<T> implements Pipe<T> {
 
     @Override
     public void save(final T data, final Callback<T> callback) {
-        final HttpProvider httpProvider = httpProviderFactory.get(baseURL);
         final String id;
 
         try {
@@ -156,7 +162,7 @@ public final class RestAdapter<T> implements Pipe<T> {
 
                     /*Serialize the object.*/
                     String body = gson.toJson(data);
-                    applyAuthToken();
+                    final HttpProvider httpProvider = getHttpProvider();
 
                     HeaderAndBody result = null;
                     if (id == null || id.length() == 0) {
@@ -196,12 +202,12 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     @Override
     public void remove(final String id, final Callback<Void> callback) {
-        final HttpProvider httpProvider = httpProviderFactory.get(baseURL);
+
         new AsyncTask<Void, Void, AsyncTaskResult<byte[]>>() {
             @Override
             protected AsyncTaskResult doInBackground(Void... voids) {
                 try {
-                    applyAuthToken();
+                    HttpProvider httpProvider = getHttpProvider();
                     return new AsyncTaskResult(httpProvider.delete(id));
                 } catch (Exception e) {
                     return new AsyncTaskResult(e);
@@ -260,11 +266,13 @@ public final class RestAdapter<T> implements Pipe<T> {
     /**
      * Apply authentication if the token is present
      */
-    private void applyAuthToken() {
-        final HttpProvider httpProvider = httpProviderFactory.get(baseURL);
+    private AuthorizationFields loadAuth() {
+
         if (authModule != null && authModule.isLoggedIn()) {
-            authModule.onSecurityApplicationRequested(httpProvider);
+            return authModule.onSecurityApplicationRequested();
         }
+
+        return new AuthorizationFields();
     }
 
     /**
@@ -275,5 +283,64 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     public void setEncoding(Charset encoding) {
         this.encoding = encoding;
+    }
+
+    /**
+     *
+     * @param queryParameters
+     * @return a url with query params added
+     */
+    private URL addAuthorization(List<Pair<String, String>> queryParameters) {
+        String query = baseURL.getQuery();
+
+        try {
+            StringBuilder queryBuilder = new StringBuilder();
+
+            if (query == null) {
+                query = "?";
+            }
+
+            queryBuilder.append(query);
+            String amp = "";
+            for (Pair<String, String> parameter : queryParameters) {
+                try {
+                    queryBuilder.append(amp)
+                            .append(URLEncoder.encode(parameter.first, "UTF-8"))
+                            .append("=")
+                            .append(URLEncoder.encode(parameter.second, "UTF-8"));
+                    amp = "&";
+                } catch (UnsupportedEncodingException ex) {
+                    Log.e(TAG, "UTF-8 encoding is not supportted.", ex);
+                    throw new RuntimeException(ex);
+                }
+            }
+            URI baseURI = baseURL.toURI();
+
+            return new URI(baseURI.getScheme(), baseURI.getUserInfo(), baseURI.getHost(), baseURI.getPort(), baseURI.getPath(), query, baseURI.getFragment()).toURL();
+        } catch (MalformedURLException ex) {
+            Log.e(TAG, "The URL could not be created from " + baseURL.toString(), ex);
+            throw new RuntimeException(ex);
+        } catch (URISyntaxException ex) {
+            Log.e(TAG, "Error turning " + query + " into URI query.", ex);
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    private void addAuthHeaders(HttpProvider httpProvider, AuthorizationFields fields) {
+        List<Pair<String, String>> authHeaders = fields.getHeaders();
+
+        for (Pair<String, String> header : authHeaders) {
+            httpProvider.setDefaultHeader(header.first, header.second);
+        }
+
+    }
+
+    private HttpProvider getHttpProvider() {
+        AuthorizationFields fields = loadAuth();
+        URL authorizedURL = addAuthorization(fields.getQueryParameters());
+        final HttpProvider httpProvider = httpProviderFactory.get(authorizedURL);
+        addAuthHeaders(httpProvider, fields);
+        return httpProvider;
     }
 }

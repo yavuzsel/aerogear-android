@@ -86,5 +86,6 @@ public interface AuthenticationModule {
      *
      * @param httpProvider
      */
-    public void onSecurityApplicationRequested(HttpProvider httpProvider);
+
+    public AuthorizationFields onSecurityApplicationRequested();
 }

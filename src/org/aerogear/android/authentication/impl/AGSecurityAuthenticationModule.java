@@ -26,10 +26,10 @@ import org.aerogear.android.Callback;
 import org.aerogear.android.Provider;
 import org.aerogear.android.authentication.AuthenticationConfig;
 import org.aerogear.android.authentication.AuthenticationModule;
+import org.aerogear.android.authentication.AuthorizationFields;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.impl.core.HttpProviderFactory;
-import org.aerogear.android.impl.core.HttpRestProvider;
 import org.json.JSONObject;
 
 /**
@@ -229,9 +229,11 @@ public final class AGSecurityAuthenticationModule implements AuthenticationModul
         return response.toString();
     }
 
-    @Override  
-    public void onSecurityApplicationRequested(HttpProvider httpProvider) {
-        httpProvider.setDefaultHeader(tokenHeaderName, authToken);
+    @Override
+    public AuthorizationFields onSecurityApplicationRequested() {
+        AuthorizationFields fields = new AuthorizationFields();
+        fields.addHeader(tokenHeaderName, authToken);
+        return fields;
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import org.aerogear.android.Provider;
+import org.aerogear.android.authentication.AuthorizationFields;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpException;
 import org.aerogear.android.core.HttpProvider;
@@ -72,17 +73,13 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
 
         HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
                 "httpProviderFactory", Provider.class).get(SIMPLE_URL);
+        AuthorizationFields fields = module.onSecurityApplicationRequested();
 
-        module.onSecurityApplicationRequested(provider);
-        Map<String, String> defaultHeaders = TestUtil.getPrivateField(provider,
-                "defaultHeaders", Map.class);
-
-        Assert.assertEquals(TOKEN, defaultHeaders.get(config
-                .getTokenHeaderName()));
+        Assert.assertEquals(newTokenName, fields.getHeaders().get(0).first);
+        Assert.assertEquals(TOKEN, fields.getHeaders().get(0).second);
 
     }
 
-   
     @Test(timeout = 500L)
     public void loginFails() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(

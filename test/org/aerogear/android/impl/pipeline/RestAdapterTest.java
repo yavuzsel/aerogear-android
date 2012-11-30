@@ -33,7 +33,6 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +64,7 @@ public class RestAdapterTest {
 
         @Override
         public HttpProvider get(Object... in) {
-            return new HttpStubProvider((URL)in[0]);
+            return new HttpStubProvider((URL) in[0]);
         }
     };
 
@@ -120,7 +119,7 @@ public class RestAdapterTest {
         final Charset utf_16 = Charset.forName("UTF-16");
 
         final HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(utf_16), new HashMap<String, Object>()));
-        
+
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
 
         TestUtil.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
@@ -197,7 +196,7 @@ public class RestAdapterTest {
         };
 
         Pipe<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
-        
+
         TestUtil.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
 
             @Override
@@ -205,7 +204,7 @@ public class RestAdapterTest {
                 return provider;
             }
         });
-        
+
         final CountDownLatch latch = new CountDownLatch(1);
         final ListClassId listClass = new ListClassId();
         final List<Point> returnedPoints = new ArrayList<Point>(10);
