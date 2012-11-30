@@ -297,7 +297,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             StringBuilder queryBuilder = new StringBuilder();
 
             if (query == null) {
-                query = "?";
+                query = "";
             }
 
             queryBuilder.append(query);
@@ -315,7 +315,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                 }
             }
             URI baseURI = baseURL.toURI();
-
+            query = queryBuilder.toString();
             return new URI(baseURI.getScheme(), baseURI.getUserInfo(), baseURI.getHost(), baseURI.getPort(), baseURI.getPath(), query, baseURI.getFragment()).toURL();
         } catch (MalformedURLException ex) {
             Log.e(TAG, "The URL could not be created from " + baseURL.toString(), ex);

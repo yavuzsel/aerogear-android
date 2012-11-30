@@ -19,8 +19,21 @@ package org.aerogear.android.authentication.impl;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import org.aerogear.android.Callback;
+import org.aerogear.android.Provider;
+import org.aerogear.android.authentication.AuthenticationModule;
+import org.aerogear.android.authentication.AuthorizationFields;
+import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.impl.core.HttpProviderFactory;
+import org.aerogear.android.impl.helper.Data;
+import org.aerogear.android.impl.helper.TestUtil;
+import org.aerogear.android.impl.pipeline.RestAdapter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class GeneralAuthenticationModuleTest implements AuthenticationModuleTest {
@@ -37,8 +50,33 @@ public class GeneralAuthenticationModuleTest implements AuthenticationModuleTest
 
     @Test
     public void applySecurityTokenOnURL() throws Exception {
-        throw new IllegalStateException("Not implemented");
 
+        HttpProviderFactory factory = mock(HttpProviderFactory.class);
+        when(factory.get(anyObject())).thenReturn(mock(HttpProvider.class));
+
+        AuthorizationFields authFields = new AuthorizationFields();
+        authFields.addQueryParameter("token", TOKEN);
+
+        AuthenticationModule urlModule = mock(AuthenticationModule.class);
+        when(urlModule.isLoggedIn()).thenReturn(true);
+        when(urlModule.onSecurityApplicationRequested()).thenReturn(authFields);
+
+        RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, SIMPLE_URL);
+        TestUtil.setPrivateField(adapter, "httpProviderFactory", factory);
+        adapter.setAuthenticationModule(urlModule);
+
+        adapter.read(new Callback<List<Data>>() {
+
+            @Override
+            public void onSuccess(List<Data> data) {
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+            }
+        });
+
+        verify(factory).get(new URL(SIMPLE_URL.toString() + "?token=" + TOKEN));
     }
 
 }

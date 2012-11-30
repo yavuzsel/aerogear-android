@@ -76,4 +76,9 @@ public final class AuthorizationFields {
         Pair<String, String> newToken = new Pair<String, String>(headerName, headerValue);
         headers.add(newToken);
     }
+
+    public void addQueryParameter(String parameterName, String parameterValue) {
+        Pair<String, String> newParameter = new Pair<String, String>(parameterName, parameterValue);
+        queryParameters.add(newParameter);
+    }
 }
