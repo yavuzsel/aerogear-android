@@ -143,7 +143,7 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
                 }
             }
 
-        }.execute((Void) null);
+        }.execute();
     }
 
     @Override
@@ -178,7 +178,7 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
                 }
             }
 
-        }.execute((Void) null);
+        }.execute();
 
     }
 
@@ -211,7 +211,7 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
                 }
             }
 
-        }.execute((Void) null);
+        }.execute();
     }
 
     @Override
