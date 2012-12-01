@@ -236,7 +236,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      * @return an array of klass with a length of 1
      */
     private Class<T[]> asArrayClass(Class<T> klass) {
-        return (Class<T[]>) ((T[]) Array.newInstance(klass, 1)).getClass();
+        return (Class<T[]>) Array.newInstance(klass, 1).getClass();
     }
 
     @Override
