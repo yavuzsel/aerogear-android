@@ -70,10 +70,7 @@ public class Data {
 
         Data data = (Data) o;
 
-        if (!id.equals(data.id))
-            return false;
-
-        return true;
+        return id.equals(data.id);
     }
 
     @Override
