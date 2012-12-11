@@ -31,7 +31,7 @@ public interface HttpProvider {
      * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
      *
-     * @return
+     * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
     public HeaderAndBody get() throws HttpException;
@@ -40,7 +40,7 @@ public interface HttpProvider {
      * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
      *
-     * @return
+     * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
     public HeaderAndBody post(String data) throws HttpException;
@@ -49,7 +49,7 @@ public interface HttpProvider {
      * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
      *
-     * @return
+     * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
     public HeaderAndBody put(String id, String data) throws HttpException;
@@ -58,7 +58,7 @@ public interface HttpProvider {
      * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
      *
-     * @return
+     * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
     public HeaderAndBody delete(String id) throws HttpException;

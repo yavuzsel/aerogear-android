@@ -78,8 +78,6 @@ public interface AuthenticationModule {
      */
     public boolean isLoggedIn();
 
-    
-    
     /**
      * This method is called be {@link Pipe} implementations when they need
      * security applied to their {@link HttpProvider}. The headers/data/query
@@ -90,5 +88,5 @@ public interface AuthenticationModule {
      * 
      */
     public AuthorizationFields getAuthorizationFields();
-    
+
 }

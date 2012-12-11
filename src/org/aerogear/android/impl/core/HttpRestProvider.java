@@ -37,14 +37,8 @@ import org.aerogear.android.core.HttpProvider;
 import org.apache.http.HttpStatus;
 
 /**
- *
- *
- *
- * These are tuned for Aerogear, assume the body is String data, and that the
+ * These are tuned for AeroGear, assume the body is String data, and that the
  * headers don't do anything funny.
- *
- *
-
  */
 public final class HttpRestProvider implements HttpProvider {
 
@@ -53,7 +47,9 @@ public final class HttpRestProvider implements HttpProvider {
     private final Map<String, String> defaultHeaders = new HashMap<String, String>();
 
     /**
-     * Set at the bottom of this 
+     * The get method of this provider optionally takes a String which is the id 
+     * in a restful URL
+     * ex http://example.com/data/$id.
      */
     private Provider<HttpURLConnection> connectionPreparer = new Provider<HttpURLConnection>() {
         @Override

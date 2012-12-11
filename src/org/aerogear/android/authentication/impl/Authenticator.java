@@ -50,27 +50,38 @@ public class Authenticator {
     }
 
     /**
-     * {@inheritDoc }
+     * Gets a AuthenticationModule for name
+     * 
+     * @param name
+     * @return a AuthenticationModule for name or null if there isn't a value for name
+     * @throws NullPointerException is name is null
      */
-
     public AuthenticationModule get(String name) {
         return modules.get(name);
     }
 
     /**
-     * {@inheritDoc }
+     * Removes a AuthenticationModule for name
+     * 
+     * @param name
+     * @return a AuthenticationModule for name or null if there isn't a value for name
+     * @throws NullPointerException is name is null
      */
-
     public AuthenticationModule remove(String name) {
         return modules.remove(name);
     }
 
     /**
-     * {@inheritDoc }
+     * 
+     * Builds a AuthenticationModule based on the AuthenticationConfig and 
+     * records it as name
+     * 
+     * @param name
+     * @param config
+     * @return a fully operational AuthenticationModule
+     * @throws NullPointerException is config or name is null
      */
     public AuthenticationModule auth(String name, AuthenticationConfig config) {
-
-        assert config != null;
 
         if (!AuthTypes.AG_SECURITY.equals(config.getAuthType())) {
 
