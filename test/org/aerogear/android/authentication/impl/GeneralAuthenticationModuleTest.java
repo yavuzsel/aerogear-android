@@ -19,20 +19,22 @@ package org.aerogear.android.authentication.impl;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import org.aerogear.android.Callback;
-import org.aerogear.android.Provider;
+import org.aerogear.android.authentication.AbstractAuthenticationModule;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.AuthorizationFields;
-import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.impl.core.HttpProviderFactory;
 import org.aerogear.android.impl.helper.Data;
 import org.aerogear.android.impl.helper.TestUtil;
 import org.aerogear.android.impl.pipeline.RestAdapter;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
@@ -59,7 +61,7 @@ public class GeneralAuthenticationModuleTest implements AuthenticationModuleTest
 
         AuthenticationModule urlModule = mock(AuthenticationModule.class);
         when(urlModule.isLoggedIn()).thenReturn(true);
-        when(urlModule.onSecurityApplicationRequested()).thenReturn(authFields);
+        when(urlModule.getAuthorizationFields()).thenReturn(authFields);
 
         RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, SIMPLE_URL);
         TestUtil.setPrivateField(adapter, "httpProviderFactory", factory);
@@ -77,6 +79,30 @@ public class GeneralAuthenticationModuleTest implements AuthenticationModuleTest
         });
 
         verify(factory).get(new URL(SIMPLE_URL.toString() + "?token=" + TOKEN));
+    }
+
+    @Test(timeout = 50l)
+    public void testAbstractMethodsThrowExceptions() throws InterruptedException {
+        AuthenticationModule module = mock(AbstractAuthenticationModule.class, CALLS_REAL_METHODS);
+        final CountDownLatch latch = new CountDownLatch(3);
+        Callback throwIfSuccess = new Callback() {
+
+            @Override
+            public void onSuccess(Object data) {
+                Assert.assertTrue("This should not be called", false);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                latch.countDown();
+            }
+        };
+        module.enroll(new HashMap<String, String>(), throwIfSuccess);
+        module.login("username", "password", throwIfSuccess);
+        module.logout(throwIfSuccess);
+
+        latch.await();
+
     }
 
 }

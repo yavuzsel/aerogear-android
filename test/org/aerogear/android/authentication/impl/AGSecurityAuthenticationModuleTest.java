@@ -71,9 +71,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                 SIMPLE_URL, config);
         TestUtil.setPrivateField(module, "authToken", TOKEN);
 
-        HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
-                "httpProviderFactory", Provider.class).get(SIMPLE_URL);
-        AuthorizationFields fields = module.onSecurityApplicationRequested();
+        AuthorizationFields fields = module.getAuthorizationFields();
 
         Assert.assertEquals(newTokenName, fields.getHeaders().get(0).first);
         Assert.assertEquals(TOKEN, fields.getHeaders().get(0).second);
