@@ -269,7 +269,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     private AuthorizationFields loadAuth() {
 
         if (authModule != null && authModule.isLoggedIn()) {
-            return authModule.onSecurityApplicationRequested();
+            return authModule.getAuthorizationFields();
         }
 
         return new AuthorizationFields();

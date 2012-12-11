@@ -230,7 +230,7 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
     }
 
     @Override
-    public AuthorizationFields onSecurityApplicationRequested() {
+    public AuthorizationFields getAuthorizationFields() {
         AuthorizationFields fields = new AuthorizationFields();
         fields.addHeader(tokenHeaderName, authToken);
         return fields;

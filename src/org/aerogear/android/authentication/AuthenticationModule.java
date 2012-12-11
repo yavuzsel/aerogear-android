@@ -89,6 +89,6 @@ public interface AuthenticationModule {
      * @return the current AuthorizationFields for security
      * 
      */
-    public AuthorizationFields onSecurityApplicationRequested();
+    public AuthorizationFields getAuthorizationFields();
     
 }
