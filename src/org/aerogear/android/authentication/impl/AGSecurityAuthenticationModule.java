@@ -24,8 +24,8 @@ import java.net.URL;
 import java.util.Map;
 import org.aerogear.android.Callback;
 import org.aerogear.android.Provider;
+import org.aerogear.android.authentication.AbstractAuthenticationModule;
 import org.aerogear.android.authentication.AuthenticationConfig;
-import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.AuthorizationFields;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
@@ -36,7 +36,7 @@ import org.json.JSONObject;
  * A module for authenticating with restful AG services.
  * @see <a href="https://github.com/aerogear/aerogear-security#endpoints-definition">AG Security Endpoint Doc</a>
  */
-public final class AGSecurityAuthenticationModule implements AuthenticationModule {
+public final class AGSecurityAuthenticationModule extends AbstractAuthenticationModule {
 
     private final Provider<HttpProvider> httpProviderFactory = new HttpProviderFactory();
 
