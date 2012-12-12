@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 public class AuthenticatorTest {
 
     private static final URL SIMPLE_URL;
-    private static String SIMPLE_MODULE_NAME = "simple";
+    private static final String SIMPLE_MODULE_NAME = "simple";
 
     static {
         try {

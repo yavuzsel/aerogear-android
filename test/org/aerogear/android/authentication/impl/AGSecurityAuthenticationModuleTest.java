@@ -48,7 +48,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
     }
 
     @Test
-    public void testDefaultContructor() throws Exception {
+    public void testDefaultConstructor() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AGSecurityAuthenticationConfig());
 

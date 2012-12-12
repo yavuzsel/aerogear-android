@@ -18,6 +18,7 @@ package org.aerogear.android.impl.helper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.aerogear.android.impl.reflection.FieldNotFoundException;
 
@@ -58,9 +59,7 @@ public class TestUtil {
     }
 
     public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
-        for (Field field : type.getDeclaredFields()) {
-            fields.add(field);
-        }
+        Collections.addAll(fields, type.getDeclaredFields());
 
         if (type.getSuperclass() != null) {
             fields = getAllFields(fields, type.getSuperclass());
