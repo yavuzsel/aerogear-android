@@ -18,7 +18,6 @@
 package org.aerogear.android.impl.datamanager;
 
 import java.util.Collection;
-
 import org.aerogear.android.datamanager.StoreType;
 import static org.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
 import org.aerogear.android.impl.helper.Data;

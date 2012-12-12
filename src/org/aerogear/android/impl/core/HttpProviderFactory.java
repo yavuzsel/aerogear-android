@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android;
 
-public interface Provider<T> {
+package org.aerogear.android.impl.core;
 
-    /**
-     * 
-     * Constructs and returns an object of type T
-     * 
-     * @param in a variable number of parameters to pass to the constructor
-     * @return an instance of T 
-     */
-    public T get(Object... in);
+import java.net.URL;
+import org.aerogear.android.Provider;
+import org.aerogear.android.core.HttpProvider;
 
+public class HttpProviderFactory implements Provider<HttpProvider> {
+
+    @Override
+    public HttpProvider get(Object... in) {
+        return new HttpRestProvider((URL) in[0]);
+    }
 }

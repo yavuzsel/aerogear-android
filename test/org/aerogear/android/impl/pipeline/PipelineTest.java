@@ -24,8 +24,8 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import org.aerogear.android.Pipeline;
 import org.aerogear.android.authentication.AuthenticationModule;
-import org.aerogear.android.authentication.impl.RestAuthenticationConfig;
-import org.aerogear.android.authentication.impl.RestAuthenticationModule;
+import org.aerogear.android.authentication.impl.AGSecurityAuthenticationConfig;
+import org.aerogear.android.authentication.impl.AGSecurityAuthenticationModule;
 import org.aerogear.android.impl.helper.Data;
 import org.aerogear.android.impl.helper.TestUtil;
 import static org.aerogear.android.impl.pipeline.PipeTypes.REST;
@@ -200,8 +200,8 @@ public class PipelineTest {
     public void pipeFactoryAddsAuthModule() throws Exception {
         DefaultPipeFactory factory = new DefaultPipeFactory();
         PipeConfig config = new PipeConfig(url, Data.class);
-        config.setAuthModule(new RestAuthenticationModule(url,
-                new RestAuthenticationConfig()));
+        config.setAuthModule(new AGSecurityAuthenticationModule(url,
+                new AGSecurityAuthenticationConfig()));
         RestAdapter<Data> pipe = (RestAdapter<Data>) factory.createPipe(
                 Data.class, config);
 

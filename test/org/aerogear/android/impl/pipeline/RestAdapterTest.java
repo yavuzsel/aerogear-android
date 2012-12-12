@@ -33,7 +33,6 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +43,10 @@ import junit.framework.Assert;
 import static junit.framework.Assert.assertEquals;
 import org.aerogear.android.Callback;
 import org.aerogear.android.Pipeline;
+import org.aerogear.android.Provider;
 import org.aerogear.android.RecordId;
 import org.aerogear.android.core.HeaderAndBody;
+import org.aerogear.android.core.HttpProvider;
 import org.aerogear.android.impl.helper.Data;
 import org.aerogear.android.impl.helper.HttpStubProvider;
 import org.aerogear.android.impl.helper.TestUtil;
@@ -59,6 +60,13 @@ public class RestAdapterTest {
 
     private static final String SERIALIZED_POINTS = "{\"points\":[{\"x\":0,\"y\":0},{\"x\":1,\"y\":2},{\"x\":2,\"y\":4},{\"x\":3,\"y\":6},{\"x\":4,\"y\":8},{\"x\":5,\"y\":10},{\"x\":6,\"y\":12},{\"x\":7,\"y\":14},{\"x\":8,\"y\":16},{\"x\":9,\"y\":18}],\"id\":\"1\"}";
     private URL url;
+    private final Provider<HttpProvider> stubHttpProviderFactory = new Provider<HttpProvider>() {
+
+        @Override
+        public HttpProvider get(Object... in) {
+            return new HttpStubProvider((URL) in[0]);
+        }
+    };
 
     @Before
     public void setup() throws MalformedURLException {
@@ -66,14 +74,16 @@ public class RestAdapterTest {
     }
 
     @Test
-    public void testPipeTypeProperty() {
-        Pipe<Data> restPipe = new RestAdapter<Data>(Data.class, new HttpStubProvider(url));
+    public void testPipeTypeProperty() throws Exception {
+        Pipe<Data> restPipe = new RestAdapter<Data>(Data.class, url);
+        TestUtil.setPrivateField(restPipe, "httpProviderFactory", stubHttpProviderFactory);
         Assert.assertEquals("verifying the (default) type", PipeTypes.REST, restPipe.getType());
     }
 
     @Test
-    public void testPipeURLProperty() {
-        Pipe<Data> restPipe = new RestAdapter<Data>(Data.class, new HttpStubProvider(url));
+    public void testPipeURLProperty() throws Exception {
+        Pipe<Data> restPipe = new RestAdapter<Data>(Data.class, url);
+        TestUtil.setPrivateField(restPipe, "httpProviderFactory", stubHttpProviderFactory);
         assertEquals("verifying the given URL", "http://server.com/context/", restPipe.getUrl().toString());
     }
 
@@ -104,12 +114,21 @@ public class RestAdapterTest {
     }
 
     @Test(timeout = 500L)
-    public void testEncoding() throws InterruptedException {
+    public void testEncoding() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
         final Charset utf_16 = Charset.forName("UTF-16");
-        HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(utf_16), new HashMap<String, Object>()));
 
-        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, provider, builder);
+        final HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(utf_16), new HashMap<String, Object>()));
+
+        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
+
+        TestUtil.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
+
+            @Override
+            public HttpProvider get(Object... in) {
+                return provider;
+            }
+        });
         restPipe.setEncoding(utf_16);
 
         runRead(restPipe);
@@ -135,12 +154,18 @@ public class RestAdapterTest {
     }
 
     @Test
-    public void testSingleObjectRead() throws ParseException, InterruptedException {
+    public void testSingleObjectRead() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
         HeaderAndBody response = new HeaderAndBody(SERIALIZED_POINTS.getBytes(), new HashMap<String, Object>());
-        HttpStubProvider provider = new HttpStubProvider(url, response);
-        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, provider, builder);
+        final HttpStubProvider provider = new HttpStubProvider(url, response);
+        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
+        TestUtil.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
 
+            @Override
+            public HttpProvider get(Object... in) {
+                return provider;
+            }
+        });
         List<ListClassId> result = runRead(restPipe);
 
         List<Point> returnedPoints = result.get(0).points;
@@ -149,12 +174,12 @@ public class RestAdapterTest {
     }
 
     @Test
-    public void testGsonBuilderProperty() throws ParseException, InterruptedException {
+    public void testGsonBuilderProperty() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
 
         final StringBuilder request = new StringBuilder("");
 
-        HttpStubProvider provider = new HttpStubProvider(url) {
+        final HttpStubProvider provider = new HttpStubProvider(url) {
             @Override
             public HeaderAndBody put(String id, String data) {
                 request.delete(0, request.length());
@@ -170,7 +195,16 @@ public class RestAdapterTest {
             }
         };
 
-        Pipe<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, provider, builder);
+        Pipe<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
+
+        TestUtil.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
+
+            @Override
+            public HttpProvider get(Object... in) {
+                return provider;
+            }
+        });
+
         final CountDownLatch latch = new CountDownLatch(1);
         final ListClassId listClass = new ListClassId();
         final List<Point> returnedPoints = new ArrayList<Point>(10);

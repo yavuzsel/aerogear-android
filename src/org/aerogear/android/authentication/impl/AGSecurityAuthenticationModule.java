@@ -24,25 +24,21 @@ import java.net.URL;
 import java.util.Map;
 import org.aerogear.android.Callback;
 import org.aerogear.android.Provider;
+import org.aerogear.android.authentication.AbstractAuthenticationModule;
 import org.aerogear.android.authentication.AuthenticationConfig;
-import org.aerogear.android.authentication.AuthenticationModule;
+import org.aerogear.android.authentication.AuthorizationFields;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpProvider;
-import org.aerogear.android.impl.core.HttpRestProvider;
+import org.aerogear.android.impl.core.HttpProviderFactory;
 import org.json.JSONObject;
 
 /**
  * A module for authenticating with restful AG services.
+ * @see <a href="https://github.com/aerogear/aerogear-security#endpoints-definition">AG Security Endpoint Doc</a>
  */
-public final class RestAuthenticationModule implements AuthenticationModule {
+public final class AGSecurityAuthenticationModule extends AbstractAuthenticationModule {
 
-    private final Provider<HttpProvider> httpProviderProvider = new Provider<HttpProvider>() {
-        @Override
-        public HttpProvider get(Object... in) {
-
-            return new HttpRestProvider((URL) in[0]);
-        }
-    };
+    private final Provider<HttpProvider> httpProviderFactory = new HttpProviderFactory();
 
     private final URL baseURL;
 
@@ -66,7 +62,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     private final String tokenHeaderName;
 
     private boolean isLoggedIn = false;
-    private static final String TAG = RestAuthenticationModule.class
+    private static final String TAG = AGSecurityAuthenticationModule.class
             .getSimpleName();
 
     /**
@@ -76,13 +72,13 @@ public final class RestAuthenticationModule implements AuthenticationModule {
      * @throws IllegalArgumentException if an endpoint can not be appended to
      * baseURL
      */
-    public RestAuthenticationModule(URL baseURL, AuthenticationConfig config) {
+    public AGSecurityAuthenticationModule(URL baseURL, AuthenticationConfig config) {
         this.baseURL = baseURL;
         this.loginEndpoint = config.getLoginEndpoint();
         this.logoutEndpoint = config.getLogoutEndpoint();
         this.enrollEndpoint = config.getEnrollEndpoint();
-        if (config instanceof RestAuthenticationConfig) {
-            this.tokenHeaderName = ((RestAuthenticationConfig) config)
+        if (config instanceof AGSecurityAuthenticationConfig) {
+            this.tokenHeaderName = ((AGSecurityAuthenticationConfig) config)
                     .getTokenHeaderName();
         } else {
             this.tokenHeaderName = "Auth-Token";
@@ -122,7 +118,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
 
             @Override
             protected Void doInBackground(Void... params) {
-                HttpProvider provider = httpProviderProvider.get(enrollURL);
+                HttpProvider provider = httpProviderFactory.get(enrollURL);
                 String enrollData = new JSONObject(userData).toString();
                 try {
                     result = provider.post(enrollData);
@@ -158,7 +154,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
 
             @Override
             protected Void doInBackground(Void... params) {
-                HttpProvider provider = httpProviderProvider.get(loginURL);
+                HttpProvider provider = httpProviderFactory.get(loginURL);
                 String loginData = buildLoginData(username, password);
                 try {
                     result = provider.post(loginData);
@@ -192,7 +188,7 @@ public final class RestAuthenticationModule implements AuthenticationModule {
 
             @Override
             protected Void doInBackground(Void... params) {
-                HttpProvider provider = httpProviderProvider.get(logoutURL);
+                HttpProvider provider = httpProviderFactory.get(logoutURL);
                 try {
                     provider.post("");
                     authToken = "";
@@ -234,8 +230,10 @@ public final class RestAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public void onSecurityApplicationRequested(HttpProvider httpProvider) {
-        httpProvider.setDefaultHeader(tokenHeaderName, authToken);
+    public AuthorizationFields getAuthorizationFields() {
+        AuthorizationFields fields = new AuthorizationFields();
+        fields.addHeader(tokenHeaderName, authToken);
+        return fields;
     }
 
     /**

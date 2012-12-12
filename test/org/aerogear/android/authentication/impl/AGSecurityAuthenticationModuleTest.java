@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import org.aerogear.android.Provider;
+import org.aerogear.android.authentication.AuthorizationFields;
 import org.aerogear.android.core.HeaderAndBody;
 import org.aerogear.android.core.HttpException;
 import org.aerogear.android.core.HttpProvider;
@@ -34,7 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(RobolectricTestRunner.class)
-public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
+public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleTest {
 
     private static final URL SIMPLE_URL;
 
@@ -47,12 +48,12 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     }
 
     @Test
-    public void testDefaultContructor() throws Exception {
-        RestAuthenticationModule module = new RestAuthenticationModule(
-                SIMPLE_URL, new RestAuthenticationConfig());
+    public void testDefaultConstructor() throws Exception {
+        AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
+                SIMPLE_URL, new AGSecurityAuthenticationConfig());
 
         HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
-                "httpProviderProvider", Provider.class).get(SIMPLE_URL);
+                "httpProviderFactory", Provider.class).get(SIMPLE_URL);
         Assert.assertEquals(SIMPLE_URL, provider.getUrl());
 
         Assert.assertEquals(SIMPLE_URL, module.getBaseURL());
@@ -63,31 +64,26 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     public void applySecurityToken() throws Exception {
         String newTokenName = "USER_TOKEN";
 
-        RestAuthenticationConfig config = new RestAuthenticationConfig();
+        AGSecurityAuthenticationConfig config = new AGSecurityAuthenticationConfig();
         config.setTokenHeaderName(newTokenName);
 
-        RestAuthenticationModule module = new RestAuthenticationModule(
+        AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, config);
         TestUtil.setPrivateField(module, "authToken", TOKEN);
 
-        HttpProvider provider = (HttpProvider) TestUtil.getPrivateField(module,
-                "httpProviderProvider", Provider.class).get(SIMPLE_URL);
+        AuthorizationFields fields = module.getAuthorizationFields();
 
-        module.onSecurityApplicationRequested(provider);
-        Map<String, String> defaultHeaders = TestUtil.getPrivateField(provider,
-                "defaultHeaders", Map.class);
-
-        Assert.assertEquals(TOKEN, defaultHeaders.get(config
-                .getTokenHeaderName()));
+        Assert.assertEquals(newTokenName, fields.getHeaders().get(0).first);
+        Assert.assertEquals(TOKEN, fields.getHeaders().get(0).second);
 
     }
 
     @Test(timeout = 500L)
     public void loginFails() throws Exception {
-        RestAuthenticationModule module = new RestAuthenticationModule(
-                SIMPLE_URL, new RestAuthenticationConfig());
+        AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
+                SIMPLE_URL, new AGSecurityAuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
@@ -115,10 +111,10 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
     public void loginSucceeds() throws IOException, NoSuchFieldException,
             InterruptedException, IllegalArgumentException,
             IllegalAccessException {
-        RestAuthenticationModule module = new RestAuthenticationModule(
-                SIMPLE_URL, new RestAuthenticationConfig());
+        AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
+                SIMPLE_URL, new AGSecurityAuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
@@ -151,10 +147,10 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
 
     @Test(timeout = 5000L)
     public void enrollSucceeds() throws Exception {
-        RestAuthenticationModule module = new RestAuthenticationModule(
-                SIMPLE_URL, new RestAuthenticationConfig());
+        AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
+                SIMPLE_URL, new AGSecurityAuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
@@ -194,12 +190,12 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
 
     @Test(timeout = 50000L)
     public void logoutSucceeds() throws Exception {
-        RestAuthenticationModule module = new RestAuthenticationModule(
-                SIMPLE_URL, new RestAuthenticationConfig());
+        AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
+                SIMPLE_URL, new AGSecurityAuthenticationConfig());
         SimpleCallback callback = new SimpleCallback();
 
         final CountDownLatch latch = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
@@ -232,7 +228,7 @@ public class RestAuthenticationModuleTest implements AuthenticationModuleTest {
         VoidCallback voidCallback = new VoidCallback();
 
         final CountDownLatch latch2 = new CountDownLatch(1);
-        TestUtil.setPrivateField(module, "httpProviderProvider",
+        TestUtil.setPrivateField(module, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
                     public HttpProvider get(Object... in) {
