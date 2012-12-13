@@ -31,7 +31,6 @@ public final class DefaultPipeFactory implements PipeFactory {
         Pipe<T> createdPipe;
         if (PipeTypes.REST.equals(config.getType())) {
             URL url = appendEndpoint(config.getBaseURL(), config.getEndpoint());
-            HttpRestProvider httpProvider = new HttpRestProvider(url);
 
             if (config.getGsonBuilder() != null) {
                 createdPipe = new RestAdapter<T>(klass, url, config.getGsonBuilder());

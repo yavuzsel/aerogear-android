@@ -166,7 +166,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                     String body = gson.toJson(data);
                     final HttpProvider httpProvider = getHttpProvider();
 
-                    HeaderAndBody result = null;
+                    HeaderAndBody result;
                     if (id == null || id.length() == 0) {
                         result = httpProvider.post(body);
                     } else {

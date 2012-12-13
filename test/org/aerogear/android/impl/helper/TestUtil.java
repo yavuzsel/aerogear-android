@@ -27,7 +27,6 @@ public class TestUtil {
     public static void setPrivateField(Object target, String fieldName,
             Object value) throws NoSuchFieldException,
             IllegalArgumentException, IllegalAccessException {
-        Class type = target.getClass();
         List<Field> fields = getAllFields(new ArrayList<Field>(), target.getClass());
 
         for (Field field : fields) {
