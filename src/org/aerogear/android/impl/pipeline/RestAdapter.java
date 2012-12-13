@@ -23,8 +23,22 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.aerogear.android.Callback;
 import org.aerogear.android.Provider;
+import org.aerogear.android.ReadFilter;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.AuthorizationFields;
 import org.aerogear.android.http.HeaderAndBody;
@@ -49,6 +63,7 @@ import java.util.List;
 public final class RestAdapter<T> implements Pipe<T> {
 
     private static final String TAG = RestAdapter.class.getSimpleName();
+    private static final String UTF_8 = "UTF-8";
     private final Gson gson;
     /**
      * A class of the Generic type this pipe wraps. This is used by GSON for
@@ -96,11 +111,12 @@ public final class RestAdapter<T> implements Pipe<T> {
         return baseURL;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void read(final Callback<List<T>> callback) {
+    public void readWithFilter(ReadFilter filter, final Callback<List<T>> callback) {
+        if (filter == null) {
+            filter = new ReadFilter();
+        }
+        final ReadFilter innerFilter = filter;
 
         new AsyncTask<Void, Void, Void>() {
             List<T> result = null;
@@ -109,7 +125,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
-                    HttpProvider httpProvider = getHttpProvider();
+                    HttpProvider httpProvider = getHttpProvider(URLDecoder.decode(innerFilter.getQuery(), UTF_8));
                     byte[] responseBody = httpProvider.get().getBody();
                     String responseAsString = new String(responseBody, encoding);
                     JsonParser parser = new JsonParser();
@@ -140,6 +156,14 @@ public final class RestAdapter<T> implements Pipe<T> {
             }
         }.execute();
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void read(final Callback<List<T>> callback) {
+        readWithFilter(null, callback);
     }
 
     @Override
@@ -236,7 +260,51 @@ public final class RestAdapter<T> implements Pipe<T> {
      * @return an array of klass with a length of 1
      */
     private Class<T[]> asArrayClass(Class<T> klass) {
+
         return (Class<T[]>) Array.newInstance(klass, 1).getClass();
+    }
+
+    private URL appendQuery(String query, URL baseURL) {
+        try {
+            URI baseURI = baseURL.toURI();
+            String baseQuery = baseURI.getQuery();
+            if (baseQuery == null || baseQuery.isEmpty()) {
+                baseQuery = query;
+            } else {
+                baseQuery = baseQuery + "&" + query;
+            }
+
+            return new URI(baseURI.getScheme(), baseURI.getUserInfo(), baseURI.getHost(), baseURI.getPort(), baseURI.getPath(), baseQuery, baseURI.getFragment()).toURL();
+        } catch (MalformedURLException ex) {
+            Log.e(TAG, "The URL could not be created from " + baseURL.toString(), ex);
+            throw new RuntimeException(ex);
+        } catch (URISyntaxException ex) {
+            Log.e(TAG, "Error turning " + query + " into URI query.", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private class AsyncTaskResult<T> {
+
+        private T result;
+        private Exception error;
+
+        public AsyncTaskResult(T result) {
+            this.result = result;
+        }
+
+        public AsyncTaskResult(Exception error) {
+            this.error = error;
+        }
+
+        public T getResult() {
+            return result;
+        }
+
+        public Exception getError() {
+            return error;
+        }
+
     }
 
     @Override
@@ -272,39 +340,26 @@ public final class RestAdapter<T> implements Pipe<T> {
      * @return a url with query params added
      */
     private URL addAuthorization(List<Pair<String, String>> queryParameters) {
-        String query = baseURL.getQuery();
 
-        try {
-            StringBuilder queryBuilder = new StringBuilder();
+        StringBuilder queryBuilder = new StringBuilder();
 
-            if (query == null) {
-                query = "";
-            }
-
-            queryBuilder.append(query);
-            String amp = "";
-            for (Pair<String, String> parameter : queryParameters) {
-                try {
-                    queryBuilder.append(amp)
+        String amp = "";
+        for (Pair<String, String> parameter : queryParameters) {
+            try {
+                queryBuilder.append(amp)
                             .append(URLEncoder.encode(parameter.first, "UTF-8"))
                             .append("=")
                             .append(URLEncoder.encode(parameter.second, "UTF-8"));
-                    amp = "&";
-                } catch (UnsupportedEncodingException ex) {
-                    Log.e(TAG, "UTF-8 encoding is not supported.", ex);
-                    throw new RuntimeException(ex);
-                }
+
+                amp = "&";
+            } catch (UnsupportedEncodingException ex) {
+                Log.e(TAG, "UTF-8 encoding is not supportted.", ex);
+                throw new RuntimeException(ex);
+
             }
-            URI baseURI = baseURL.toURI();
-            query = queryBuilder.toString();
-            return new URI(baseURI.getScheme(), baseURI.getUserInfo(), baseURI.getHost(), baseURI.getPort(), baseURI.getPath(), query, baseURI.getFragment()).toURL();
-        } catch (MalformedURLException ex) {
-            Log.e(TAG, "The URL could not be created from " + baseURL.toString(), ex);
-            throw new RuntimeException(ex);
-        } catch (URISyntaxException ex) {
-            Log.e(TAG, "Error turning " + query + " into URI query.", ex);
-            throw new RuntimeException(ex);
         }
+
+        return appendQuery(queryBuilder.toString(), baseURL);
 
     }
 
@@ -318,8 +373,15 @@ public final class RestAdapter<T> implements Pipe<T> {
     }
 
     private HttpProvider getHttpProvider() {
+        return getHttpProvider(null);
+    }
+
+    private HttpProvider getHttpProvider(String filterQuery) {
         AuthorizationFields fields = loadAuth();
         URL authorizedURL = addAuthorization(fields.getQueryParameters());
+        if (!(filterQuery == null || filterQuery.isEmpty())) {
+            authorizedURL = appendQuery(filterQuery, authorizedURL);
+        }
         final HttpProvider httpProvider = httpProviderFactory.get(authorizedURL);
         addAuthHeaders(httpProvider, fields);
         return httpProvider;
