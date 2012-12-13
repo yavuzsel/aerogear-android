@@ -27,12 +27,12 @@ public class HttpException extends RuntimeException {
     /**
      * The body of the http response.
      */
-    private byte[] data;
+    private final byte[] data;
 
     /**
      * The returned status code
      */
-    private int statusCode;
+    private final int statusCode;
 
     public HttpException(byte[] data, int statusCode) {
         this(data, statusCode, null);

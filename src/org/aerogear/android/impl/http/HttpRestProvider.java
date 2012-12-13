@@ -49,7 +49,7 @@ public final class HttpRestProvider implements HttpProvider {
      * in a restful URL
      * ex http://example.com/data/$id.
      */
-    private Provider<HttpURLConnection> connectionPreparer = new Provider<HttpURLConnection>() {
+    private final Provider<HttpURLConnection> connectionPreparer = new Provider<HttpURLConnection>() {
         @Override
         public HttpURLConnection get(Object... in) {
             String id = null;

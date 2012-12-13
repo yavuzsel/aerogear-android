@@ -25,7 +25,8 @@ import org.aerogear.android.datamanager.StoreType;
 public enum StoreTypes implements StoreType {
 
     MEMORY("MEMORY");
-    private String typeDescription;
+
+    private final String typeDescription;
 
     StoreTypes(String typeDescription) {
         this.typeDescription = typeDescription;
