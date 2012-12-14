@@ -105,7 +105,7 @@ public class Property {
     /**
      * Set new value
      *
-     * @param instance Instante to set new value
+     * @param instance Instance to set new value
      * @param value new value
      */
     public void setValue(Object instance, Object value) {
