@@ -80,7 +80,7 @@ public class Pipeline {
      * @param pipeFactory {@link PipeFactory} implementation
      * @throws IllegalArgumentException if baseURL is not a valid URL
      */
-    public Pipeline(String baseURL, PipeFactory pipeFactory) {
+    private Pipeline(String baseURL, PipeFactory pipeFactory) {
         this.pipeFactory = pipeFactory;
 
         try {

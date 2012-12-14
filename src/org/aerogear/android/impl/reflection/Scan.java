@@ -31,7 +31,7 @@ public final class Scan {
      * @param klass Class to search @RecordId
      * @return Field with @RecordId
      */
-    public static Field recordIdFieldIn(Class klass) {
+    private static Field recordIdFieldIn(Class klass) {
         for (Field field : klass.getDeclaredFields()) {
             if (field.isAnnotationPresent(RecordId.class)) {
                 return field;

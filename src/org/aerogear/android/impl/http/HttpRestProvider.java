@@ -211,7 +211,7 @@ public final class HttpRestProvider implements HttpProvider {
         return prepareConnection(null);
     }
 
-    private HttpURLConnection prepareConnection(String id) throws IOException {
+    private HttpURLConnection prepareConnection(String id) {
         return connectionPreparer.get(id);
     }
 
