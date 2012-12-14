@@ -284,29 +284,6 @@ public final class RestAdapter<T> implements Pipe<T> {
         }
     }
 
-    private class AsyncTaskResult<T> {
-
-        private T result;
-        private Exception error;
-
-        public AsyncTaskResult(T result) {
-            this.result = result;
-        }
-
-        public AsyncTaskResult(Exception error) {
-            this.error = error;
-        }
-
-        public T getResult() {
-            return result;
-        }
-
-        public Exception getError() {
-            return error;
-        }
-
-    }
-
     @Override
     public void setAuthenticationModule(AuthenticationModule module) {
         this.authModule = module;
