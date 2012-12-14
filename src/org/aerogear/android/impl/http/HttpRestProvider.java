@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 /**
  * These are tuned for AeroGear, assume the body is String data, and that the
  * headers don't do anything funny.
