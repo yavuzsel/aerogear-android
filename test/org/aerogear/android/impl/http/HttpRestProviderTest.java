@@ -14,9 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.impl.core;
+package org.aerogear.android.impl.http;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.aerogear.android.Provider;
+import org.aerogear.android.authentication.impl.AuthenticatorTest;
+import org.aerogear.android.http.HeaderAndBody;
+import org.aerogear.android.http.HttpException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
@@ -28,18 +37,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.aerogear.android.Provider;
-import org.aerogear.android.authentication.impl.AuthenticatorTest;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpException;
-import static org.aerogear.android.impl.helper.TestUtil.*;
+
+import static org.aerogear.android.impl.helper.TestUtil.setPrivateField;
 import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 @RunWith(RobolectricTestRunner.class)
 public class HttpRestProviderTest {

@@ -23,28 +23,25 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.aerogear.android.Callback;
 import org.aerogear.android.Provider;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.AuthorizationFields;
-import org.aerogear.android.core.HeaderAndBody;
-import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.http.HeaderAndBody;
+import org.aerogear.android.http.HttpProvider;
 import org.aerogear.android.impl.core.HttpProviderFactory;
 import org.aerogear.android.impl.reflection.Property;
 import org.aerogear.android.impl.reflection.Scan;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeType;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.net.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Rest implementation of {@link Pipe}.
@@ -105,9 +102,12 @@ public final class RestAdapter<T> implements Pipe<T> {
     @Override
     public void read(final Callback<List<T>> callback) {
 
-        new AsyncTask<Void, Void, AsyncTaskResult<List<T>>>() {
+        new AsyncTask<Void, Void, Void>() {
+            List<T> result = null;
+            Exception exception = null;
+
             @Override
-            protected AsyncTaskResult doInBackground(Void... voids) {
+            protected Void doInBackground(Void... voids) {
                 try {
                     HttpProvider httpProvider = getHttpProvider();
                     byte[] responseBody = httpProvider.get().getBody();
@@ -115,31 +115,31 @@ public final class RestAdapter<T> implements Pipe<T> {
                     JsonParser parser = new JsonParser();
                     JsonElement result = parser.parse(responseAsString);
                     if (result.isJsonArray()) {
-                        T[] resultArray = gson.fromJson(responseAsString,
-                                arrayKlass);
-                        return new AsyncTaskResult(Arrays.asList(resultArray));
+                        T[] resultArray = gson.fromJson(responseAsString, arrayKlass);
+                        this.result = Arrays.asList(resultArray);
                     } else {
                         T resultObject = gson.fromJson(responseAsString, klass);
                         List<T> resultList = new ArrayList<T>(1);
                         resultList.add(resultObject);
-                        return new AsyncTaskResult(resultList);
-
+                        this.result = resultList;
                     }
                 } catch (Exception e) {
-                    return new AsyncTaskResult(e);
+                    exception = e;
                 }
+                return null;
             }
 
             @Override
-            protected void onPostExecute(
-                    AsyncTaskResult<List<T>> asyncTaskResult) {
-                if (asyncTaskResult.getError() != null) {
-                    callback.onFailure(asyncTaskResult.getError());
+            protected void onPostExecute(Void ignore) {
+                super.onPostExecute(ignore);
+                if (exception == null) {
+                    callback.onSuccess(this.result);
                 } else {
-                    callback.onSuccess(asyncTaskResult.getResult());
+                    callback.onFailure(exception);
                 }
             }
         }.execute();
+
     }
 
     @Override
@@ -155,42 +155,40 @@ public final class RestAdapter<T> implements Pipe<T> {
             return;
         }
 
-        new AsyncTask<Void, Void, AsyncTaskResult<T>>() {
+        new AsyncTask<Void, Void, Void>() {
+            T result = null;
+            Exception exception = null;
+
             @Override
-            protected AsyncTaskResult doInBackground(Void... voids) {
+            protected Void doInBackground(Void... voids) {
                 try {
 
-                    /*Serialize the object.*/
                     String body = gson.toJson(data);
                     final HttpProvider httpProvider = getHttpProvider();
 
-                    HeaderAndBody result = null;
+                    HeaderAndBody result;
                     if (id == null || id.length() == 0) {
                         result = httpProvider.post(body);
                     } else {
                         result = httpProvider.put(id, body);
                     }
 
-                    /*Deseralize the result and return it, or pass null.*/
-
-                    if (result != null) {
-                        return new AsyncTaskResult(gson.fromJson(new String(result.getBody(), encoding), klass));
-                    } else {
-                        return new AsyncTaskResult((T) null);
-
-                    }
+                    this.result = gson.fromJson(new String(result.getBody(), encoding), klass);
 
                 } catch (Exception e) {
-                    return new AsyncTaskResult(e);
+                    exception = e;
                 }
+
+                return null;
             }
 
             @Override
-            protected void onPostExecute(AsyncTaskResult<T> asyncTaskResult) {
-                if (asyncTaskResult.getError() != null) {
-                    callback.onFailure(asyncTaskResult.getError());
+            protected void onPostExecute(Void ignore) {
+                super.onPostExecute(ignore);
+                if (exception == null) {
+                    callback.onSuccess(this.result);
                 } else {
-                    callback.onSuccess(asyncTaskResult.getResult());
+                    callback.onFailure(exception);
                 }
             }
         }.execute();
@@ -203,26 +201,31 @@ public final class RestAdapter<T> implements Pipe<T> {
     @Override
     public void remove(final String id, final Callback<Void> callback) {
 
-        new AsyncTask<Void, Void, AsyncTaskResult<byte[]>>() {
+        new AsyncTask<Void, Void, Void>() {
+            Exception exception = null;
+
             @Override
-            protected AsyncTaskResult doInBackground(Void... voids) {
+            protected Void doInBackground(Void... voids) {
                 try {
                     HttpProvider httpProvider = getHttpProvider();
-                    return new AsyncTaskResult(httpProvider.delete(id));
+                    httpProvider.delete(id);
                 } catch (Exception e) {
-                    return new AsyncTaskResult(e);
+                    exception = e;
                 }
+                return null;
             }
 
             @Override
-            protected void onPostExecute(AsyncTaskResult<byte[]> asyncTaskResult) {
-                if (asyncTaskResult.getError() != null) {
-                    callback.onFailure(asyncTaskResult.getError());
-                } else {
+            protected void onPostExecute(Void ignore) {
+                super.onPostExecute(ignore);
+                if (exception == null) {
                     callback.onSuccess(null);
+                } else {
+                    callback.onFailure(exception);
                 }
             }
         }.execute();
+
     }
 
     /**
@@ -233,29 +236,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      * @return an array of klass with a length of 1
      */
     private Class<T[]> asArrayClass(Class<T> klass) {
-        return (Class<T[]>) ((T[]) Array.newInstance(klass, 1)).getClass();
-    }
-
-    private class AsyncTaskResult<T> {
-
-        private T result;
-        private Exception error;
-
-        public AsyncTaskResult(T result) {
-            this.result = result;
-        }
-
-        public AsyncTaskResult(Exception error) {
-            this.error = error;
-        }
-
-        public T getResult() {
-            return result;
-        }
-
-        public Exception getError() {
-            return error;
-        }
+        return (Class<T[]>) Array.newInstance(klass, 1).getClass();
     }
 
     @Override
@@ -310,7 +291,7 @@ public final class RestAdapter<T> implements Pipe<T> {
                             .append(URLEncoder.encode(parameter.second, "UTF-8"));
                     amp = "&";
                 } catch (UnsupportedEncodingException ex) {
-                    Log.e(TAG, "UTF-8 encoding is not supportted.", ex);
+                    Log.e(TAG, "UTF-8 encoding is not supported.", ex);
                     throw new RuntimeException(ex);
                 }
             }

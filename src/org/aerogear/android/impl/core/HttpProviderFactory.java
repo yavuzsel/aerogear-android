@@ -17,9 +17,11 @@
 
 package org.aerogear.android.impl.core;
 
-import java.net.URL;
 import org.aerogear.android.Provider;
-import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.http.HttpProvider;
+import org.aerogear.android.impl.http.HttpRestProvider;
+
+import java.net.URL;
 
 public class HttpProviderFactory implements Provider<HttpProvider> {
 

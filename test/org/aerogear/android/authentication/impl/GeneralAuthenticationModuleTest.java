@@ -17,16 +17,11 @@
 package org.aerogear.android.authentication.impl;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import org.aerogear.android.Callback;
 import org.aerogear.android.authentication.AbstractAuthenticationModule;
 import org.aerogear.android.authentication.AuthenticationModule;
 import org.aerogear.android.authentication.AuthorizationFields;
-import org.aerogear.android.core.HttpProvider;
+import org.aerogear.android.http.HttpProvider;
 import org.aerogear.android.impl.core.HttpProviderFactory;
 import org.aerogear.android.impl.helper.Data;
 import org.aerogear.android.impl.helper.TestUtil;
@@ -34,6 +29,13 @@ import org.aerogear.android.impl.pipeline.RestAdapter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.*;
 

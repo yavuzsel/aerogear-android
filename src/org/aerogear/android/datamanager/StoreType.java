@@ -17,7 +17,7 @@
 
 package org.aerogear.android.datamanager;
 
-import org.aerogear.android.core.TypeDescriptor;
+import org.aerogear.android.TypeDescriptor;
 
 public interface StoreType extends TypeDescriptor {
 }

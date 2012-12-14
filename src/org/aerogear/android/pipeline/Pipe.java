@@ -24,7 +24,7 @@ import org.aerogear.android.authentication.AuthenticationModule;
 
 /**
  * A {@link Pipe} represents a server connection. An object of this class is responsible to communicate
- * with the server in order to perfom read/write operations.
+ * with the server in order to perform read/write operations.
  *
  * @param <T> The data type of the {@link Pipe} operation
  */

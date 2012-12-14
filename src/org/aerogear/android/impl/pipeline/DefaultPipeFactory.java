@@ -20,7 +20,7 @@ package org.aerogear.android.impl.pipeline;
 import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.aerogear.android.impl.core.HttpRestProvider;
+import org.aerogear.android.impl.http.HttpRestProvider;
 import org.aerogear.android.pipeline.Pipe;
 import org.aerogear.android.pipeline.PipeFactory;
 
@@ -31,7 +31,6 @@ public final class DefaultPipeFactory implements PipeFactory {
         Pipe<T> createdPipe;
         if (PipeTypes.REST.equals(config.getType())) {
             URL url = appendEndpoint(config.getBaseURL(), config.getEndpoint());
-            HttpRestProvider httpProvider = new HttpRestProvider(url);
 
             if (config.getGsonBuilder() != null) {
                 createdPipe = new RestAdapter<T>(klass, url, config.getGsonBuilder());

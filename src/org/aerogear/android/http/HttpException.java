@@ -14,37 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.android.core;
+package org.aerogear.android.http;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * This is a convenience to wrap up headers from a
- * HTTPResponse with its entity.
+ * If an HTTP Request does not return status code 200 then this will
+ * be thrown.
  */
-public class HeaderAndBody {
+public class HttpException extends RuntimeException {
 
-    private final byte[] body;
+    /**
+     * The body of the http response.
+     */
+    private final byte[] data;
 
-    private final Map<String, Object> headers;
+    /**
+     * The returned status code
+     */
+    private final int statusCode;
 
-    public HeaderAndBody(byte[] body, Map<String, Object> headers) {
-        this.body = Arrays.copyOf(body, body.length);
-        this.headers = new HashMap<String, Object>(headers);
+    public HttpException(byte[] data, int statusCode) {
+        this(data, statusCode, null);
     }
 
-    public byte[] getBody() {
-        return Arrays.copyOf(body, body.length);
+    public HttpException(byte[] data, int statusCode, String message) {
+        super(message);
+        this.data = data;
+        this.statusCode = statusCode;
     }
 
-    public Object getHeader(String headerName) {
-        return headers.get(headerName);
+    public byte[] getData() {
+        return Arrays.copyOf(data, data.length);
     }
 
-    public void setHeader(String headerName, Object headerValue) {
-        headers.put(headerName, headerValue);
+    public int getStatusCode() {
+        return statusCode;
     }
 
 }
