@@ -353,7 +353,7 @@ public final class RestAdapter<T> implements Pipe<T> {
 
                 amp = "&";
             } catch (UnsupportedEncodingException ex) {
-                Log.e(TAG, "UTF-8 encoding is not supportted.", ex);
+                Log.e(TAG, "UTF-8 encoding is not supported.", ex);
                 throw new RuntimeException(ex);
 
             }

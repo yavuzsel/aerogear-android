@@ -110,7 +110,9 @@ public class MemoryStorage<T> implements Store<T> {
      */
     @Override
     public List<T> readWithFilter(ReadFilter filter) {
-
+        if (filter == null) {
+            filter = new ReadFilter();
+        }
         JSONObject where = filter.getWhere();
         scanForNestedObjectsInWhereClause(where);
         List<T> results = new ArrayList<T>(data.values());
@@ -140,20 +142,14 @@ public class MemoryStorage<T> implements Store<T> {
         while (keys.hasNext()) {
             filterPropertyName = keys.next().toString();
             filterValue = where.opt(filterPropertyName);
-
+ 
             for (T objectInStorage : data) {
                 Property objectProperty = new Property(objectInStorage.getClass(), filterPropertyName);
                 Object propertyValue = objectProperty.getValue(objectInStorage);
                 if (propertyValue != null && filterValue != null) {
-                    if (propertyValue.equals(filterValue)) {
-                        continue;
-                    } else {
+                    if (!propertyValue.equals(filterValue)) {
                         data.remove(objectInStorage);
                     }
-                } else if (propertyValue == null && filterValue == null) {//both props are null don't remove
-                    continue;
-                } else {
-                    data.remove(objectInStorage);
                 }
             }
         }
