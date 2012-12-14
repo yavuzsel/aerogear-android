@@ -63,14 +63,12 @@ public class Data {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Data data = (Data) o;
 
-        return id.equals(data.id);
+        return !(id != null ? !id.equals(data.id) : data.id != null);
     }
 
     @Override
