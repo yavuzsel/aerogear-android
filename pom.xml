@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.aerogear.android</groupId>
     <artifactId>aerogear-android</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.M1</version>
     <packaging>apklib</packaging>
     <name>AeroGear Android Libary</name>
 
