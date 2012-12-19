@@ -2,11 +2,42 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.aerogear.android</groupId>
+
+    <groupId>org.jboss.aerogear</groupId>
     <artifactId>aerogear-android</artifactId>
     <version>1.0.0.M1</version>
     <packaging>apklib</packaging>
     <name>AeroGear Android Libary</name>
+    <url>http://aerogear.org</url>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>6-beta-2</version>
+    </parent>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>secondsun</id>
+            <name>Summers Pittman</name>
+            <url>http://blog.sagaoftherealms.net/</url>
+            <email>supittma@redhat.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:aerogear/aerogear-android.git</connection>
+        <developerConnection>scm:git:git@github.com:aerogear/aerogear-android.git</developerConnection>
+        <url>git@github.com:aerogear/aerogear-android.git</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
