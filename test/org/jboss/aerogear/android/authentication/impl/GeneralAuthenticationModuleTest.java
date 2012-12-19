@@ -83,7 +83,7 @@ public class GeneralAuthenticationModuleTest implements AuthenticationModuleTest
         verify(factory).get(new URL(SIMPLE_URL.toString() + "?token=" + TOKEN));
     }
 
-    @Test(timeout = 50l)
+    @Test(timeout = 1000l)
     public void testAbstractMethodsThrowExceptions() throws InterruptedException {
         AuthenticationModule module = mock(AbstractAuthenticationModule.class, CALLS_REAL_METHODS);
         final CountDownLatch latch = new CountDownLatch(3);
