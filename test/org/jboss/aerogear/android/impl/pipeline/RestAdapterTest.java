@@ -16,10 +16,6 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import org.jboss.aerogear.android.impl.pipeline.PipeConfig;
-import org.jboss.aerogear.android.impl.pipeline.PipeTypes;
-import org.jboss.aerogear.android.impl.pipeline.RestAdapter;
-import org.jboss.aerogear.android.impl.pipeline.DefaultPipeFactory;
 import android.graphics.Point;
 import android.util.Log;
 import com.google.gson.Gson;
