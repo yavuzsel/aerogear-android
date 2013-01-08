@@ -17,8 +17,7 @@
 
 package org.jboss.aerogear.android.impl.datamanager;
 
-import org.jboss.aerogear.android.impl.datamanager.DefaultStoreFactory;
-import org.jboss.aerogear.android.impl.datamanager.DefaultIdGenerator;
+import com.xtremelabs.robolectric.Robolectric;
 import java.net.MalformedURLException;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -27,7 +26,8 @@ import org.jboss.aerogear.android.DataManager;
 import org.jboss.aerogear.android.datamanager.IdGenerator;
 import org.jboss.aerogear.android.datamanager.Store;
 import org.jboss.aerogear.android.datamanager.StoreFactory;
-import static org.jboss.aerogear.android.impl.datamanager.StoreTypes.MEMORY;
+import static org.jboss.aerogear.android.impl.datamanager.StoreTypes.*;
+import org.jboss.aerogear.android.impl.helper.Data;
 import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,7 +81,7 @@ public class DataManagerTest {
 
     @Test
     public void testCreateStoreWithMemoryType() {
-        Store store = dataManager.store("foo", MEMORY);
+        Store store = dataManager.store("foo", new StoreConfig());
 
         assertNotNull("store could not be null", store);
         assertEquals("verifying the type", MEMORY, store.getType());
@@ -98,7 +98,7 @@ public class DataManagerTest {
 
     @Test
     public void testAddStoreWithMemoryType() {
-        dataManager.store("foo", MEMORY);
+        dataManager.store("foo", new StoreConfig());
         Store store = dataManager.get("foo");
 
         assertNotNull("foo store could not be null", store);
@@ -106,8 +106,20 @@ public class DataManagerTest {
     }
 
     @Test
+    public void testAddStoreWithSQLType() {
+        StoreConfig sqlStoreConfig = new StoreConfig();
+        sqlStoreConfig.setContext(Robolectric.application.getApplicationContext());
+        sqlStoreConfig.setType(SQL);
+        sqlStoreConfig.setKlass(Data.class);
+        dataManager.store("foo", sqlStoreConfig);
+        Store store = dataManager.get("foo");
+        assertNotNull("foo store could not be null", store);
+        assertEquals("verifying the type", SQL, store.getType());
+    }
+
+    @Test
     public void testAndAddAndRemoveStores() {
-        dataManager.store("foo", MEMORY);
+        dataManager.store("foo", new StoreConfig());
         dataManager.store("bar");
 
         Store fooStore = dataManager.get("foo");

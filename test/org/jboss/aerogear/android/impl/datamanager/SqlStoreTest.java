@@ -17,7 +17,6 @@
 
 package org.jboss.aerogear.android.impl.datamanager;
 
-import org.jboss.aerogear.android.impl.datamanager.SQLStore;
 import android.content.Context;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
@@ -25,10 +24,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import org.aerogear.android.Callback;
-import org.aerogear.android.ReadFilter;
-import org.aerogear.android.RecordId;
-import org.aerogear.android.impl.helper.Data;
+import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.ReadFilter;
+import org.jboss.aerogear.android.RecordId;
+import org.jboss.aerogear.android.impl.helper.Data;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;

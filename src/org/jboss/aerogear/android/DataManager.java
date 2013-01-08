@@ -21,10 +21,9 @@ import java.util.Map;
 import org.jboss.aerogear.android.datamanager.IdGenerator;
 import org.jboss.aerogear.android.datamanager.Store;
 import org.jboss.aerogear.android.datamanager.StoreFactory;
-import org.jboss.aerogear.android.datamanager.StoreType;
 import org.jboss.aerogear.android.impl.datamanager.DefaultIdGenerator;
 import org.jboss.aerogear.android.impl.datamanager.DefaultStoreFactory;
-import org.jboss.aerogear.android.impl.datamanager.StoreTypes;
+import org.jboss.aerogear.android.impl.datamanager.StoreConfig;
 
 /**
  * Represents an abstraction layer for a storage system.
@@ -107,7 +106,7 @@ public class DataManager {
      * @param storeName The name of the actual data store object.
      */
     public Store store(String storeName) {
-        return store(storeName, StoreTypes.MEMORY);
+        return store(storeName, new StoreConfig());
     }
 
     /**
@@ -115,10 +114,10 @@ public class DataManager {
      * type argument.
      *
      * @param storeName The name of the actual data store object.
-     * @param type The type of the new data store object.
+     * @param config The config object used to build the store
      */
-    public Store store(String storeName, StoreType type) {
-        Store store = storeFactory.createStore(type, idGenerator);
+    public Store store(String storeName, StoreConfig config) {
+        Store store = storeFactory.createStore(config);
         stores.put(storeName, store);
         return store;
     }

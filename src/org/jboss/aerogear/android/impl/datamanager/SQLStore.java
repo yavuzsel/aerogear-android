@@ -39,13 +39,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.aerogear.android.Callback;
-import org.aerogear.android.ReadFilter;
-import org.aerogear.android.datamanager.IdGenerator;
-import org.aerogear.android.datamanager.Store;
-import org.aerogear.android.datamanager.StoreType;
-import org.aerogear.android.impl.reflection.Property;
-import org.aerogear.android.impl.reflection.Scan;
+import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.ReadFilter;
+import org.jboss.aerogear.android.datamanager.IdGenerator;
+import org.jboss.aerogear.android.datamanager.Store;
+import org.jboss.aerogear.android.datamanager.StoreType;
+import org.jboss.aerogear.android.impl.reflection.Property;
+import org.jboss.aerogear.android.impl.reflection.Scan;
 
 public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
 

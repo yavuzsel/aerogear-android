@@ -18,8 +18,8 @@ package org.jboss.aerogear.android.impl.datamanager;
 
 import android.content.Context;
 import com.google.gson.GsonBuilder;
-import org.aerogear.android.datamanager.IdGenerator;
-import org.aerogear.android.datamanager.StoreType;
+import org.jboss.aerogear.android.datamanager.IdGenerator;
+import org.jboss.aerogear.android.datamanager.StoreType;
 
 public final class StoreConfig {
     private Context context;
