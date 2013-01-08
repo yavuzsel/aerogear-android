@@ -24,9 +24,14 @@ import org.jboss.aerogear.android.datamanager.StoreType;
 
 public final class DefaultStoreFactory implements StoreFactory {
 
-    public Store createStore(StoreType type, IdGenerator idGenerator) {
+    @Override
+    public Store createStore(StoreConfig config) {
+        StoreType type = config.getType();
+        IdGenerator idGenerator = config.getIdGenerator();
         if (type.equals(StoreTypes.MEMORY)) {
             return new MemoryStorage(idGenerator);
+        } else if (StoreTypes.SQL.equals(type)) {
+            return new SQLStore(null, null);
         }
         throw new IllegalArgumentException("Type is not supported yet");
     }
