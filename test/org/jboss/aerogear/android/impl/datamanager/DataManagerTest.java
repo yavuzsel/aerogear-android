@@ -18,6 +18,7 @@
 package org.jboss.aerogear.android.impl.datamanager;
 
 import com.xtremelabs.robolectric.Robolectric;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.net.MalformedURLException;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -31,7 +32,9 @@ import org.jboss.aerogear.android.impl.helper.Data;
 import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(RobolectricTestRunner.class)
 public class DataManagerTest {
 
     private DataManager dataManager;

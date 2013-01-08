@@ -31,7 +31,7 @@ public final class DefaultStoreFactory implements StoreFactory {
         if (type.equals(StoreTypes.MEMORY)) {
             return new MemoryStorage(idGenerator);
         } else if (StoreTypes.SQL.equals(type)) {
-            return new SQLStore(null, null);
+            return new SQLStore(config.getKlass(), config.getContext(), config.getBuilder());
         }
         throw new IllegalArgumentException("Type is not supported yet");
     }
