@@ -24,6 +24,8 @@ import java.util.Arrays;
  */
 public class HttpException extends RuntimeException {
 
+    private static final String DEFAULT_MESSAGE = "The server returned the error code %d.";
+
     /**
      * The body of the http response.
      */
@@ -35,7 +37,7 @@ public class HttpException extends RuntimeException {
     private final int statusCode;
 
     public HttpException(byte[] data, int statusCode) {
-        this(data, statusCode, null);
+        this(data, statusCode, String.format(DEFAULT_MESSAGE, statusCode));
     }
 
     public HttpException(byte[] data, int statusCode, String message) {

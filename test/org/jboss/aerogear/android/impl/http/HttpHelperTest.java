@@ -28,6 +28,7 @@ public class HttpHelperTest {
     private static final byte[] SIMPLE_DATA = { 8, 6, 7, 5, 3, 0, 9 };
     private static final String SAMPLE_MESSAGE = "SAMPLE_MESSAGE";
     private static final String SAMPLE_HEADER = "SAMPLE_HEADER";
+    private static final String DEFAULT_MESSAGE = "The server returned the error code 404.";
     private static final int NOT_FOUND = 404;
 
     @Test
@@ -39,6 +40,7 @@ public class HttpHelperTest {
         assertNotSame(SIMPLE_DATA, exception.getData());
         assertArrayEquals(SIMPLE_DATA, exception.getData());
         assertEquals(NOT_FOUND, exception.getStatusCode());
+        assertEquals(DEFAULT_MESSAGE, exception.getMessage());
         assertEquals(SAMPLE_MESSAGE, exceptionWithMessage.getMessage());
 
     }
