@@ -24,9 +24,10 @@ import org.jboss.aerogear.android.datamanager.StoreType;
  */
 public enum StoreTypes implements StoreType {
 
-    MEMORY("MEMORY");
+    MEMORY("MEMORY"),
+    SQL("SQL");
 
-    private final String typeDescription;
+    private String typeDescription;
 
     StoreTypes(String typeDescription) {
         this.typeDescription = typeDescription;

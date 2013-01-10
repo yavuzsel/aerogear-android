@@ -17,8 +17,10 @@
 
 package org.jboss.aerogear.android.datamanager;
 
+import org.jboss.aerogear.android.impl.datamanager.StoreConfig;
+
 public interface StoreFactory {
 
-    public Store createStore(StoreType type, IdGenerator idGenerator);
+    public Store createStore(StoreConfig config);
 
 }
