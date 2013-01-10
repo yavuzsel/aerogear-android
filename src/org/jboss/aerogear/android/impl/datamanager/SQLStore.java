@@ -65,20 +65,22 @@ public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
             + " ON %s_property (PARENT_ID);";
     private SQLiteDatabase database;
     private final Gson gson;
-    private final IdGenerator generator = new DefaultIdGenerator();
+    private final IdGenerator generator;
 
     public SQLStore(Class<T> klass, Context context) {
         super(context, klass.getSimpleName(), null, 1);
         this.klass = klass;
         this.className = klass.getSimpleName();
         this.gson = new Gson();
+        this.generator = new DefaultIdGenerator();
     }
 
-    public SQLStore(Class<T> klass, Context context, GsonBuilder builder) {
+    public SQLStore(Class<T> klass, Context context, GsonBuilder builder, IdGenerator generator) {
         super(context, klass.getSimpleName(), null, 1);
         this.klass = klass;
         this.className = klass.getSimpleName();
         this.gson = builder.create();
+        this.generator = generator;
     }
 
     /**

@@ -17,6 +17,8 @@
 
 package org.jboss.aerogear.android.impl.datamanager;
 
+import android.content.Context;
+import com.google.gson.GsonBuilder;
 import org.jboss.aerogear.android.datamanager.IdGenerator;
 import org.jboss.aerogear.android.datamanager.Store;
 import org.jboss.aerogear.android.datamanager.StoreFactory;
@@ -28,10 +30,26 @@ public final class DefaultStoreFactory implements StoreFactory {
     public Store createStore(StoreConfig config) {
         StoreType type = config.getType();
         IdGenerator idGenerator = config.getIdGenerator();
+        Class klass = config.getKlass();
+        Context context = config.getContext();
+        GsonBuilder builder = config.getBuilder();
+
         if (type.equals(StoreTypes.MEMORY)) {
             return new MemoryStorage(idGenerator);
         } else if (StoreTypes.SQL.equals(type)) {
-            return new SQLStore(config.getKlass(), config.getContext(), config.getBuilder());
+            if (klass == null) {
+                throw new IllegalArgumentException("StoreConfig.klass may not be null");
+            }
+
+            if (context == null) {
+                throw new IllegalArgumentException("StoreConfig.context may not be null");
+            }
+
+            if (builder == null) {
+                throw new IllegalArgumentException("StoreConfig.builder may not be null");
+            }
+
+            return new SQLStore(klass, context, builder, idGenerator);
         }
         throw new IllegalArgumentException("Type is not supported yet");
     }
