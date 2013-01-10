@@ -19,13 +19,42 @@ package org.jboss.aerogear.android.impl.datamanager;
 import android.content.Context;
 import com.google.gson.GsonBuilder;
 import org.jboss.aerogear.android.datamanager.IdGenerator;
+import org.jboss.aerogear.android.datamanager.Store;
+import org.jboss.aerogear.android.datamanager.StoreFactory;
 import org.jboss.aerogear.android.datamanager.StoreType;
 
+/**
+ * This class bundles up all of the possible variables which may be used to instanciate a {@link Store}
+ */
 public final class StoreConfig {
+
+    /**
+     * An Android Context, used by {@link SQLStore}
+     */
     private Context context;
+
+    /**
+     * The Class of the store, should be the same as the parameterized class
+     * of the Store.  Used by {@link SQLStore}
+     */
     private Class klass;
+
+    /**
+     * The type of Store this instance will build when consumed by a {@link StoreFactory}
+     * Defaults to MEMORY.
+     */
     private StoreType type = StoreTypes.MEMORY;
+
+    /**
+     * The builder to use to manage objects.  Used by {@link SQLStore}
+     * Defaults to new GsonBuilder();
+     */
     private GsonBuilder builder = new GsonBuilder();
+
+    /**
+     * The IdGenerator used by the Store.  Used by {@link SQLStore} and {@link MemoryStorage}.
+     * Defaults to new DefaultIdGenerator();
+     */
     private IdGenerator idGenerator = new DefaultIdGenerator();
 
     public StoreConfig() {
