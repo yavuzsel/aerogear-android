@@ -75,22 +75,22 @@ public class SqlStoreTest {
         Assert.assertEquals(6, allData.size());
         Assert.assertEquals("name", allData.get(0).getName());
         Assert.assertEquals("name2", allData.get(5).getName());
-        
+
     }
-    
+
     @Test
     public void testRemove() throws InterruptedException, JSONException {
         loadBulkData();
         store.remove(1);
-                
+
         List<Data> allData = new ArrayList<Data>(store.readAll());
         Collections.sort(allData);
         Assert.assertEquals(5, allData.size());
-        Assert.assertEquals(2l, (long)allData.get(0).getId());
+        Assert.assertEquals(2l, (long) allData.get(0).getId());
         Assert.assertEquals("name2", allData.get(4).getName());
-        
+
     }
-    
+
     @Test
     public void testFilter() throws InterruptedException, JSONException {
         ReadFilter filter;
@@ -98,7 +98,10 @@ public class SqlStoreTest {
         List<Data> result;
 
         loadBulkData();
-        
+
+        result = store.readWithFilter(null);
+        Assert.assertEquals(6, result.size());
+
         filter = new ReadFilter();
         where = new JSONObject();
         where.put("name", "name2");
@@ -135,8 +138,8 @@ public class SqlStoreTest {
         filter = new ReadFilter();
         where = new JSONObject();
         where.put("text", "nestedText");
-            JSONObject dataFilter = new JSONObject();
-            dataFilter.put("id", 10);
+        JSONObject dataFilter = new JSONObject();
+        dataFilter.put("id", 10);
         where.put("data", dataFilter);
         filter.setWhere(where);
         result = nestedStore.readWithFilter(filter);

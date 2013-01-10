@@ -151,30 +151,36 @@ public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
      */
     @Override
     public List<T> readWithFilter(ReadFilter filter) {
+        if (filter == null) {
+            filter = new ReadFilter();
+        }
         String sql = String.format("select PARENT_ID from %s_property where PROPERTY_NAME = ? and PROPERTY_VALUE = ?", className);
         JsonObject where = (JsonObject) new JsonParser().parse(filter.getWhere().toString());
-        List<Pair<String, String>> keyValues = new ArrayList<Pair<String, String>>();
+        List<Pair<String, String>> queryList = new ArrayList<Pair<String, String>>();
         Map<String, AtomicInteger> resultCount = new HashMap<String, AtomicInteger>();
-        buildKeyValuePairs(where, keyValues, "");
+        buildKeyValuePairs(where, queryList, "");
 
-        for (Pair<String, String> kv : keyValues) {
-            String[] bindArgs = new String[] { kv.first, kv.second };
-            Cursor cursor = database.rawQuery(sql, bindArgs);
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(0);
-                AtomicInteger count = resultCount.get(id);
-                if (count == null) {
-                    count = new AtomicInteger(0);
-                    resultCount.put(id, count);
+        if (queryList.isEmpty()) {//there is no query
+            return new ArrayList<T>(readAll());
+        } else {
+            for (Pair<String, String> kv : queryList) {
+                String[] bindArgs = new String[] { kv.first, kv.second };
+                Cursor cursor = database.rawQuery(sql, bindArgs);
+                while (cursor.moveToNext()) {
+                    String id = cursor.getString(0);
+                    AtomicInteger count = resultCount.get(id);
+                    if (count == null) {
+                        count = new AtomicInteger(0);
+                        resultCount.put(id, count);
+                    }
+                    count.incrementAndGet();
                 }
-                count.incrementAndGet();
             }
         }
-
         List<T> results = new ArrayList<T>();
 
         for (String id : resultCount.keySet()) {
-            if (resultCount.get(id).get() == keyValues.size()) {//There are as many objects as queries which meant a result was returned for every query
+            if (resultCount.get(id).get() == queryList.size()) {//There are as many objects as queries which meant a result was returned for every query
                 results.add(read(id));
             }
         }
