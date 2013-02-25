@@ -69,7 +69,6 @@ public class StubPipeFactory implements PipeFactory {
             public void remove(String id, Callback callback) {
             }
 
-
             @Override
             public PipeHandler getHandler() {
                 return null;

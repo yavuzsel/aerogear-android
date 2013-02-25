@@ -133,14 +133,17 @@ public class RestAdapterTest {
 
     }
 
-    @Test(timeout = 50000L)
+    @Test(timeout = 500L)
     public void testEncoding() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
         final Charset utf_16 = Charset.forName("UTF-16");
 
         final HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(utf_16), new HashMap<String, Object>()));
 
-        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setGsonBuilder(builder);
+        config.setEncoding(utf_16);
+        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
         UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
             @Override
@@ -148,7 +151,6 @@ public class RestAdapterTest {
                 return provider;
             }
         });
-        restPipe.setEncoding(utf_16);
 
         runRead(restPipe);
 
@@ -177,7 +179,11 @@ public class RestAdapterTest {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
         HeaderAndBody response = new HeaderAndBody(SERIALIZED_POINTS.getBytes(), new HashMap<String, Object>());
         final HttpStubProvider provider = new HttpStubProvider(url, response);
-        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
+
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setGsonBuilder(builder);
+
+        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
         UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
             @Override
@@ -197,8 +203,13 @@ public class RestAdapterTest {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
         HeaderAndBody response = new HeaderAndBody(("{\"result\":{\"points\":" + SERIALIZED_POINTS + "}}").getBytes(), new HashMap<String, Object>());
         final HttpStubProvider provider = new HttpStubProvider(url, response);
-        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
-        restPipe.setDataRoot("result.points");
+
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setGsonBuilder(builder);
+        config.setDataRoot("result.points");
+
+        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
+
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
         UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
             @Override
@@ -260,7 +271,10 @@ public class RestAdapterTest {
             }
         };
 
-        Pipe<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setGsonBuilder(builder);
+
+        Pipe<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
 
         UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
@@ -338,7 +352,10 @@ public class RestAdapterTest {
         when(urlModule.isLoggedIn()).thenReturn(true);
         when(urlModule.getAuthorizationFields()).thenReturn(authFields);
 
-        RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, url);
+        PipeConfig config = new PipeConfig(url, Data.class);
+        config.setAuthModule(urlModule);
+
+        RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
 
         UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", factory);
@@ -346,8 +363,6 @@ public class RestAdapterTest {
         ReadFilter filter = new ReadFilter();
         filter.setLimit(10);
         filter.setWhere(new JSONObject("{\"model\":\"BMW\"}"));
-
-        adapter.setAuthenticationModule(urlModule);
 
         adapter.readWithFilter(filter, new Callback<List<Data>>() {
             @Override
@@ -451,7 +466,10 @@ public class RestAdapterTest {
         PageConfig pageConfig = new PageConfig();
         pageConfig.setMetadataLocation(PageConfig.MetadataLocations.HEADERS);
 
-        RestAdapter adapter = new RestAdapter(Data.class, url, new GsonBuilder(), pageConfig);
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setPageConfig(pageConfig);
+
+        RestAdapter adapter = new RestAdapter(Data.class, url, config);
         List<Data> list = new ArrayList<Data>();
         HeaderAndBody response = new HeaderAndBody(new byte[] {}, new HashMap<String, Object>() {
             {
@@ -476,7 +494,11 @@ public class RestAdapterTest {
         pageConfig.setMetadataLocation(PageConfig.MetadataLocations.BODY);
         pageConfig.setNextIdentifier("pages.next");
         pageConfig.setPreviousIdentifier("pages.previous");
-        RestAdapter adapter = new RestAdapter(Data.class, url, new GsonBuilder(), pageConfig);
+
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setPageConfig(pageConfig);
+
+        RestAdapter adapter = new RestAdapter(Data.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
 
         List<Data> list = new ArrayList<Data>();

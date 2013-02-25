@@ -29,7 +29,6 @@ import java.net.URL;
 import java.util.List;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.ReadFilter;
-import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.impl.pipeline.loader.AbstractModernPipeLoader;
 import org.jboss.aerogear.android.impl.pipeline.loader.ModernReadLoader;
 import org.jboss.aerogear.android.impl.pipeline.loader.ModernRemoveLoader;
@@ -56,21 +55,21 @@ public class ModernLoaderAdapter<T> implements Pipe<T>, LoaderManager.LoaderCall
     };
 
     private final Context applicationContext;
-    private final RestAdapter<T> pipe;
+    private final Pipe<T> pipe;
     private final LoaderManager manager;
     private final Gson gson;
 
-    public ModernLoaderAdapter(Activity activity, RestAdapter<T> pipe) {
+    public ModernLoaderAdapter(Activity activity, Pipe<T> pipe, Gson gson) {
         this.pipe = pipe;
-        gson = pipe.getGSON();
-        manager = activity.getLoaderManager();
-        applicationContext = activity.getApplicationContext();
+        this.gson = gson;
+        this.manager = activity.getLoaderManager();
+        this.applicationContext = activity.getApplicationContext();
     }
 
-    public ModernLoaderAdapter(Fragment fragment, Context applicationContext, RestAdapter<T> pipe) {
+    public ModernLoaderAdapter(Fragment fragment, Context applicationContext, Pipe<T> pipe, Gson gson) {
         this.pipe = pipe;
-        manager = fragment.getLoaderManager();
-        gson = pipe.getGSON();
+        this.manager = fragment.getLoaderManager();
+        this.gson = gson;
         this.applicationContext = applicationContext;
     }
 
@@ -125,13 +124,18 @@ public class ModernLoaderAdapter<T> implements Pipe<T>, LoaderManager.LoaderCall
     }
 
     @Override
-    public void setAuthenticationModule(AuthenticationModule module) {
-        pipe.setAuthenticationModule(module);
+    public PipeHandler<T> getHandler() {
+        return pipe.getHandler();
     }
 
     @Override
-    public PipeHandler<T> getHandler() {
-        return pipe.getHandler();
+    public Gson getGson() {
+        return gson;
+    }
+
+    @Override
+    public Class<T> getKlass() {
+        return pipe.getKlass();
     }
 
     @Override

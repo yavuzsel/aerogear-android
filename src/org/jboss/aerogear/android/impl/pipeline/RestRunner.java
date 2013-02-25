@@ -61,8 +61,8 @@ public class RestRunner<T> implements PipeHandler<T> {
     private final PageConfig pageConfig;
     private static final String TAG = RestRunner.class.getSimpleName();
     private final Gson gson;
-    private String dataRoot = "";
-    private ParameterProvider parameterProvider = new DefaultParameterProvider();
+    private final String dataRoot;
+    private final ParameterProvider parameterProvider;
     /**
      * A class of the Generic type this pipe wraps. This is used by GSON for
      * deserializing.
@@ -82,43 +82,62 @@ public class RestRunner<T> implements PipeHandler<T> {
         this.klass = klass;
         this.arrayKlass = asArrayClass(klass);
         this.baseURL = baseURL;
+        this.dataRoot = "";
         this.gson = new Gson();
         this.pageConfig = null;
+        this.parameterProvider = new DefaultParameterProvider();
     }
 
     public RestRunner(Class<T> klass, URL baseURL,
-            GsonBuilder gsonBuilder) {
+            PipeConfig config) {
         this.klass = klass;
         this.arrayKlass = asArrayClass(klass);
         this.baseURL = baseURL;
-        this.gson = gsonBuilder.create();
-        this.pageConfig = null;
-    }
 
-    public RestRunner(Class<T> klass, URL baseURL, PageConfig pageconfig) {
-        this.klass = klass;
-        this.arrayKlass = asArrayClass(klass);
-        this.baseURL = baseURL;
-        this.gson = new Gson();
-        this.pageConfig = pageconfig;
-    }
+        if (config.getGsonBuilder() != null) {
+            this.gson = config.getGsonBuilder().create();
+        } else {
+            this.gson = new Gson();
+        }
 
-    public RestRunner(Class<T> klass, URL baseURL,
-            GsonBuilder gsonBuilder, PageConfig pageconfig) {
-        this.klass = klass;
-        this.arrayKlass = asArrayClass(klass);
-        this.baseURL = baseURL;
-        this.gson = gsonBuilder.create();
-        this.pageConfig = pageconfig;
-        if (pageconfig != null) {
-            if (pageconfig.getPageHeaderParser() == null) {
-                if (PageConfig.MetadataLocations.BODY.equals(pageconfig.getMetadataLocation())) {
-                    pageconfig.setPageHeaderParser(new URIBodyPageParser(baseURL));
-                } else if (PageConfig.MetadataLocations.HEADERS.equals(pageconfig.getMetadataLocation())) {
-                    pageconfig.setPageHeaderParser(new URIPageHeaderParser(baseURL));
+        if (config.getEncoding() != null) {
+            this.encoding = config.getEncoding();
+        } else {
+            this.encoding = Charset.forName("UTF-8");
+        }
+
+        if (config.getDataRoot() != null) {
+            this.dataRoot = config.getDataRoot();
+        } else {
+            this.dataRoot = "";
+        }
+
+        if (config.getPageConfig() != null) {
+            this.pageConfig = config.getPageConfig();
+
+            if (pageConfig.getParameterProvider() != null) {
+                this.parameterProvider = pageConfig.getParameterProvider();
+            } else {
+                this.parameterProvider = new DefaultParameterProvider();
+            }
+
+            if (pageConfig.getPageHeaderParser() == null) {
+                if (PageConfig.MetadataLocations.BODY.equals(pageConfig.getMetadataLocation())) {
+                    pageConfig.setPageHeaderParser(new URIBodyPageParser(baseURL));
+                } else if (PageConfig.MetadataLocations.HEADERS.equals(pageConfig.getMetadataLocation())) {
+                    pageConfig.setPageHeaderParser(new URIPageHeaderParser(baseURL));
                 }
             }
+
+        } else {
+            this.pageConfig = null;
+            this.parameterProvider = new DefaultParameterProvider();
         }
+
+        if (config.getAuthModule() != null) {
+            this.authModule = config.getAuthModule();
+        }
+
     }
 
     @Override
@@ -396,12 +415,7 @@ public class RestRunner<T> implements PipeHandler<T> {
         return dataRoot;
     }
 
-    public void setDataRoot(String dataRoot) {
-        this.dataRoot = dataRoot;
-    }
-
     protected Gson getGSON() {
         return gson;
     }
-
 }

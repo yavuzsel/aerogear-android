@@ -22,6 +22,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
+import org.jboss.aerogear.android.pipeline.PipeHandler;
 import org.jboss.aerogear.android.pipeline.PipeType;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 
@@ -34,6 +35,7 @@ public final class PipeConfig {
     private PageConfig pageConfig;
     private GsonBuilder gsonBuilder;
     private AuthenticationModule authModule;
+    private PipeHandler handler;
 
     /**
      * Where the data elements the pipe wants to extract are found in the
@@ -139,6 +141,14 @@ public final class PipeConfig {
 
     public void setDataRoot(String dataRoot) {
         this.dataRoot = dataRoot;
+    }
+
+    public PipeHandler getHandler() {
+        return handler;
+    }
+
+    public void setHandler(PipeHandler handler) {
+        this.handler = handler;
     }
 
 }

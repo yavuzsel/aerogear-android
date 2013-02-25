@@ -56,21 +56,21 @@ public class SupportLoaderAdapter<T> implements Pipe<T>, LoaderManager.LoaderCal
     };
 
     private final Context applicationContext;
-    private final RestAdapter<T> pipe;
+    private final Pipe<T> pipe;
     private final LoaderManager manager;
     private final Gson gson;
 
-    public SupportLoaderAdapter(FragmentActivity activity, RestAdapter<T> pipe) {
+    public SupportLoaderAdapter(FragmentActivity activity, Pipe<T> pipe, Gson gson) {
         this.pipe = pipe;
-        gson = pipe.getGSON();
-        manager = activity.getSupportLoaderManager();
-        applicationContext = activity.getApplicationContext();
+        this.gson = gson;
+        this.manager = activity.getSupportLoaderManager();
+        this.applicationContext = activity.getApplicationContext();
     }
 
-    public SupportLoaderAdapter(Fragment fragment, Context applicationContext, RestAdapter<T> pipe) {
+    public SupportLoaderAdapter(Fragment fragment, Context applicationContext, Pipe<T> pipe, Gson gson) {
         this.pipe = pipe;
-        manager = fragment.getLoaderManager();
-        gson = pipe.getGSON();
+        this.manager = fragment.getLoaderManager();
+        this.gson = gson;
         this.applicationContext = applicationContext;
     }
 
@@ -126,11 +126,6 @@ public class SupportLoaderAdapter<T> implements Pipe<T>, LoaderManager.LoaderCal
     }
 
     @Override
-    public void setAuthenticationModule(AuthenticationModule module) {
-        pipe.setAuthenticationModule(module);
-    }
-
-    @Override
     public PipeHandler<T> getHandler() {
         return pipe.getHandler();
     }
@@ -162,6 +157,16 @@ public class SupportLoaderAdapter<T> implements Pipe<T>, LoaderManager.LoaderCal
     }
 
     @Override
+    public Gson getGson() {
+        return gson;
+    }
+
+    @Override
+    public Class<T> getKlass() {
+        return pipe.getKlass();
+    }
+
+    @Override
     public void onLoadFinished(Loader<T> loader, T data) {
         if (!(loader instanceof AbstractSupportPipeLoader)) {
             Log.e(TAG, "Adapter is listening to loaders which it doesn't support");
@@ -182,4 +187,5 @@ public class SupportLoaderAdapter<T> implements Pipe<T>, LoaderManager.LoaderCal
     public void onLoaderReset(Loader<T> loader) {
         //Gotta do something, though I don't know what
     }
+
 }
