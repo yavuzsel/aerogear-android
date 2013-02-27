@@ -20,7 +20,6 @@ If you are unfamiliar with Maven, developerWorks has a detailed [introduction](h
 * Java 6.0 (Java SDK 1.6)+
 * Maven 3+
 * Git
-* Maven 3+
 * Android SDK
 * Need to have an AVD image running 2.3.3 (API level 10)
 * You may use any IDE that supports Maven, but this guide currently focuses on the command line.
