@@ -35,6 +35,17 @@ You must have the version of the platform installed through the Android SDK as y
     export ANDROID_HOME=YOUR_ANDROID_SDK_DIRECTORY
     mvn install -P 4.1
 
+*Note:* During the instalation you might face with some issues like this https://issues.jboss.org/browse/AEROGEAR-951. The workaround is:
+
+	cd maven-android-sdk-deployer/extras/
+
+Edit the pom.xml file commenting following modules:
+
+	<!-- <module>analytics</module> -->
+	<!-- <module>admob</module> -->
+	<!-- <module>google-play-services</module> -->
+
+
 
 Now Maven will be able to include Android 4.1 as a dependency.  There are also profiles for other version of Android.
 
