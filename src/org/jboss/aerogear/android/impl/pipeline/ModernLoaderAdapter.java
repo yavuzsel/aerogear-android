@@ -44,13 +44,14 @@ import org.jboss.aerogear.android.pipeline.PipeType;
 
 /**
  * This class wraps a Pipe in an asynchronous Loader.
- *
+ * 
  * This classes uses Loaders from android.conent. It will not work on pre
  * Honeycomb devices. If you do need to support Android devices &lt; version
  * 3.0, consider using {@link SupportLoaderAdapter}
- *
+ * 
  */
-public class ModernLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.LoaderCallbacks<T> {
+public class ModernLoaderAdapter<T> implements LoaderPipe<T>,
+        LoaderManager.LoaderCallbacks<T> {
 
     private static final String TAG = ModernLoaderAdapter.class.getSimpleName();
     private static final String CALLBACK = "org.jboss.aerogear.android.impl.pipeline.ModernClassLoader.CALLBACK";
@@ -74,7 +75,8 @@ public class ModernLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Load
     private final Gson gson;
     private final String name;
 
-    public ModernLoaderAdapter(Activity activity, Pipe<T> pipe, Gson gson, String name) {
+    public ModernLoaderAdapter(Activity activity, Pipe<T> pipe, Gson gson,
+            String name) {
         this.pipe = pipe;
         this.gson = gson;
         this.manager = activity.getLoaderManager();
@@ -84,7 +86,8 @@ public class ModernLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Load
         this.activity = activity;
     }
 
-    public ModernLoaderAdapter(Fragment fragment, Context applicationContext, Pipe<T> pipe, Gson gson, String name) {
+    public ModernLoaderAdapter(Fragment fragment, Context applicationContext,
+            Pipe<T> pipe, Gson gson, String name) {
         this.pipe = pipe;
         this.manager = fragment.getLoaderManager();
         this.gson = gson;
@@ -129,7 +132,9 @@ public class ModernLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Load
         int id = Objects.hashCode(name, item, callback);
         Bundle bundle = new Bundle();
         bundle.putSerializable(CALLBACK, callback);
-        bundle.putSerializable(ITEM, gson.toJson(item));//item may not be serializable, but it has to be gsonable
+        bundle.putSerializable(ITEM, gson.toJson(item));// item may not be
+        // serializable, but it
+        // has to be gsonable
         bundle.putSerializable(METHOD, Methods.SAVE);
         manager.initLoader(id, bundle, this);
     }
@@ -168,18 +173,21 @@ public class ModernLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Load
         switch (method) {
         case READ: {
             ReadFilter filter = (ReadFilter) bundle.get(FILTER);
-            loader = new ModernReadLoader(applicationContext, callback, pipe.getRunner(), filter, this);
+            loader = new ModernReadLoader(applicationContext, callback,
+                    pipe.getHandler(), filter, this);
         }
             break;
         case REMOVE: {
             String toRemove = bundle.getString(REMOVE_ID, "-1");
-            loader = new ModernRemoveLoader(applicationContext, callback, pipe.getRunner(), toRemove);
+            loader = new ModernRemoveLoader(applicationContext, callback,
+                    pipe.getHandler(), toRemove);
         }
             break;
         case SAVE: {
             String json = bundle.getString(ITEM);
             T item = gson.fromJson(json, pipe.getKlass());
-            loader = new ModernSaveLoader(applicationContext, callback, pipe.getRunner(), item);
+            loader = new ModernSaveLoader(applicationContext, callback,
+                    pipe.getHandler(), item);
         }
             break;
         }
@@ -189,41 +197,13 @@ public class ModernLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Load
     @Override
     public void onLoadFinished(Loader<T> loader, final T data) {
         if (!(loader instanceof AbstractModernPipeLoader)) {
-            Log.e(TAG, "Adapter is listening to loaders which it doesn't support");
-            throw new IllegalStateException("Adapter is listening to loaders which it doesn't support");
+            Log.e(TAG,
+                    "Adapter is listening to loaders which it doesn't support");
+            throw new IllegalStateException(
+                    "Adapter is listening to loaders which it doesn't support");
         } else {
             final AbstractModernPipeLoader<T> modernLoader = (AbstractModernPipeLoader<T>) loader;
-            if (modernLoader.hasException()) {
-                final Exception exception = modernLoader.getException();
-                Log.e(TAG, exception.getMessage(), exception);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (modernLoader.callback instanceof AbstractFragmentCallback) {
-                            fragmentFailure(modernLoader.callback, exception);
-                        } else if (modernLoader.callback instanceof AbstractActivityCallback) {
-                            activityFailure(modernLoader.callback, exception);
-                        } else {
-                            modernLoader.callback.onFailure(exception);
-                        }
-                    }
-                });
-
-            } else {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (modernLoader.callback instanceof AbstractFragmentCallback) {
-                            fragmentSuccess(modernLoader.callback, data);
-                        } else if (modernLoader.callback instanceof AbstractActivityCallback) {
-                            activitySuccess(modernLoader.callback, data);
-                        } else {
-                            modernLoader.callback.onSuccess(data);
-                        }
-                    }
-                });
-
-            }
+            handler.post(new CallbackHandler<T>(this, modernLoader, data));
         }
     }
 
@@ -256,7 +236,8 @@ public class ModernLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Load
         callback.setFragment(null);
     }
 
-    private void fragmentFailure(Callback<T> typelessCallback, Exception exception) {
+    private void fragmentFailure(Callback<T> typelessCallback,
+            Exception exception) {
         AbstractFragmentCallback callback = (AbstractFragmentCallback) typelessCallback;
         callback.setFragment(fragment);
         callback.onFailure(exception);
@@ -270,10 +251,54 @@ public class ModernLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Load
         callback.setActivity(null);
     }
 
-    private void activityFailure(Callback<T> typelessCallback, Exception exception) {
+    private void activityFailure(Callback<T> typelessCallback,
+            Exception exception) {
         AbstractActivityCallback callback = (AbstractActivityCallback) typelessCallback;
         callback.setActivity(activity);
         callback.onFailure(exception);
         callback.setActivity(null);
     }
+
+    @SuppressWarnings("rawtypes")
+    static class CallbackHandler<T> implements Runnable {
+
+        private final ModernLoaderAdapter<T> adapter;
+        private final AbstractModernPipeLoader<T> modernLoader;
+        private final T data;
+
+        public CallbackHandler(ModernLoaderAdapter<T> adapter,
+                AbstractModernPipeLoader<T> loader, T data) {
+            super();
+            this.adapter = adapter;
+            this.modernLoader = loader;
+            this.data = data;
+        }
+
+        @Override
+        public void run() {
+            if (modernLoader.hasException()) {
+                final Exception exception = modernLoader.getException();
+                Log.e(TAG, exception.getMessage(), exception);
+                if (modernLoader.getCallback() instanceof AbstractFragmentCallback) {
+                    adapter.fragmentFailure(modernLoader.getCallback(), exception);
+                } else if (modernLoader.getCallback() instanceof AbstractActivityCallback) {
+                    adapter.activityFailure(modernLoader.getCallback(), exception);
+                } else {
+                    modernLoader.getCallback().onFailure(exception);
+                }
+
+            } else {
+
+                if (modernLoader.getCallback() instanceof AbstractFragmentCallback) {
+                    adapter.fragmentSuccess(modernLoader.getCallback(), data);
+                } else if (modernLoader.getCallback() instanceof AbstractActivityCallback) {
+                    adapter.activitySuccess(modernLoader.getCallback(), data);
+                } else {
+                    modernLoader.getCallback().onSuccess(data);
+                }
+            }
+
+        }
+    }
+
 }
