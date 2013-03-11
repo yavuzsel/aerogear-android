@@ -36,7 +36,7 @@ import org.jboss.aerogear.android.impl.pipeline.loader.AbstractModernPipeLoader;
  * @param <T>
  */
 public abstract class AbstractFragmentCallback<T> extends AbstractCallback<T> {
-    
+
     private transient Fragment fragment;
 
     /**
