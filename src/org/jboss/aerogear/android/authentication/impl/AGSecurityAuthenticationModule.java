@@ -40,13 +40,7 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
 
     private static final String TAG = AGSecurityAuthenticationModule.class
             .getSimpleName();
-    private static final int CORE_POOL_SIZE = 5;
-    private static final int MAX_POOL_SIZE = 64;
-    private static final int KEEP_ALIVE = 1;
-    private static final BlockingQueue<Runnable> WORK_QUEUE =
-            new LinkedBlockingQueue<Runnable>(10);
-    public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE,
-            TimeUnit.SECONDS, WORK_QUEUE);
+
     /**
      * This is the field which stores the AG security token.
      */
@@ -56,6 +50,7 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
      */
     private final String tokenHeaderName;
     private boolean isLoggedIn = false;
+
     private final AGSecurityAuthenticationModuleRunner runner;
 
     /**
@@ -66,13 +61,16 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
      * baseURL
      */
     public AGSecurityAuthenticationModule(URL baseURL, AuthenticationConfig config) {
+
         this.runner = new AGSecurityAuthenticationModuleRunner(baseURL, config);
+
         if (config instanceof AGSecurityAuthenticationConfig) {
             this.tokenHeaderName = ((AGSecurityAuthenticationConfig) config)
                     .getTokenHeaderName();
         } else {
             this.tokenHeaderName = "Auth-Token";
         }
+
     }
 
     @Override
@@ -104,7 +102,7 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
                 HeaderAndBody result = null;
                 Exception exception = null;
                 try {
-                    result = runner.enroll(userData);
+                    result = runner.onEnroll(userData);
                     authToken = result.getHeader(tokenHeaderName).toString();
                     isLoggedIn = true;
                 } catch (Exception e) {
@@ -133,7 +131,7 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
                 Exception exception = null;
 
                 try {
-                    result = runner.login(username, password);
+                    result = runner.onLogin(username, password);
                     authToken = result.getHeader(tokenHeaderName).toString();
                     isLoggedIn = true;
                 } catch (Exception e) {
@@ -157,7 +155,7 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
             public void run() {
                 Exception exception = null;
                 try {
-                    runner.logout();
+                    runner.onLogout();
                     authToken = "";
                     isLoggedIn = false;
                 } catch (Exception e) {

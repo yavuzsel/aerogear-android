@@ -57,19 +57,19 @@ public class AGSecurityAuthenticationModuleRunner {
         this.enrollURL = appendToBaseURL(enrollEndpoint);
     }
 
-    public HeaderAndBody enroll(final Map<String, String> userData) {
+    public HeaderAndBody onEnroll(final Map<String, String> userData) {
         HttpProvider provider = httpProviderFactory.get(enrollURL);
         String enrollData = new JSONObject(userData).toString();
         return provider.post(enrollData);
     }
 
-    public HeaderAndBody login(final String username, final String password) {
+    public HeaderAndBody onLogin(final String username, final String password) {
         HttpProvider provider = httpProviderFactory.get(loginURL);
         String loginData = buildLoginData(username, password);
         return provider.post(loginData);
     }
 
-    public void logout() {
+    public void onLogout() {
         HttpProvider provider = httpProviderFactory.get(logoutURL);
         provider.post("");
     }

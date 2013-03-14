@@ -17,8 +17,6 @@
 
 package org.jboss.aerogear.android.authentication.impl;
 
-import org.jboss.aerogear.android.authentication.impl.AGSecurityAuthenticationModule;
-import org.jboss.aerogear.android.authentication.impl.AGSecurityAuthenticationConfig;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
@@ -37,7 +35,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 @RunWith(RobolectricTestRunner.class)
 public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleTest {
@@ -52,7 +49,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         }
     }
 
-    @Test
+    @Test(timeout = 500L)
     public void testDefaultConstructor() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AGSecurityAuthenticationConfig());
@@ -65,7 +62,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
 
     }
 
-    @Test
+    @Test(timeout = 500L)
     public void applySecurityToken() throws Exception {
         String newTokenName = "USER_TOKEN";
 
@@ -114,7 +111,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         Assert.assertFalse(module.isLoggedIn());
     }
 
-    @Test()
+    @Test(timeout = 500L)
     public void loginSucceeds() throws IOException, NoSuchFieldException,
             InterruptedException, IllegalArgumentException,
             IllegalAccessException {
@@ -130,20 +127,17 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                             @Override
                             public HeaderAndBody post(String ignore)
                                     throws RuntimeException {
-                                try {
-                                    HashMap<String, Object> headers = new HashMap<String, Object>();
-                                    headers.put("Auth-Token", TOKEN);
-                                    return new HeaderAndBody(new byte[1],
+                                HashMap<String, Object> headers = new HashMap<String, Object>();
+                                headers.put("Auth-Token", TOKEN);
+                                return new HeaderAndBody(new byte[1],
                                             headers);
-                                } finally {
-                                    latch.countDown();
-                                }
+
                             }
                         };
                     }
                 });
 
-        SimpleCallback callback = new SimpleCallback();
+        SimpleCallback callback = new SimpleCallback(latch);
         module.login(PASSING_USERNAME, LOGIN_PASSWORD, callback);
         latch.await();
 
@@ -153,7 +147,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         Assert.assertEquals(TOKEN, module.getAuthToken());
     }
 
-    @Test(timeout = 5000L)
+    @Test(timeout = 500L)
     public void enrollSucceeds() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AGSecurityAuthenticationConfig());
@@ -167,19 +161,16 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                             @Override
                             public HeaderAndBody post(String enrollData)
                                     throws RuntimeException {
-                                try {
-                                    HashMap<String, Object> headers = new HashMap<String, Object>();
-                                    headers.put("Auth-Token", TOKEN);
-                                    return new HeaderAndBody(new byte[1],
+                                HashMap<String, Object> headers = new HashMap<String, Object>();
+                                headers.put("Auth-Token", TOKEN);
+                                return new HeaderAndBody(new byte[1],
                                             headers);
-                                } finally {
-                                    latch.countDown();
-                                }
+
                             }
                         };
                     }
                 });
-        SimpleCallback callback = new SimpleCallback();
+        SimpleCallback callback = new SimpleCallback(latch);
 
         Map<String, String> userData = new HashMap<String, String>();
         userData.put("username", PASSING_USERNAME);
@@ -197,7 +188,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         Assert.assertEquals(TOKEN, module.getAuthToken());
     }
 
-    @Test(timeout = 50000L)
+    @Test(timeout = 500L)
     public void logoutSucceeds() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AGSecurityAuthenticationConfig());
