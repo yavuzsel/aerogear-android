@@ -46,7 +46,7 @@ public interface Pipe<T> {
     URL getUrl();
 
     /**
-     * Reads all the data from the underlying server connection.
+     * Sends a signal to the Pipe to read its data and return it via the callback.
      *
      * @param callback The callback for consuming the result from the {@link Pipe} invocation.
      */
@@ -76,12 +76,6 @@ public interface Pipe<T> {
      */
     void remove(String id, Callback<Void> callback);
 
-    /**
-     * Sets the authentication module for the Pipe.
-     * It should already be logged in.
-     *
-     * @param module
-     */
-    void setAuthenticationModule(AuthenticationModule module);
+    PipeHandler<T> getHandler();
 
 }

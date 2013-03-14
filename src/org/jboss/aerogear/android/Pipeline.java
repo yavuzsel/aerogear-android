@@ -165,7 +165,7 @@ public class Pipeline {
         }
         throw new IllegalArgumentException(String.format("The pipe named %s is not an instance of RestAdapter", name));
     }
-    
+
     /**
      * Look up for a pipe object.  This will wrap the Pipe in a Loader.
      *
@@ -178,11 +178,11 @@ public class Pipeline {
     public Pipe get(String name, FragmentActivity activity) {
         Pipe pipe = pipes.get(name);
         if (pipe != null && pipe instanceof RestAdapter) {
-            return new SupportLoaderAdapter(activity, (RestAdapter)pipes.get(name));
+            return new SupportLoaderAdapter(activity, (RestAdapter) pipes.get(name));
         }
         throw new IllegalArgumentException(String.format("The pipe named %s is not an instance of RestAdapter", name));
     }
-    
+
     /**
      * Look up for a pipe object.  This will wrap the Pipe in a Loader.
      *
@@ -196,9 +196,9 @@ public class Pipeline {
      */
     public Pipe get(String name, android.support.v4.app.Fragment fragment, Context applicationContext) {
         Pipe pipe = pipes.get(name);
-        
+
         if (pipe != null && pipe instanceof RestAdapter) {
-            return new SupportLoaderAdapter(fragment, applicationContext, (RestAdapter)pipes.get(name));
+            return new SupportLoaderAdapter(fragment, applicationContext, (RestAdapter) pipes.get(name));
         }
         throw new IllegalArgumentException(String.format("The pipe named %s is not an instance of RestAdapter", name));
     }

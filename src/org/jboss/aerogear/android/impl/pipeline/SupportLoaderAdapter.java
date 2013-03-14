@@ -35,6 +35,7 @@ import org.jboss.aerogear.android.impl.pipeline.loader.support.SupportReadLoader
 import org.jboss.aerogear.android.impl.pipeline.loader.support.SupportRemoveLoader;
 import org.jboss.aerogear.android.impl.pipeline.loader.support.SupportSaveLoader;
 import org.jboss.aerogear.android.pipeline.Pipe;
+import org.jboss.aerogear.android.pipeline.PipeHandler;
 import org.jboss.aerogear.android.pipeline.PipeType;
 
 /**
@@ -130,6 +131,11 @@ public class SupportLoaderAdapter<T> implements Pipe<T>, LoaderManager.LoaderCal
     }
 
     @Override
+    public PipeHandler<T> getHandler() {
+        return pipe.getHandler();
+    }
+
+    @Override
     public Loader<T> onCreateLoader(int id, Bundle bundle) {
         Methods method = (Methods) bundle.get(METHOD);
         Callback callback = (Callback) bundle.get(CALLBACK);
@@ -137,18 +143,18 @@ public class SupportLoaderAdapter<T> implements Pipe<T>, LoaderManager.LoaderCal
         switch (method) {
         case READ: {
             ReadFilter filter = (ReadFilter) bundle.get(FILTER);
-            loader = new SupportReadLoader(applicationContext, callback, pipe.getRunner(), filter, this);
+            loader = new SupportReadLoader(applicationContext, callback, pipe.getHandler(), filter, this);
         }
             break;
         case REMOVE: {
             String toRemove = bundle.getString(REMOVE_ID, "-1");
-            loader = new SupportRemoveLoader(applicationContext, callback, pipe.getRunner(), toRemove);
+            loader = new SupportRemoveLoader(applicationContext, callback, pipe.getHandler(), toRemove);
         }
             break;
         case SAVE: {
             String json = bundle.getString(ITEM);
             T item = gson.fromJson(json, pipe.getKlass());
-            loader = new SupportSaveLoader(applicationContext, callback, pipe.getRunner(), item);
+            loader = new SupportSaveLoader(applicationContext, callback, pipe.getHandler(), item);
         }
             break;
         }

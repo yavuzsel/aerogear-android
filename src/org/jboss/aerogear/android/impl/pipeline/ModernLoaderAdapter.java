@@ -35,6 +35,7 @@ import org.jboss.aerogear.android.impl.pipeline.loader.ModernReadLoader;
 import org.jboss.aerogear.android.impl.pipeline.loader.ModernRemoveLoader;
 import org.jboss.aerogear.android.impl.pipeline.loader.ModernSaveLoader;
 import org.jboss.aerogear.android.pipeline.Pipe;
+import org.jboss.aerogear.android.pipeline.PipeHandler;
 import org.jboss.aerogear.android.pipeline.PipeType;
 
 /**
@@ -126,6 +127,11 @@ public class ModernLoaderAdapter<T> implements Pipe<T>, LoaderManager.LoaderCall
     @Override
     public void setAuthenticationModule(AuthenticationModule module) {
         pipe.setAuthenticationModule(module);
+    }
+
+    @Override
+    public PipeHandler<T> getHandler() {
+        return pipe.getHandler();
     }
 
     @Override
