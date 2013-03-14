@@ -22,6 +22,8 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import com.google.common.base.Objects;
 import java.net.URL;
@@ -31,8 +33,15 @@ import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.pipeline.AbstractActivityCallback;
+import org.jboss.aerogear.android.pipeline.AbstractFragmentCallback;
 
-public class ModernAuthenticationModuleAdapter implements AuthenticationModule, LoaderManager.LoaderCallbacks<HeaderAndBody>{
+/**
+ * This class manages the relationship between Android's Loader framework and 
+ * requests to Authentication.  This class acts as a proxy for an 
+ * {@link AuthenticationModule} instance.
+ */
+public class ModernAuthenticationModuleAdapter implements AuthenticationModule, LoaderManager.LoaderCallbacks<HeaderAndBody> {
 
     private static final String TAG = ModernAuthenticationModuleAdapter.class.getSimpleName();
     private static final String CALLBACK = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.CALLBACK";
@@ -41,27 +50,38 @@ public class ModernAuthenticationModuleAdapter implements AuthenticationModule, 
     private static final String PASSWORD = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.PASSWORD";
     private static final String PARAMS = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.PARAMS";
 
-    
     private static enum Methods {
         LOGIN, LOGOUT, ENROLL
     };
-    
+
     private final Context applicationContext;
     private final AuthenticationModule module;
     private final LoaderManager manager;
-    
-    public ModernAuthenticationModuleAdapter(Activity activity, AuthenticationModule module) {
+    private final Activity activity;
+    private final Fragment fragment;
+    private final String name;
+    private final Handler handler;
+
+    public ModernAuthenticationModuleAdapter(Activity activity, AuthenticationModule module, String name) {
         this.module = module;
         this.manager = activity.getLoaderManager();
         this.applicationContext = activity.getApplicationContext();
+        this.activity = activity;
+        this.fragment = null;
+        this.name = name;
+        this.handler = new Handler(Looper.getMainLooper());
     }
 
-    public ModernAuthenticationModuleAdapter(Fragment fragment, Context applicationContext, AuthenticationModule module) {
+    public ModernAuthenticationModuleAdapter(Fragment fragment, Context applicationContext, AuthenticationModule module, String name) {
         this.module = module;
         this.manager = fragment.getLoaderManager();
         this.applicationContext = applicationContext;
+        this.activity = null;
+        this.fragment = fragment;
+        this.name = name;
+        this.handler = new Handler(Looper.getMainLooper());
     }
-    
+
     @Override
     public URL getBaseURL() {
         return module.getBaseURL();
@@ -84,7 +104,7 @@ public class ModernAuthenticationModuleAdapter implements AuthenticationModule, 
 
     @Override
     public void enroll(Map<String, String> userData, Callback<HeaderAndBody> callback) {
-        int id = Objects.hashCode(userData, callback);
+        int id = Objects.hashCode(name, userData, callback);
         Bundle bundle = new Bundle();
         bundle.putSerializable(CALLBACK, callback);
         bundle.putSerializable(PARAMS, new HashMap(userData));
@@ -94,7 +114,7 @@ public class ModernAuthenticationModuleAdapter implements AuthenticationModule, 
 
     @Override
     public void login(String username, String password, Callback<HeaderAndBody> callback) {
-        int id = Objects.hashCode(username, password, callback);
+        int id = Objects.hashCode(name, username, password, callback);
         Bundle bundle = new Bundle();
         bundle.putSerializable(CALLBACK, callback);
         bundle.putSerializable(USERNAME, username);
@@ -105,7 +125,7 @@ public class ModernAuthenticationModuleAdapter implements AuthenticationModule, 
 
     @Override
     public void logout(Callback<Void> callback) {
-        int id = Objects.hashCode(callback);
+        int id = Objects.hashCode(name, callback);
         Bundle bundle = new Bundle();
         bundle.putSerializable(CALLBACK, callback);
         bundle.putSerializable(METHOD, ModernAuthenticationModuleAdapter.Methods.LOGOUT);
@@ -147,19 +167,48 @@ public class ModernAuthenticationModuleAdapter implements AuthenticationModule, 
         return loader;
     }
 
+    /**
+     * This method will call the Callback for a enroll, login, or logout method
+     * on the main thread of the application.  If a callback is an instance of 
+     * {@link AbstractFragmentCallback} or {@link AbstractActivityCallback}
+     * then it will also configure the reference to {@link Fragment} or {@link FragmentActivity} 
+     * for the callback.
+     */
     @Override
-    public void onLoadFinished(Loader<HeaderAndBody> loader, HeaderAndBody data) {
+    public void onLoadFinished(Loader<HeaderAndBody> loader, final HeaderAndBody data) {
         if (!(loader instanceof AbstractModernAuthenticationLoader)) {
             Log.e(TAG, "Adapter is listening to loaders which it doesn't support");
             throw new IllegalStateException("Adapter is listening to loaders which it doesn't support");
         } else {
-            AbstractModernAuthenticationLoader modernLoader = (AbstractModernAuthenticationLoader) loader;
+            final AbstractModernAuthenticationLoader modernLoader = (AbstractModernAuthenticationLoader) loader;
             if (modernLoader.hasException()) {
-            	Exception exception = modernLoader.getException();
-            	Log.e(TAG, exception.getMessage(), exception);
-                modernLoader.getCallback().onFailure(exception);
+                final Exception exception = modernLoader.getException();
+                Log.e(TAG, exception.getMessage(), exception);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (modernLoader.getCallback() instanceof AbstractFragmentCallback) {
+                            fragmentFailure(modernLoader.getCallback(), exception);
+                        } else if (modernLoader.getCallback() instanceof AbstractActivityCallback) {
+                            activityFailure(modernLoader.getCallback(), exception);
+                        } else {
+                            modernLoader.getCallback().onFailure(exception);
+                        }
+                    }
+                });
             } else {
-                modernLoader.getCallback().onSuccess(data);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (modernLoader.getCallback() instanceof AbstractFragmentCallback) {
+                            fragmentSuccess(modernLoader.getCallback(), data);
+                        } else if (modernLoader.getCallback() instanceof AbstractActivityCallback) {
+                            activitySuccess(modernLoader.getCallback(), data);
+                        } else {
+                            modernLoader.getCallback().onSuccess(data);
+                        }
+                    }
+                });
             }
         }
     }
@@ -168,5 +217,33 @@ public class ModernAuthenticationModuleAdapter implements AuthenticationModule, 
     public void onLoaderReset(Loader<HeaderAndBody> loader) {
         //Do nothing, should call logout on module manually.
     }
-    
+
+    private void fragmentSuccess(Callback<HeaderAndBody> typelessCallback, HeaderAndBody data) {
+        AbstractFragmentCallback callback = (AbstractFragmentCallback) typelessCallback;
+        callback.setFragment(fragment);
+        callback.onSuccess(data);
+        callback.setFragment(null);
+    }
+
+    private void fragmentFailure(Callback<HeaderAndBody> typelessCallback, Exception exception) {
+        AbstractFragmentCallback callback = (AbstractFragmentCallback) typelessCallback;
+        callback.setFragment(fragment);
+        callback.onFailure(exception);
+        callback.setFragment(null);
+    }
+
+    private void activitySuccess(Callback<HeaderAndBody> typelessCallback, HeaderAndBody data) {
+        AbstractActivityCallback callback = (AbstractActivityCallback) typelessCallback;
+        callback.setActivity(activity);
+        callback.onSuccess(data);
+        callback.setActivity(null);
+    }
+
+    private void activityFailure(Callback<HeaderAndBody> typelessCallback, Exception exception) {
+        AbstractActivityCallback callback = (AbstractActivityCallback) typelessCallback;
+        callback.setActivity(activity);
+        callback.onFailure(exception);
+        callback.setActivity(null);
+    }
+
 }

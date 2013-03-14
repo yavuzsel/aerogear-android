@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.authentication.impl.loader;
 
 import android.content.Context;
+import android.content.Loader;
 import android.util.Log;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -24,14 +25,17 @@ import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 
-public class ModernEnrollLoader extends AbstractModernAuthenticationLoader { 
-    
+/**
+ * This class is a {@link Loader} which performs an enroll operation on behalf 
+ * of an {@link AuthenticationModule}.
+ */
+public class ModernEnrollLoader extends AbstractModernAuthenticationLoader {
+
     private static final String TAG = ModernEnrollLoader.class.getSimpleName();
-    
+
     private HeaderAndBody result = null;
     private final Map<String, String> params;
-    
-    
+
     public ModernEnrollLoader(Context context, Callback callback, AuthenticationModule module, Map<String, String> params) {
         super(context, module, callback);
         this.params = params;
@@ -61,7 +65,7 @@ public class ModernEnrollLoader extends AbstractModernAuthenticationLoader {
         }
         return result;
     }
-    
+
     @Override
     protected void onStartLoading() {
         if (result == null) {
@@ -70,5 +74,5 @@ public class ModernEnrollLoader extends AbstractModernAuthenticationLoader {
             deliverResult(result);
         }
     }
-    
+
 }

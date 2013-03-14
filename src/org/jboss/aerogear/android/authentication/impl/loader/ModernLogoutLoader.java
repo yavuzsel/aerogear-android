@@ -17,16 +17,21 @@
 package org.jboss.aerogear.android.authentication.impl.loader;
 
 import android.content.Context;
+import android.content.Loader;
 import android.util.Log;
 import java.util.concurrent.CountDownLatch;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 
+/**
+ * This class is a {@link Loader} which performs an logout operation on behalf 
+ * of an {@link AuthenticationModule}.
+ */
 public class ModernLogoutLoader extends AbstractModernAuthenticationLoader {
 
     private static final String TAG = ModernLogoutLoader.class.getSimpleName();
-    
+
     public ModernLogoutLoader(Context context, Callback callback, AuthenticationModule module) {
         super(context, module, callback);
     }
@@ -54,10 +59,10 @@ public class ModernLogoutLoader extends AbstractModernAuthenticationLoader {
         }
         return null;
     }
-    
+
     @Override
     protected void onStartLoading() {
         forceLoad();
     }
-    
+
 }

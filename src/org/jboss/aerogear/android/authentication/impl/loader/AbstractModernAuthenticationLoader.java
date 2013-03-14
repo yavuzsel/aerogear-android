@@ -22,7 +22,13 @@ import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 
+/**
+ * This class provides a reference to the callback, authentication module, and 
+ * possible exceptions for the authentication loaders, modules, and call backs 
+ * which may use it.
+ */
 public abstract class AbstractModernAuthenticationLoader extends AsyncTaskLoader<HeaderAndBody> {
+
     protected final Callback callback;
     protected final AuthenticationModule module;
     private Exception exception;

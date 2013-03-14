@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
-import org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter;
+import org.jboss.aerogear.android.authentication.impl.loader.ModernAuthenticationModuleAdapter;
 
 /**
  * This is the default implementation of Authenticator.
@@ -109,7 +109,7 @@ public class Authenticator {
      * @throws NullPointerException is name is null
      */
     public AuthenticationModule get(String name, Activity activity) {
-        return new ModernAuthenticationModuleAdapter(activity, modules.get(name));
+        return new ModernAuthenticationModuleAdapter(activity, modules.get(name), name);
     }
 
     /**
@@ -120,7 +120,7 @@ public class Authenticator {
      * @throws NullPointerException is name is null
      */
     public AuthenticationModule get(String name, Fragment fragment, Context applicationContext) {
-        return new ModernAuthenticationModuleAdapter(fragment, applicationContext, modules.get(name));
+        return new ModernAuthenticationModuleAdapter(fragment, applicationContext, modules.get(name), name);
     }
 
 }
