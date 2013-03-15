@@ -54,11 +54,6 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
         LoaderManager.LoaderCallbacks<T> {
 
     private static final String TAG = LoaderAdapter.class.getSimpleName();
-    private static final String CALLBACK = "org.jboss.aerogear.android.impl.pipeline.ModernClassLoader.CALLBACK";
-    private static final String METHOD = "org.jboss.aerogear.android.impl.pipeline.ModernClassLoader.METHOD";
-    private static final String FILTER = "org.jboss.aerogear.android.impl.pipeline.ModernClassLoader.FILTER";
-    private static final String ITEM = "org.jboss.aerogear.android.impl.pipeline.ModernClassLoader.ITEM";
-    private static final String REMOVE_ID = "org.jboss.aerogear.android.impl.pipeline.ModernClassLoader.REMOVIE_ID";
     private final Handler handler;
     private Multimap<String, Integer> idsForNamedPipes;
 
