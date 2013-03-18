@@ -113,7 +113,7 @@ public class Authenticator {
      * @param name
      * @param activity the activity which the Loaders should be bound against.
      * 
-     * @return a ModernAuthenticationModuleAdapter for name
+     * @return a {@link AuthenticationModuleAdapter} for name
      * @throws NullPointerException is name is null
      */
     public AuthenticationModule get(String name, Activity activity) {
@@ -127,7 +127,7 @@ public class Authenticator {
      * @param fragment the fragment the Loaders will be bound against.
      * @param applicationContext 
      * 
-     * @return a ModernAuthenticationModuleAdapter for name
+     * @return a {@link AuthenticationModuleAdapter}for name
      * @throws NullPointerException is name is null
      */
     public AuthenticationModule get(String name, Fragment fragment, Context applicationContext) {
