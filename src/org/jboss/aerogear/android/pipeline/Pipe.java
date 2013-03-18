@@ -17,11 +17,11 @@
 
 package org.jboss.aerogear.android.pipeline;
 
+import com.google.gson.Gson;
 import java.net.URL;
 import java.util.List;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.ReadFilter;
-import org.jboss.aerogear.android.authentication.AuthenticationModule;
 
 /**
  * A {@link Pipe} represents a server connection. An object of this class is responsible to communicate
@@ -46,7 +46,7 @@ public interface Pipe<T> {
     URL getUrl();
 
     /**
-     * Reads all the data from the underlying server connection.
+     * Sends a signal to the Pipe to read its data and return it via the callback.
      *
      * @param callback The callback for consuming the result from the {@link Pipe} invocation.
      */
@@ -77,11 +77,22 @@ public interface Pipe<T> {
     void remove(String id, Callback<Void> callback);
 
     /**
-     * Sets the authentication module for the Pipe.
-     * It should already be logged in.
-     *
-     * @param module
+     * Returns the GSON serializer used to serialized instances of objects.
+     * 
+     * @return the gson instance servicing this pipe.
      */
-    void setAuthenticationModule(AuthenticationModule module);
+    Gson getGson();
+
+    /**
+     * @return the class which travels on this pipe
+     */
+    Class<T> getKlass();
+
+    /**
+     * Returns the instance which is responsible for handling read, save, and remove.
+     *
+     * @return the handler performing operations for this Pipe.  May be the Pipe itself.
+     */
+    PipeHandler<T> getHandler();
 
 }

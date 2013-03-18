@@ -17,11 +17,15 @@
 
 package org.jboss.aerogear.android.authentication;
 
-import android.os.AsyncTask;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class stubs out the enroll, login, and logout methods. If you call these
@@ -31,53 +35,31 @@ import java.util.Map;
 public abstract class AbstractAuthenticationModule implements
         AuthenticationModule {
 
+    private static final int CORE_POOL_SIZE = 5;
+    private static final int MAX_POOL_SIZE = 64;
+    private static final int KEEP_ALIVE = 1;
+    private static final BlockingQueue<Runnable> WORK_QUEUE =
+            new LinkedBlockingQueue<Runnable>(10);
+
+    protected static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE,
+            TimeUnit.SECONDS, WORK_QUEUE);
+
+    @Override
     public void enroll(Map<String, String> userData,
             final Callback<HeaderAndBody> callback) {
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                callback.onFailure(new IllegalStateException("Not implemented"));
-            }
-        }.execute((Void) null);
-
+        callback.onFailure(new IllegalStateException("Not implemented"));
     }
 
+    @Override
     public void login(final String username, final String password,
             final Callback<HeaderAndBody> callback) {
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                callback.onFailure(new IllegalStateException("Not implemented"));
-            }
-        }.execute((Void) null);
+        callback.onFailure(new IllegalStateException("Not implemented"));
 
     }
 
+    @Override
     public void logout(final Callback<Void> callback) {
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                callback.onFailure(new IllegalStateException("Not implemented"));
-            }
-        }.execute((Void) null);
+        callback.onFailure(new IllegalStateException("Not implemented"));
     }
 
 }

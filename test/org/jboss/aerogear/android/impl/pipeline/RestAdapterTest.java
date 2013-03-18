@@ -1,20 +1,18 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors by the
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @authors tag. See the copyright.txt in the distribution for a full listing of
+ * individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+ * applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+ * OF ANY KIND, either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
  */
-
 package org.jboss.aerogear.android.impl.pipeline;
 
 import org.jboss.aerogear.android.impl.pipeline.paging.WrappingPagedList;
@@ -79,9 +77,9 @@ public class RestAdapterTest {
 
     private static final String TAG = RestAdapterTest.class.getSimpleName();
     private static final String SERIALIZED_POINTS = "{\"points\":[{\"x\":0,\"y\":0},{\"x\":1,\"y\":2},{\"x\":2,\"y\":4},{\"x\":3,\"y\":6},{\"x\":4,\"y\":8},{\"x\":5,\"y\":10},{\"x\":6,\"y\":12},{\"x\":7,\"y\":14},{\"x\":8,\"y\":16},{\"x\":9,\"y\":18}],\"id\":\"1\"}";
+    private static final String POINTS_ARRAY = "[{\"x\":0,\"y\":0},{\"x\":1,\"y\":2},{\"x\":2,\"y\":4},{\"x\":3,\"y\":6},{\"x\":4,\"y\":8},{\"x\":5,\"y\":10},{\"x\":6,\"y\":12},{\"x\":7,\"y\":14},{\"x\":8,\"y\":16},{\"x\":9,\"y\":18}]";
     private URL url;
     private final Provider<HttpProvider> stubHttpProviderFactory = new Provider<HttpProvider>() {
-
         @Override
         public HttpProvider get(Object... in) {
             return new HttpStubProvider((URL) in[0]);
@@ -96,14 +94,16 @@ public class RestAdapterTest {
     @Test
     public void testPipeTypeProperty() throws Exception {
         Pipe<Data> restPipe = new RestAdapter<Data>(Data.class, url);
-        UnitTestUtils.setPrivateField(restPipe, "httpProviderFactory", stubHttpProviderFactory);
+        Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", stubHttpProviderFactory);
         Assert.assertEquals("verifying the (default) type", PipeTypes.REST, restPipe.getType());
     }
 
     @Test
     public void testPipeURLProperty() throws Exception {
         Pipe<Data> restPipe = new RestAdapter<Data>(Data.class, url);
-        UnitTestUtils.setPrivateField(restPipe, "httpProviderFactory", stubHttpProviderFactory);
+        Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", stubHttpProviderFactory);
         assertEquals("verifying the given URL", "http://server.com/context/", restPipe.getUrl().toString());
     }
 
@@ -124,10 +124,10 @@ public class RestAdapterTest {
 
         pc.setGsonBuilder(builder);
         Pipe<ListClassId> restPipe = factory.createPipe(ListClassId.class, pc);
-
-        Field gsonField = restPipe.getClass().getDeclaredField("gson");
+        Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
+        Field gsonField = restRunner.getClass().getDeclaredField("gson");
         gsonField.setAccessible(true);
-        Gson gson = (Gson) gsonField.get(restPipe);
+        Gson gson = (Gson) gsonField.get(restRunner);
 
         gson.toJson(new ListClassId());
 
@@ -140,16 +140,17 @@ public class RestAdapterTest {
 
         final HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(utf_16), new HashMap<String, Object>()));
 
-        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
-
-        UnitTestUtils.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
-
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setGsonBuilder(builder);
+        config.setEncoding(utf_16);
+        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
+        Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
             @Override
             public HttpProvider get(Object... in) {
                 return provider;
             }
         });
-        restPipe.setEncoding(utf_16);
 
         runRead(restPipe);
 
@@ -168,8 +169,8 @@ public class RestAdapterTest {
 
         RestAdapter<ListClassId> restPipe = (RestAdapter<ListClassId>) pipeline
                 .pipe(ListClassId.class, config);
-
-        assertEquals(utf_16, UnitTestUtils.getPrivateField(restPipe, "encoding"));
+        Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
+        assertEquals(utf_16, UnitTestUtils.getPrivateField(restRunner, "encoding"));
 
     }
 
@@ -178,9 +179,13 @@ public class RestAdapterTest {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
         HeaderAndBody response = new HeaderAndBody(SERIALIZED_POINTS.getBytes(), new HashMap<String, Object>());
         final HttpStubProvider provider = new HttpStubProvider(url, response);
-        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
-        UnitTestUtils.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
 
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setGsonBuilder(builder);
+
+        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
+        Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
             @Override
             public HttpProvider get(Object... in) {
                 return provider;
@@ -198,10 +203,15 @@ public class RestAdapterTest {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
         HeaderAndBody response = new HeaderAndBody(("{\"result\":{\"points\":" + SERIALIZED_POINTS + "}}").getBytes(), new HashMap<String, Object>());
         final HttpStubProvider provider = new HttpStubProvider(url, response);
-        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
-        restPipe.setDataRoot("result.points");
-        UnitTestUtils.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
 
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setGsonBuilder(builder);
+        config.setDataRoot("result.points");
+
+        RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
+
+        Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
             @Override
             public HttpProvider get(Object... in) {
                 return provider;
@@ -211,6 +221,31 @@ public class RestAdapterTest {
 
         List<Point> returnedPoints = result.get(0).points;
         assertEquals(10, returnedPoints.size());
+
+    }
+
+    @Test
+    public void testReadArray() throws Exception {
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
+        HeaderAndBody response = new HeaderAndBody((POINTS_ARRAY).getBytes(), new HashMap<String, Object>());
+        final HttpStubProvider provider = new HttpStubProvider(url, response);
+
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setGsonBuilder(builder);
+        config.setDataRoot("");
+
+        RestAdapter<Point> restPipe = new RestAdapter<Point>(Point.class, url, config);
+
+        Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
+            @Override
+            public HttpProvider get(Object... in) {
+                return provider;
+            }
+        });
+        List<Point> result = runRead(restPipe);
+
+        assertEquals(10, result.size());
 
     }
 
@@ -236,10 +271,13 @@ public class RestAdapterTest {
             }
         };
 
-        Pipe<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, builder);
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setGsonBuilder(builder);
 
-        UnitTestUtils.setPrivateField(restPipe, "httpProviderFactory", new Provider<HttpProvider>() {
+        Pipe<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
+        Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
 
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
             @Override
             public HttpProvider get(Object... in) {
                 return provider;
@@ -271,31 +309,38 @@ public class RestAdapterTest {
     @Test
     public void runReadWithFilterUsingUri() throws Exception {
 
+        final CountDownLatch latch = new CountDownLatch(1);
+
         HttpProviderFactory factory = mock(HttpProviderFactory.class);
         when(factory.get(anyObject())).thenReturn(mock(HttpProvider.class));
 
         RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, url);
-        UnitTestUtils.setPrivateField(adapter, "httpProviderFactory", factory);
+        Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", factory);
 
         ReadFilter filter = new ReadFilter();
         filter.setLinkUri(URI.create("?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token"));
 
         adapter.readWithFilter(filter, new Callback<List<Data>>() {
-
             @Override
             public void onSuccess(List<Data> data) {
+                latch.countDown();
             }
 
             @Override
             public void onFailure(Exception e) {
+                latch.countDown();
             }
         });
+        latch.await(500, TimeUnit.MILLISECONDS);
 
         verify(factory).get(eq(new URL(url.toString() + "?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token")));
     }
 
     @Test
     public void runReadWithFilterAndAuthenticaiton() throws Exception {
+
+        final CountDownLatch latch = new CountDownLatch(1);
 
         HttpProviderFactory factory = mock(HttpProviderFactory.class);
         when(factory.get(anyObject())).thenReturn(mock(HttpProvider.class));
@@ -307,26 +352,31 @@ public class RestAdapterTest {
         when(urlModule.isLoggedIn()).thenReturn(true);
         when(urlModule.getAuthorizationFields()).thenReturn(authFields);
 
-        RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, url);
-        UnitTestUtils.setPrivateField(adapter, "httpProviderFactory", factory);
+        PipeConfig config = new PipeConfig(url, Data.class);
+        config.setAuthModule(urlModule);
+
+        RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, url, config);
+        Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
+
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", factory);
 
         ReadFilter filter = new ReadFilter();
         filter.setLimit(10);
         filter.setWhere(new JSONObject("{\"model\":\"BMW\"}"));
 
-        adapter.setAuthenticationModule(urlModule);
-
         adapter.readWithFilter(filter, new Callback<List<Data>>() {
-
             @Override
             public void onSuccess(List<Data> data) {
+                latch.countDown();
             }
 
             @Override
             public void onFailure(Exception e) {
+                latch.countDown();
                 Logger.getLogger(getClass().getSimpleName()).log(Level.SEVERE, TAG, e);
             }
         });
+        latch.await(500, TimeUnit.MILLISECONDS);
 
         verify(factory).get(new URL(url.toString() + "?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token"));
     }
@@ -349,9 +399,9 @@ public class RestAdapterTest {
         pipeConfig.setPageConfig(pageConfig);
 
         Pipe<ListClassId> dataPipe = pipeline.pipe(ListClassId.class, pipeConfig);
+        Object restRunner = UnitTestUtils.getPrivateField(dataPipe, "restRunner");
 
-        UnitTestUtils.setPrivateField(dataPipe, "httpProviderFactory", new Provider<HttpProvider>() {
-
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
             @Override
             public HttpProvider get(Object... in) {
                 return provider;
@@ -385,9 +435,9 @@ public class RestAdapterTest {
         pipeConfig.setPageConfig(pageConfig);
 
         Pipe<ListClassId> dataPipe = pipeline.pipe(ListClassId.class, pipeConfig);
+        Object restRunner = UnitTestUtils.getPrivateField(dataPipe, "restRunner");
 
-        UnitTestUtils.setPrivateField(dataPipe, "httpProviderFactory", new Provider<HttpProvider>() {
-
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", new Provider<HttpProvider>() {
             @Override
             public HttpProvider get(Object... in) {
                 HashMap<String, Object> headers = new HashMap<String, Object>(1);
@@ -416,7 +466,10 @@ public class RestAdapterTest {
         PageConfig pageConfig = new PageConfig();
         pageConfig.setMetadataLocation(PageConfig.MetadataLocations.HEADERS);
 
-        RestAdapter adapter = new RestAdapter(Data.class, url, new GsonBuilder(), pageConfig);
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setPageConfig(pageConfig);
+
+        RestAdapter adapter = new RestAdapter(Data.class, url, config);
         List<Data> list = new ArrayList<Data>();
         HeaderAndBody response = new HeaderAndBody(new byte[] {}, new HashMap<String, Object>() {
             {
@@ -425,10 +478,11 @@ public class RestAdapterTest {
             }
         });
         JSONObject where = new JSONObject();
-        Method method = adapter.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class);
+        Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
+        Method method = restRunner.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class, Pipe.class);
         method.setAccessible(true);
 
-        WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(adapter, list, response, where);
+        WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(restRunner, list, response, where, adapter);
         assertEquals(new URI("http://server.com/context/chapter3"), pagedList.getNextFilter().getLinkUri());
         assertEquals(new URI("http://server.com/context/chapter2"), pagedList.getPreviousFilter().getLinkUri());
 
@@ -440,14 +494,20 @@ public class RestAdapterTest {
         pageConfig.setMetadataLocation(PageConfig.MetadataLocations.BODY);
         pageConfig.setNextIdentifier("pages.next");
         pageConfig.setPreviousIdentifier("pages.previous");
-        RestAdapter adapter = new RestAdapter(Data.class, url, new GsonBuilder(), pageConfig);
+
+        PipeConfig config = new PipeConfig(url, ListClassId.class);
+        config.setPageConfig(pageConfig);
+
+        RestAdapter adapter = new RestAdapter(Data.class, url, config);
+        Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
+
         List<Data> list = new ArrayList<Data>();
         HeaderAndBody response = new HeaderAndBody("{\"pages\":{\"next\":\"chapter3\",\"previous\":\"chapter2\"}}".getBytes(), new HashMap<String, Object>());
         JSONObject where = new JSONObject();
-        Method method = adapter.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class);
+        Method method = restRunner.getClass().getDeclaredMethod("computePagedList", List.class, HeaderAndBody.class, JSONObject.class, Pipe.class);
         method.setAccessible(true);
 
-        WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(adapter, list, response, where);
+        WrappingPagedList<Data> pagedList = (WrappingPagedList<Data>) method.invoke(restRunner, list, response, where, adapter);
         assertEquals(new URI("http://server.com/context/chapter3"), pagedList.getNextFilter().getLinkUri());
         assertEquals(new URI("http://server.com/context/chapter2"), pagedList.getPreviousFilter().getLinkUri());
 
@@ -490,7 +550,8 @@ public class RestAdapterTest {
     }
 
     /**
-     * Runs a read method, returns the result of the call back and rethrows the underlying exception
+     * Runs a read method, returns the result of the call back and rethrows the
+     * underlying exception
      *
      * @param restPipe
      */
@@ -533,7 +594,6 @@ public class RestAdapterTest {
         }
 
         public ListClassId() {
-
         }
 
         public String getId() {

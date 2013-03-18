@@ -14,29 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.aerogear.android.pipeline;
 
-package org.jboss.aerogear.android;
-
-import java.io.Serializable;
+import java.util.List;
+import org.jboss.aerogear.android.ReadFilter;
 
 /**
- * A handler for consuming the data/result of an operation.
- *
- * @param <T> The data type of the operation
+ * Classes which implement this interface provide the logic for how pipes 
+ * interact with services.
  */
-public interface Callback<T> extends Serializable {
-
+public interface PipeHandler<T> {
     /**
-     * Called when operation completes with success.
-     *
-     * @param data The received data of the operation.
+     * This method is called after a call to read.  It performs the actual load of data
+     * and returns.
+     * 
+     * @return a List of data.
+     * 
      */
-    void onSuccess(T data);
+    List<T> onRead(Pipe<T> requestingPipe);
 
-    /**
-     * Invoked when an operation has failed.
-     *
-     * @param e The exception to give more insights on why the operation has failed.
-     */
-    void onFailure(Exception e);
+    List<T> onReadWithFilter(ReadFilter filter, Pipe<T> requestingPipe);
+
+    T onSave(T item);
+
+    void onRemove(String id);
 }

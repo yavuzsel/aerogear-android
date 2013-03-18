@@ -36,6 +36,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import org.jboss.aerogear.android.impl.pipeline.PipeConfig;
 
 import static org.mockito.Mockito.*;
 
@@ -55,6 +57,8 @@ public class GeneralAuthenticationModuleTest implements AuthenticationModuleTest
     @Test
     public void applySecurityTokenOnURL() throws Exception {
 
+        final CountDownLatch latch = new CountDownLatch(1);
+
         HttpProviderFactory factory = mock(HttpProviderFactory.class);
         when(factory.get(anyObject())).thenReturn(mock(HttpProvider.class));
 
@@ -65,21 +69,27 @@ public class GeneralAuthenticationModuleTest implements AuthenticationModuleTest
         when(urlModule.isLoggedIn()).thenReturn(true);
         when(urlModule.getAuthorizationFields()).thenReturn(authFields);
 
-        RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, SIMPLE_URL);
-        UnitTestUtils.setPrivateField(adapter, "httpProviderFactory", factory);
-        adapter.setAuthenticationModule(urlModule);
+        PipeConfig config = new PipeConfig(SIMPLE_URL, Data.class);
+        config.setAuthModule(urlModule);
+
+        RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, SIMPLE_URL, config);
+        Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
+        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", factory);
 
         adapter.read(new Callback<List<Data>>() {
 
             @Override
             public void onSuccess(List<Data> data) {
+                latch.countDown();
             }
 
             @Override
             public void onFailure(Exception e) {
+                latch.countDown();
             }
         });
 
+        latch.await(1, TimeUnit.SECONDS);
         verify(factory).get(new URL(SIMPLE_URL.toString() + "?token=" + TOKEN));
     }
 
