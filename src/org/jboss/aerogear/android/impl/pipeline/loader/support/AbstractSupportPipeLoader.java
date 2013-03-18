@@ -18,6 +18,7 @@ package org.jboss.aerogear.android.impl.pipeline.loader.support;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.impl.pipeline.loader.AbstractPipeLoader;
 
 /**
  * This class maintains references to the callback to be called when a Loader
@@ -26,7 +27,7 @@ import org.jboss.aerogear.android.Callback;
  *
  * This class and its subclasses use the Loaders from android.support and will
  * work on devices &lt; Android 3.0. If your application does not need to
- * support these devices see {@link AbstractModernPipeLoader}
+ * support these devices see {@link AbstractPipeLoader}
  */
 public abstract class AbstractSupportPipeLoader<T> extends AsyncTaskLoader<T> {
 

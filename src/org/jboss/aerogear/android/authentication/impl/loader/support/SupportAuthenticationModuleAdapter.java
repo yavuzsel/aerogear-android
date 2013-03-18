@@ -32,6 +32,7 @@ import java.util.Map;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.authentication.impl.loader.AuthenticationModuleAdapter;
 import org.jboss.aerogear.android.authentication.impl.loader.LoaderAuthenticationModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipeline.support.AbstractFragmentActivityCallback;
@@ -44,7 +45,7 @@ import org.jboss.aerogear.android.pipeline.support.AbstractSupportFragmentCallba
  *
  * This class uses the Android support versions of the Loader API. If you do not
  * need to support devices &lt; Android 3.0, see
- * {@link ModernAuthenticationModuleAdapter}
+ * {@link AuthenticationModuleAdapter}
  */
 public class SupportAuthenticationModuleAdapter implements LoaderAuthenticationModule, LoaderManager.LoaderCallbacks<HeaderAndBody> {
 

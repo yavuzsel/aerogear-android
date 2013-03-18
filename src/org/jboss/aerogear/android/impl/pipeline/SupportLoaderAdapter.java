@@ -49,7 +49,7 @@ import com.google.gson.Gson;
  * This class wraps a Pipe in an asynchronous Loader.
  *
  * This classes uses Loaders from android.support. If you do not need to support
- * Android devices &lt; version 3.0, consider using {@link ModernLoaderAdapter}
+ * Android devices &lt; version 3.0, consider using {@link LoaderAdapter}
  *
  */
 public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.LoaderCallbacks<T> {

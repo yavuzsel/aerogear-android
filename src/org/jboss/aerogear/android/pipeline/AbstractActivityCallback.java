@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.pipeline;
 
 import android.app.Activity;
+import com.google.common.base.Objects;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.impl.pipeline.loader.AbstractPipeLoader;
 
@@ -59,7 +60,7 @@ public abstract class AbstractActivityCallback<T> extends AbstractCallback<T> {
     }
 
     /**
-     * This method is called by {@link AbstractModernPipeLoader}
+     * This method is called by {@link AbstractPipeLoader}
      * during the onLoadComplete method before onSuccess or onFailure are called.
      * 
      * @param activity 

@@ -17,6 +17,7 @@ package org.jboss.aerogear.android.pipeline;
 
 import android.app.Activity;
 import android.app.Fragment;
+import com.google.common.base.Objects;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.impl.loader.AbstractAuthenticationLoader;
 import org.jboss.aerogear.android.impl.pipeline.loader.AbstractPipeLoader;
@@ -61,8 +62,8 @@ public abstract class AbstractFragmentCallback<T> extends AbstractCallback<T> {
     }
 
     /**
-     * This method is called by {@link AbstractModernPipeLoader} or
-     * {@link AbstractModernAuthenticationLoader} during the onLoadComplete
+     * This method is called by {@link AbstractPipeLoader} or
+     * {@link AbstractAuthenticationLoader} during the onLoadComplete
      * method before onSuccess or onFailure are called.
      *
      * @param fragment

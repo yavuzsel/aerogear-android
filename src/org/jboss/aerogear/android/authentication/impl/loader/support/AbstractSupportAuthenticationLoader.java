@@ -20,6 +20,7 @@ import android.support.v4.content.AsyncTaskLoader;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
+import org.jboss.aerogear.android.authentication.impl.loader.AbstractAuthenticationLoader;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 
 /**
@@ -29,7 +30,7 @@ import org.jboss.aerogear.android.http.HeaderAndBody;
  *
  * This class and its subclasses use the Loaders from android.support and will
  * work on devices &lt; Android 3.0. If your application does not need to
- * support these devices see {@link AbstractModernAuthenticationLoader}
+ * support these devices see {@link AbstractAuthenticationLoader}
  */
 public abstract class AbstractSupportAuthenticationLoader extends AsyncTaskLoader<HeaderAndBody> {
 
