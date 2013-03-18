@@ -23,6 +23,7 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import com.google.common.base.Objects;
 import java.net.URL;
@@ -45,15 +46,10 @@ import org.jboss.aerogear.android.pipeline.AbstractFragmentCallback;
  * devices &lt; Android 3.0. For these devices see
  * {@link SupportAuthenticationModuleAdapter }
  */
-public class AuthenticationModuleAdapter implements AuthenticationModule, LoaderManager.LoaderCallbacks<HeaderAndBody> {
+public class AuthenticationModuleAdapter implements LoaderAuthenticationModule, LoaderManager.LoaderCallbacks<HeaderAndBody> {
 
     private static final String TAG = AuthenticationModuleAdapter.class.getSimpleName();
-    private static final String CALLBACK = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.CALLBACK";
-    private static final String METHOD = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.METHOD";
-    private static final String USERNAME = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.USERNAME";
-    private static final String PASSWORD = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.PASSWORD";
-    private static final String PARAMS = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.PARAMS";
-
+    
     private static enum Methods {
 
         LOGIN, LOGOUT, ENROLL

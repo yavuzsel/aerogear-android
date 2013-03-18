@@ -32,6 +32,7 @@ import java.util.Map;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.authentication.impl.loader.LoaderAuthenticationModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipeline.support.AbstractFragmentActivityCallback;
 import org.jboss.aerogear.android.pipeline.support.AbstractSupportFragmentCallback;
@@ -45,15 +46,10 @@ import org.jboss.aerogear.android.pipeline.support.AbstractSupportFragmentCallba
  * need to support devices &lt; Android 3.0, see
  * {@link ModernAuthenticationModuleAdapter}
  */
-public class SupportAuthenticationModuleAdapter implements AuthenticationModule, LoaderManager.LoaderCallbacks<HeaderAndBody> {
+public class SupportAuthenticationModuleAdapter implements LoaderAuthenticationModule, LoaderManager.LoaderCallbacks<HeaderAndBody> {
 
     private static final String TAG = SupportAuthenticationModuleAdapter.class.getSimpleName();
-    private static final String CALLBACK = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.CALLBACK";
-    private static final String METHOD = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.METHOD";
-    private static final String USERNAME = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.USERNAME";
-    private static final String PASSWORD = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.PASSWORD";
-    private static final String PARAMS = "org.jboss.aerogear.android.authentication.loader.ModernAuthenticationModuleAdapter.PARAMS";
-
+    
     static enum Methods {
 
         LOGIN, LOGOUT, ENROLL
