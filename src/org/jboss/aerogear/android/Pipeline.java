@@ -172,7 +172,6 @@ public class Pipeline {
      * @param activity the activity whose lifecycle the loader will follow
      * @return the new created Pipe object
      * 
-     * @throws IllegalStateException if the named pipe is not an instance of RestAdapter
      */
     public LoaderPipe get(String name, FragmentActivity activity) {
         Pipe pipe = pipes.get(name);
@@ -190,7 +189,6 @@ public class Pipeline {
      * 
      * @return the new created Pipe object
      * 
-     * @throws IllegalStateException if the named pipe is not an instance of RestAdapter
      */
     public LoaderPipe get(String name, android.support.v4.app.Fragment fragment, Context applicationContext) {
         Pipe pipe = pipes.get(name);
