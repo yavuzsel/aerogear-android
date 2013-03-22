@@ -68,7 +68,7 @@ public class PageConfig {
      */
     private ParameterProvider parameterProvider = new DefaultParameterProvider();
 
-    private PageResultExtractor pageHeaderParser;
+    private PageParameterExtractor pageParameterExtractor;
 
     public MetadataLocation getMetadataLocation() {
         return metadataLocation;
@@ -118,12 +118,12 @@ public class PageConfig {
         this.parameterProvider = parameterProvider;
     }
 
-    public PageResultExtractor getPageHeaderParser() {
-        return pageHeaderParser;
+    public PageParameterExtractor getPageParameterExtractor() {
+        return pageParameterExtractor;
     }
 
-    public void setPageHeaderParser(PageResultExtractor pageHeaderParser) {
-        this.pageHeaderParser = pageHeaderParser;
+    public void setPageParameterExtractor(PageParameterExtractor pageParameterExtractor) {
+        this.pageParameterExtractor = pageParameterExtractor;
     }
 
 }
