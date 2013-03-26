@@ -25,13 +25,13 @@ import java.net.URL;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
-import org.jboss.aerogear.android.pipeline.paging.PageResultExtractor;
+import org.jboss.aerogear.android.pipeline.paging.PageParameterExtractor;
 
 /**
  * This class assumes the response body paging properties are URI's and parses them 
  * accordingly.
  */
-public class URIBodyPageParser implements PageResultExtractor<PageConfig> {
+public class URIBodyPageParser implements PageParameterExtractor<PageConfig> {
     private final URI baseUri;
 
     private static final String TAG = URIPageHeaderParser.class.getSimpleName();

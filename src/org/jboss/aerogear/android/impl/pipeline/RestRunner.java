@@ -120,11 +120,11 @@ public class RestRunner<T> implements PipeHandler<T> {
                 this.parameterProvider = new DefaultParameterProvider();
             }
 
-            if (pageConfig.getPageHeaderParser() == null) {
+            if (pageConfig.getPageParameterExtractor() == null) {
                 if (PageConfig.MetadataLocations.BODY.equals(pageConfig.getMetadataLocation())) {
-                    pageConfig.setPageHeaderParser(new URIBodyPageParser(baseURL));
+                    pageConfig.setPageParameterExtractor(new URIBodyPageParser(baseURL));
                 } else if (PageConfig.MetadataLocations.HEADERS.equals(pageConfig.getMetadataLocation())) {
-                    pageConfig.setPageHeaderParser(new URIPageHeaderParser(baseURL));
+                    pageConfig.setPageParameterExtractor(new URIPageHeaderParser(baseURL));
                 }
             }
 
@@ -336,11 +336,11 @@ public class RestRunner<T> implements PipeHandler<T> {
                 throw new RuntimeException(ex);
             }
         } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocations.HEADERS)) {
-            nextRead = pageConfig.getPageHeaderParser().getNextFilter(httpResponse, RestRunner.this.pageConfig);
-            previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestRunner.this.pageConfig);
+            nextRead = pageConfig.getPageParameterExtractor().getNextFilter(httpResponse, RestRunner.this.pageConfig);
+            previousRead = pageConfig.getPageParameterExtractor().getPreviousFilter(httpResponse, RestRunner.this.pageConfig);
         } else if (pageConfig.getMetadataLocation().equals(PageConfig.MetadataLocations.BODY)) {
-            nextRead = pageConfig.getPageHeaderParser().getNextFilter(httpResponse, RestRunner.this.pageConfig);
-            previousRead = pageConfig.getPageHeaderParser().getPreviousFilter(httpResponse, RestRunner.this.pageConfig);
+            nextRead = pageConfig.getPageParameterExtractor().getNextFilter(httpResponse, RestRunner.this.pageConfig);
+            previousRead = pageConfig.getPageParameterExtractor().getPreviousFilter(httpResponse, RestRunner.this.pageConfig);
         } else {
             throw new IllegalStateException("Not supported");
         }

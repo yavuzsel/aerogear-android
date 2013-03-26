@@ -22,7 +22,7 @@ import org.jboss.aerogear.android.http.HeaderAndBody;
 /**
  * Classes which implement this interface are responsible for consuming a response from a server and extracting paging information (if any).
  */
-public interface PageResultExtractor<T extends PageConfig> {
+public interface PageParameterExtractor<T extends PageConfig> {
 
     /**
      * 
