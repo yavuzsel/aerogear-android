@@ -16,7 +16,7 @@ the specific language governing permissions and ~ limitations under the License.
 
     <groupId>org.jboss.aerogear</groupId>
     <artifactId>aerogear-android</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>apklib</packaging>
     <name>AeroGear Android Libary</name>
     <url>http://aerogear.org</url>
@@ -68,7 +68,6 @@ the specific language governing permissions and ~ limitations under the License.
                     <version>3.5.1</version>
                     <configuration>
                         <sdk>
-                            <platform>15</platform>
                         </sdk>
                         <undeployBeforeDeploy>true</undeployBeforeDeploy>
                     </configuration>
@@ -121,7 +120,6 @@ the specific language governing permissions and ~ limitations under the License.
                         <debug>${debug}</debug>
                     </run>
                     <sdk>
-                        <platform>16</platform>
                     </sdk>
                     <emulator>
                         <avd>${android.avd}</avd>
