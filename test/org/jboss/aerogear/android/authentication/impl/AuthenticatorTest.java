@@ -18,7 +18,7 @@
 package org.jboss.aerogear.android.authentication.impl;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.jboss.aerogear.android.authentication.AuthenticationConfig;
+import org.jboss.aerogear.android.authentication.AuthType;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
 import org.junit.Test;
@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 
 import static org.junit.Assert.*;
 
@@ -59,7 +60,13 @@ public class AuthenticatorTest {
 
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
         AuthenticationConfig config = new AuthenticationConfig();
-        config.setAuthType(null);
+        config.setAuthType(new AuthType() {
+
+            @Override
+            public String getName() {
+                return "Bad type";
+            }
+        });
         AuthenticationModule simpleAuthModule = authenticator.auth(
                 SIMPLE_MODULE_NAME, config);
 
