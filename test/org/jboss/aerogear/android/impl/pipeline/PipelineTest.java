@@ -17,26 +17,23 @@
 
 package org.jboss.aerogear.android.impl.pipeline;
 
-import org.jboss.aerogear.android.impl.pipeline.PipeConfig;
-import org.jboss.aerogear.android.impl.pipeline.DefaultPipeFactory;
-import org.jboss.aerogear.android.impl.pipeline.RestAdapter;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import java.net.MalformedURLException;
-import java.net.URL;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 import org.jboss.aerogear.android.Pipeline;
+import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
-import org.jboss.aerogear.android.authentication.impl.AGSecurityAuthenticationConfig;
 import org.jboss.aerogear.android.authentication.impl.AGSecurityAuthenticationModule;
 import org.jboss.aerogear.android.impl.helper.Data;
 import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
-import static org.jboss.aerogear.android.impl.pipeline.PipeTypes.REST;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import static junit.framework.Assert.*;
+import static org.jboss.aerogear.android.impl.pipeline.PipeTypes.REST;
 
 @RunWith(RobolectricTestRunner.class)
 public class PipelineTest {
@@ -205,7 +202,7 @@ public class PipelineTest {
         DefaultPipeFactory factory = new DefaultPipeFactory();
         PipeConfig config = new PipeConfig(url, Data.class);
         config.setAuthModule(new AGSecurityAuthenticationModule(url,
-                new AGSecurityAuthenticationConfig()));
+                new AuthenticationConfig()));
         RestAdapter<Data> pipe = (RestAdapter<Data>) factory.createPipe(
                 Data.class, config);
         Object restRunner = UnitTestUtils.getPrivateField(pipe, "restRunner");
