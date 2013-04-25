@@ -25,6 +25,7 @@ import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.impl.core.HttpProviderFactory;
+import org.jboss.aerogear.android.impl.util.UrlUtils;
 import org.json.JSONObject;
 
 class AGSecurityAuthenticationModuleRunner {
@@ -52,9 +53,9 @@ class AGSecurityAuthenticationModuleRunner {
         this.logoutEndpoint = config.getLogoutEndpoint();
         this.enrollEndpoint = config.getEnrollEndpoint();
 
-        this.loginURL = appendToBaseURL(loginEndpoint);
-        this.logoutURL = appendToBaseURL(logoutEndpoint);
-        this.enrollURL = appendToBaseURL(enrollEndpoint);
+        this.loginURL = UrlUtils.appendToBaseURL(baseURL, loginEndpoint);
+        this.logoutURL = UrlUtils.appendToBaseURL(baseURL, logoutEndpoint);
+        this.enrollURL = UrlUtils.appendToBaseURL(baseURL, enrollEndpoint);
         
         this.timeout = config.getTimeout();
         
@@ -93,22 +94,7 @@ class AGSecurityAuthenticationModuleRunner {
         return enrollEndpoint;
     }
 
-    /**
-     *
-     * @param endpoint
-     * @return a new url baseUrl + endpoint
-     * @throws IllegalArgumentException if baseUrl+endpoint is not a real url.
-     */
-    private URL appendToBaseURL(String endpoint) {
-        try {
-            return new URL(baseURL.toString() + endpoint);
-        } catch (MalformedURLException ex) {
-            String message = "Could not append " + endpoint + " to "
-                    + baseURL.toString();
-            Log.e(TAG, message, ex);
-            throw new IllegalArgumentException(message, ex);
-        }
-    }
+   
 
     private String buildLoginData(String username, String password) {
         JsonObject response = new JsonObject();
