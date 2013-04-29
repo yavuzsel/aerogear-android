@@ -19,7 +19,7 @@ package org.jboss.aerogear.android.authentication.impl;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.jboss.aerogear.android.Provider;
-import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
@@ -52,7 +52,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
     @Test(timeout = 500L)
     public void testDefaultConstructor() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
-                SIMPLE_URL, new AGSecurityAuthenticationConfig());
+                SIMPLE_URL, new AuthenticationConfig());
         Object runner = UnitTestUtils.getPrivateField(module, "runner");
         HttpProvider provider = (HttpProvider) UnitTestUtils.getPrivateField(runner,
                 "httpProviderFactory", Provider.class).get(SIMPLE_URL);
@@ -63,27 +63,9 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
     }
 
     @Test(timeout = 500L)
-    public void applySecurityToken() throws Exception {
-        String newTokenName = "USER_TOKEN";
-
-        AGSecurityAuthenticationConfig config = new AGSecurityAuthenticationConfig();
-        config.setTokenHeaderName(newTokenName);
-
-        AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
-                SIMPLE_URL, config);
-        UnitTestUtils.setPrivateField(module, "authToken", TOKEN);
-
-        AuthorizationFields fields = module.getAuthorizationFields();
-
-        Assert.assertEquals(newTokenName, fields.getHeaders().get(0).first);
-        Assert.assertEquals(TOKEN, fields.getHeaders().get(0).second);
-
-    }
-
-    @Test(timeout = 500L)
     public void loginFails() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
-                SIMPLE_URL, new AGSecurityAuthenticationConfig());
+                SIMPLE_URL, new AuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
         Object runner = UnitTestUtils.getPrivateField(module, "runner");
         UnitTestUtils.setPrivateField(runner, "httpProviderFactory",
@@ -116,7 +98,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
             InterruptedException, IllegalArgumentException,
             IllegalAccessException {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
-                SIMPLE_URL, new AGSecurityAuthenticationConfig());
+                SIMPLE_URL, new AuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
         Object runner = UnitTestUtils.getPrivateField(module, "runner");
         UnitTestUtils.setPrivateField(runner, "httpProviderFactory",
@@ -128,9 +110,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                             public HeaderAndBody post(String ignore)
                                     throws RuntimeException {
                                 HashMap<String, Object> headers = new HashMap<String, Object>();
-                                headers.put("Auth-Token", TOKEN);
-                                return new HeaderAndBody(new byte[1],
-                                            headers);
+                                return new HeaderAndBody(new byte[1], headers);
 
                             }
                         };
@@ -144,13 +124,12 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
         Assert.assertTrue(module.isLoggedIn());
-        Assert.assertEquals(TOKEN, module.getAuthToken());
     }
 
     @Test(timeout = 500L)
     public void enrollSucceeds() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
-                SIMPLE_URL, new AGSecurityAuthenticationConfig());
+                SIMPLE_URL, new AuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
         Object runner = UnitTestUtils.getPrivateField(module, "runner");
         UnitTestUtils.setPrivateField(runner, "httpProviderFactory",
@@ -162,9 +141,7 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                             public HeaderAndBody post(String enrollData)
                                     throws RuntimeException {
                                 HashMap<String, Object> headers = new HashMap<String, Object>();
-                                headers.put("Auth-Token", TOKEN);
-                                return new HeaderAndBody(new byte[1],
-                                            headers);
+                                return new HeaderAndBody(new byte[1], headers);
 
                             }
                         };
@@ -185,13 +162,12 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         Assert.assertNotNull(callback.data);
 
         Assert.assertTrue(module.isLoggedIn());
-        Assert.assertEquals(TOKEN, module.getAuthToken());
     }
 
     @Test(timeout = 500L)
     public void logoutSucceeds() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
-                SIMPLE_URL, new AGSecurityAuthenticationConfig());
+                SIMPLE_URL, new AuthenticationConfig());
         SimpleCallback callback = new SimpleCallback();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -206,7 +182,6 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                                     throws RuntimeException {
                                 try {
                                     HashMap<String, Object> headers = new HashMap<String, Object>();
-                                    headers.put("Auth-Token", TOKEN);
                                     return new HeaderAndBody(new byte[1],
                                             headers);
                                 } finally {
@@ -224,7 +199,6 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
         Assert.assertTrue(module.isLoggedIn());
-        Assert.assertEquals(TOKEN, module.getAuthToken());
 
         VoidCallback voidCallback = new VoidCallback();
 
@@ -257,7 +231,5 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         Assert.assertNull(voidCallback.exception);
 
         Assert.assertFalse(module.isLoggedIn());
-        Assert.assertEquals("", module.getAuthToken());
-
     }
 }

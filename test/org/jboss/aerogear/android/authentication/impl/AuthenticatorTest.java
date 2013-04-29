@@ -17,21 +17,19 @@
 
 package org.jboss.aerogear.android.authentication.impl;
 
-import org.jboss.aerogear.android.authentication.impl.AuthTypes;
-import org.jboss.aerogear.android.authentication.impl.Authenticator;
-import org.jboss.aerogear.android.authentication.impl.AGSecurityAuthenticationConfig;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.jboss.aerogear.android.authentication.AuthenticationConfig;
+import org.jboss.aerogear.android.authentication.AuthenticationModule;
+import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jboss.aerogear.android.authentication.AuthenticationModule;
-import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthenticatorTest {
@@ -60,7 +58,7 @@ public class AuthenticatorTest {
     public void testAddAuthenticatorFailsWithUnsupportedType() {
 
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
-        AGSecurityAuthenticationConfig config = new AGSecurityAuthenticationConfig();
+        AuthenticationConfig config = new AuthenticationConfig();
         config.setAuthType(null);
         AuthenticationModule simpleAuthModule = authenticator.auth(
                 SIMPLE_MODULE_NAME, config);
@@ -74,7 +72,7 @@ public class AuthenticatorTest {
 
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
         AuthenticationModule simpleAuthModule = authenticator.auth(
-                SIMPLE_MODULE_NAME, new AGSecurityAuthenticationConfig());
+                SIMPLE_MODULE_NAME, new AuthenticationConfig());
 
         assertNotNull(simpleAuthModule);
 
@@ -84,7 +82,7 @@ public class AuthenticatorTest {
     public void testAddAndGetSimpleAuthenticator() {
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
         AuthenticationModule simpleAuthModule = authenticator.auth(
-                SIMPLE_MODULE_NAME, new AGSecurityAuthenticationConfig());
+                SIMPLE_MODULE_NAME, new AuthenticationConfig());
         assertEquals(simpleAuthModule, authenticator.get(SIMPLE_MODULE_NAME));
         authenticator.remove(SIMPLE_MODULE_NAME);
         assertNull(authenticator.get(SIMPLE_MODULE_NAME));
@@ -95,7 +93,7 @@ public class AuthenticatorTest {
 
         Authenticator authenticator = new Authenticator(SIMPLE_URL);
 
-        AGSecurityAuthenticationConfig config = new AGSecurityAuthenticationConfig();
+        AuthenticationConfig config = new AuthenticationConfig();
         config.setAuthType(AuthTypes.AG_SECURITY);
         config.setEnrollEndpoint("testEnroll");
         config.setLoginEndpoint("testLogin");

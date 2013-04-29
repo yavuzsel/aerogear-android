@@ -54,45 +54,6 @@ public class GeneralAuthenticationModuleTest implements AuthenticationModuleTest
         }
     }
 
-    @Test
-    public void applySecurityTokenOnURL() throws Exception {
-
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        HttpProviderFactory factory = mock(HttpProviderFactory.class);
-        when(factory.get(anyObject())).thenReturn(mock(HttpProvider.class));
-
-        AuthorizationFields authFields = new AuthorizationFields();
-        authFields.addQueryParameter("token", TOKEN);
-
-        AuthenticationModule urlModule = mock(AuthenticationModule.class);
-        when(urlModule.isLoggedIn()).thenReturn(true);
-        when(urlModule.getAuthorizationFields()).thenReturn(authFields);
-
-        PipeConfig config = new PipeConfig(SIMPLE_URL, Data.class);
-        config.setAuthModule(urlModule);
-
-        RestAdapter<Data> adapter = new RestAdapter<Data>(Data.class, SIMPLE_URL, config);
-        Object restRunner = UnitTestUtils.getPrivateField(adapter, "restRunner");
-        UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", factory);
-
-        adapter.read(new Callback<List<Data>>() {
-
-            @Override
-            public void onSuccess(List<Data> data) {
-                latch.countDown();
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                latch.countDown();
-            }
-        });
-
-        latch.await(1, TimeUnit.SECONDS);
-        verify(factory).get(new URL(SIMPLE_URL.toString() + "?token=" + TOKEN), Integer.MAX_VALUE);
-    }
-
     @Test(timeout = 1000l)
     public void testAbstractMethodsThrowExceptions() throws InterruptedException {
         AuthenticationModule module = mock(AbstractAuthenticationModule.class, CALLS_REAL_METHODS);
