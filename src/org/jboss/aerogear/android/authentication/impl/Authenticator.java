@@ -83,18 +83,18 @@ public class Authenticator {
         if (type == null) {
             throw new IllegalArgumentException("Unsupported Auth Type passed");
         }
-        
-        switch(type) {
-            case AG_SECURITY:
-                modules.put(name, new AGSecurityAuthenticationModule(baseURL, config));
-                break;
-            case HTTP_BASIC:
-                modules.put(name, new HttpBasicAuthenticationModule(baseURL, config));
-                break;
-            default:
-                
+
+        switch (type) {
+        case AG_SECURITY:
+            modules.put(name, new AGSecurityAuthenticationModule(baseURL, config));
+            break;
+        case HTTP_BASIC:
+            modules.put(name, new HttpBasicAuthenticationModule(baseURL));
+            break;
+        default:
+
         }
-        
+
         return modules.get(name);
 
     }

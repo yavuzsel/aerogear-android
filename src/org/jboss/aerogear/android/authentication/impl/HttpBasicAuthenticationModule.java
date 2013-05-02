@@ -65,7 +65,7 @@ public class HttpBasicAuthenticationModule extends AbstractAuthenticationModule 
     /**
      * @param baseURL The base URL shared by a Pipe.
      */
-    public HttpBasicAuthenticationModule(URL baseURL, AuthenticationConfig config) {
+    public HttpBasicAuthenticationModule(URL baseURL) {
         this.baseURL = baseURL;
     }
 
