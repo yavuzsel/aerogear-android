@@ -79,11 +79,22 @@ public class Authenticator {
      */
     public AuthenticationModule auth(String name, AuthenticationConfig config) {
 
-        if (!AuthTypes.AG_SECURITY.equals(config.getAuthType())) {
-
+        AuthTypes type = AuthTypes.valueOf(config.getAuthType());
+        if (type == null) {
             throw new IllegalArgumentException("Unsupported Auth Type passed");
         }
-        modules.put(name, new AGSecurityAuthenticationModule(baseURL, config));
+
+        switch (type) {
+        case AG_SECURITY:
+            modules.put(name, new AGSecurityAuthenticationModule(baseURL, config));
+            break;
+        case HTTP_BASIC:
+            modules.put(name, new HttpBasicAuthenticationModule(baseURL));
+            break;
+        default:
+
+        }
+
         return modules.get(name);
 
     }
