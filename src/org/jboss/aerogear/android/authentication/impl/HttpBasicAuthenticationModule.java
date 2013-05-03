@@ -16,27 +16,19 @@
  */
 package org.jboss.aerogear.android.authentication.impl;
 
-import java.io.IOException;
-import java.net.CookieManager;
-import java.net.CookieStore;
-import java.net.HttpCookie;
-import java.net.PasswordAuthentication;
-import java.net.URISyntaxException;
-import java.net.URL;
+import android.util.Base64;
+import android.util.Pair;
+import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.authentication.AbstractAuthenticationModule;
+import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.pipeline.Pipe;
+
+import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.authentication.AbstractAuthenticationModule;
-import org.jboss.aerogear.android.authentication.AuthenticationConfig;
-import org.jboss.aerogear.android.authentication.AuthorizationFields;
-import org.jboss.aerogear.android.http.HeaderAndBody;
-
-import android.util.Base64;
-import android.util.Pair;
 import java.util.Map;
-import org.jboss.aerogear.android.pipeline.Pipe;
 
 /**
  * This class provides Authentication using HTTP Basic
