@@ -25,6 +25,7 @@ import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
 import org.jboss.aerogear.android.pipeline.PipeType;
+import org.jboss.aerogear.android.pipeline.RequestBuilder;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 
 /**
@@ -48,6 +49,7 @@ public final class PipeConfig {
      */
     private String dataRoot = "";
     private Charset encoding = Charset.forName("UTF-8");
+    private RequestBuilder requestBuilder;
 
     public PipeConfig(URL baseURL, Class klass) {
         this.baseURL = baseURL;
@@ -300,4 +302,30 @@ public final class PipeConfig {
     public void setTimeout(Integer timeout) {
         this.timeout = timeout;
     }
+
+    /**
+     * A request builder is responsible for turning an object into a request
+     * used in a Pipe's save methods.
+     * 
+     * This value defaults to {@link GsonRequestBuilder}
+     * 
+     * @param requestBuilder a new request builder
+     */
+    public void setRequestBuilder(RequestBuilder requestBuilder) {
+        this.requestBuilder = requestBuilder;
+    }
+    
+    /**
+     * A request builder is responsible for turning an object into a request
+     * used in a Pipe's save methods.
+     * 
+     * This value defaults to {@link GsonRequestBuilder}
+     * 
+     * @return the current request builder.
+     */
+    public RequestBuilder getRequestBuilder() {
+        return this.requestBuilder;
+    }
+
+    
 }
