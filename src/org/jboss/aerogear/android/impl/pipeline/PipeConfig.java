@@ -26,6 +26,7 @@ import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
 import org.jboss.aerogear.android.pipeline.PipeType;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
+import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 
 /**
@@ -42,6 +43,7 @@ public final class PipeConfig {
     private AuthenticationModule authModule;
     private PipeHandler handler;
     private Integer timeout = Integer.MAX_VALUE;
+    private ResponseParser responseParser;
     /**
      * Where the data elements the pipe wants to extract are found in the
      * response from the server. Defaults to the root of the data structure
@@ -325,6 +327,26 @@ public final class PipeConfig {
      */
     public RequestBuilder getRequestBuilder() {
         return this.requestBuilder;
+    }
+
+    /**
+     * A ResponseParser is responsible for parsing a String value of the 
+     * response from a remote source into a object instance.
+     *
+     * @return 
+     * 
+     */
+    public ResponseParser getResponseParser() {
+        return responseParser;
+    }
+
+    /**
+     * A ResponseParser is responsible for parsing a String value of the 
+     * response from a remote source into a object instance.
+     * 
+     */
+    public void setResponseParser(ResponseParser responseParser) {
+        this.responseParser = responseParser;
     }
 
     

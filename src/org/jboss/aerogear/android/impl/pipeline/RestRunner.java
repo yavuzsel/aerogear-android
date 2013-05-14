@@ -1,4 +1,5 @@
 /**
+<<<<<<< HEAD
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
  *
@@ -13,12 +14,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+=======
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors by the
+ *
+ * @authors tag. See the copyright.txt in the distribution for a full listing of
+ * individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+ * applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+ * OF ANY KIND, either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+>>>>>>> Adding ResponseParser classes
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
 import android.util.Log;
 import android.util.Pair;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.io.UnsupportedEncodingException;
@@ -52,6 +67,8 @@ import org.jboss.aerogear.android.impl.util.ParseException;
 import org.jboss.aerogear.android.impl.util.WebLinkParser;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
+import org.jboss.aerogear.android.pipeline.RequestBuilder;
+import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 import org.jboss.aerogear.android.pipeline.paging.ParameterProvider;
 import org.json.JSONObject;
@@ -60,7 +77,7 @@ public class RestRunner<T> implements PipeHandler<T> {
 
     private final PageConfig pageConfig;
     private static final String TAG = RestRunner.class.getSimpleName();
-    private final Gson gson;
+    private final RequestBuilder<T> requestBuilder;
     private final String dataRoot;
     private final ParameterProvider parameterProvider;
     /**
@@ -76,6 +93,7 @@ public class RestRunner<T> implements PipeHandler<T> {
     private final URL baseURL;
     private final Provider<HttpProvider> httpProviderFactory = new HttpProviderFactory();
     private final Integer timeout;
+    private final ResponseParser<T> responseParser;
     private AuthenticationModule authModule;
     private Charset encoding = Charset.forName("UTF-8");
 
@@ -84,10 +102,11 @@ public class RestRunner<T> implements PipeHandler<T> {
         this.arrayKlass = asArrayClass(klass);
         this.baseURL = baseURL;
         this.dataRoot = "";
-        this.gson = new Gson();
+        this.requestBuilder = new GsonRequestBuilder<T>();
         this.pageConfig = null;
         this.parameterProvider = new DefaultParameterProvider();
         this.timeout = Integer.MAX_VALUE;
+        this.responseParser = new GsonResponseParser<T>();
     }
 
     public RestRunner(Class<T> klass, URL baseURL,
@@ -96,11 +115,11 @@ public class RestRunner<T> implements PipeHandler<T> {
         this.arrayKlass = asArrayClass(klass);
         this.baseURL = baseURL;
         this.timeout = config.getTimeout();
-        
-        if (config.getGsonBuilder() != null) {
-            this.gson = config.getGsonBuilder().create();
+
+        if (config.getRequestBuilder()!= null) {
+            this.requestBuilder = config.getRequestBuilder();
         } else {
-            this.gson = new Gson();
+            this.requestBuilder = new GsonRequestBuilder<T>();
         }
 
         if (config.getEncoding() != null) {
@@ -115,6 +134,12 @@ public class RestRunner<T> implements PipeHandler<T> {
             this.dataRoot = "";
         }
 
+        if (config.getResponseParser() != null) {
+            this.responseParser = config.getResponseParser(); 
+        } else {
+            this.responseParser = new GsonResponseParser<T>();
+        }
+        
         if (config.getPageConfig() != null) {
             this.pageConfig = config.getPageConfig();
 
@@ -132,6 +157,7 @@ public class RestRunner<T> implements PipeHandler<T> {
                 }
             }
 
+            
         } else {
             this.pageConfig = null;
             this.parameterProvider = new DefaultParameterProvider();
@@ -156,7 +182,7 @@ public class RestRunner<T> implements PipeHandler<T> {
         Object idObject = new Property(data.getClass(), recordIdFieldName).getValue(data);
         id = idObject == null ? null : idObject.toString();
 
-        String body = gson.toJson(data);
+        String body = requestBuilder.getBody(data);
         final HttpProvider httpProvider = getHttpProvider();
 
         HeaderAndBody result;
@@ -166,7 +192,7 @@ public class RestRunner<T> implements PipeHandler<T> {
             result = httpProvider.put(id, body);
         }
 
-        return gson.fromJson(new String(result.getBody(), encoding), klass);
+        return responseParser.handleResponse(new String(result.getBody(), encoding), klass);
     }
 
     @Override
@@ -201,13 +227,13 @@ public class RestRunner<T> implements PipeHandler<T> {
         JsonElement httpJsonResult = parser.parse(responseAsString);
         httpJsonResult = getResultElement(httpJsonResult, dataRoot);
         if (httpJsonResult.isJsonArray()) {
-            T[] resultArray = gson.fromJson(httpJsonResult, arrayKlass);
+            T[] resultArray = responseParser.handleArrayResponse(httpJsonResult.getAsString(), arrayKlass);
             result = Arrays.asList(resultArray);
             if (pageConfig != null) {
                 result = computePagedList(result, httpResponse, filter.getWhere(), requestingPipe);
             }
         } else {
-            T resultObject = gson.fromJson(httpJsonResult, klass);
+            T resultObject = responseParser.handleResponse(httpJsonResult.getAsString(), klass);
             List<T> resultList = new ArrayList<T>(1);
             resultList.add(resultObject);
             result = resultList;
@@ -429,8 +455,8 @@ public class RestRunner<T> implements PipeHandler<T> {
         return dataRoot;
     }
 
-    protected Gson getGSON() {
-        return gson;
+    protected RequestBuilder<T> getRequestBuilder() {
+        return requestBuilder;
     }
 
     private boolean retryAuth(AuthenticationModule authModule) {
