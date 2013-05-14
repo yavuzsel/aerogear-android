@@ -125,6 +125,9 @@ public final class PipeConfig {
     }
 
     /**
+     * @deprecated Pipes are moving to a more generic RequestBuilder interface.
+     * {@link GsonRequestBuilder}
+     * 
      * @return the current GSONBuilder which will be used to generate GSON
      * objects to be used by Pipes with this config.
      */
@@ -133,9 +136,14 @@ public final class PipeConfig {
     }
 
     /**
+     * 
+     * @deprecated Pipes are moving to a more generic RequestBuilder interface.
+     * {@link GsonRequestBuilder}
+     * 
      * @param gsonBuilder GSONBuilder which will be used to generate GSON
      * objects to be used by Pipes with this config.
      */
+    @Deprecated
     public void setGsonBuilder(GsonBuilder gsonBuilder) {
         this.gsonBuilder = gsonBuilder;
     }
