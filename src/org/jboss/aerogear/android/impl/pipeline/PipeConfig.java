@@ -39,11 +39,10 @@ public final class PipeConfig {
     private String endpoint;
     private PipeType type = PipeTypes.REST;
     private PageConfig pageConfig;
-    private GsonBuilder gsonBuilder;
     private AuthenticationModule authModule;
     private PipeHandler handler;
     private Integer timeout = Integer.MAX_VALUE;
-    private ResponseParser responseParser;
+    private ResponseParser responseParser = new GsonResponseParser();
     /**
      * Where the data elements the pipe wants to extract are found in the
      * response from the server. Defaults to the root of the data structure
@@ -51,7 +50,7 @@ public final class PipeConfig {
      */
     private String dataRoot = "";
     private Charset encoding = Charset.forName("UTF-8");
-    private RequestBuilder requestBuilder;
+    private RequestBuilder requestBuilder = new GsonRequestBuilder();
 
     public PipeConfig(URL baseURL, Class klass) {
         this.baseURL = baseURL;
@@ -131,25 +130,42 @@ public final class PipeConfig {
     /**
      * @deprecated Pipes are moving to a more generic RequestBuilder interface.
      * {@link GsonRequestBuilder}
-     * 
+     *
      * @return the current GSONBuilder which will be used to generate GSON
      * objects to be used by Pipes with this config.
+     *
+     * @throws IllegalStateException if ResponseBuilder is not an instance of
+     * GsonResponseParser
+     *
      */
     public GsonBuilder getGsonBuilder() {
-        return gsonBuilder;
+        if (responseParser instanceof GsonResponseParser) {
+            return ((GsonResponseParser) responseParser).getGsonBuilder();
+        } else {
+            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
+        }
     }
 
     /**
-     * 
+     *
      * @deprecated Pipes are moving to a more generic RequestBuilder interface.
      * {@link GsonRequestBuilder}
-     * 
+     *
      * @param gsonBuilder GSONBuilder which will be used to generate GSON
      * objects to be used by Pipes with this config.
+     *
+     * @throws IllegalStateException if ResponseBuilder is not an instance of
+     * GsonResponseParser
+     *
      */
     @Deprecated
     public void setGsonBuilder(GsonBuilder gsonBuilder) {
-        this.gsonBuilder = gsonBuilder;
+        if (!(responseParser instanceof GsonResponseParser && requestBuilder instanceof GsonRequestBuilder)) {
+            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
+        } else {
+            ((GsonResponseParser) responseParser).setGsonBuilder(gsonBuilder);
+            ((GsonRequestBuilder) requestBuilder).setGsonBuilder(gsonBuilder);
+        }
     }
 
     /**
@@ -308,21 +324,21 @@ public final class PipeConfig {
     /**
      * A request builder is responsible for turning an object into a request
      * used in a Pipe's save methods.
-     * 
+     *
      * This value defaults to {@link GsonRequestBuilder}
-     * 
+     *
      * @param requestBuilder a new request builder
      */
     public void setRequestBuilder(RequestBuilder requestBuilder) {
         this.requestBuilder = requestBuilder;
     }
-    
+
     /**
      * A request builder is responsible for turning an object into a request
      * used in a Pipe's save methods.
-     * 
+     *
      * This value defaults to {@link GsonRequestBuilder}
-     * 
+     *
      * @return the current request builder.
      */
     public RequestBuilder getRequestBuilder() {
@@ -330,24 +346,22 @@ public final class PipeConfig {
     }
 
     /**
-     * A ResponseParser is responsible for parsing a String value of the 
+     * A ResponseParser is responsible for parsing a String value of the
      * response from a remote source into a object instance.
      *
-     * @return 
-     * 
+     * @return
+     *
      */
     public ResponseParser getResponseParser() {
         return responseParser;
     }
 
     /**
-     * A ResponseParser is responsible for parsing a String value of the 
+     * A ResponseParser is responsible for parsing a String value of the
      * response from a remote source into a object instance.
-     * 
+     *
      */
     public void setResponseParser(ResponseParser responseParser) {
         this.responseParser = responseParser;
     }
-
-    
 }

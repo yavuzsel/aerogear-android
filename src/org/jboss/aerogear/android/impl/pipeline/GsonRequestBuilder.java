@@ -21,19 +21,39 @@ import org.jboss.aerogear.android.pipeline.RequestBuilder;
 
 public class GsonRequestBuilder<T> implements RequestBuilder<T> {
 
-    private final Gson gson;
-
+    private Gson gson;
+    private GsonBuilder gsonBuilder;
+    
     public GsonRequestBuilder() {
         this.gson = new Gson();
+        this.gsonBuilder = new GsonBuilder();
     }
 
     public GsonRequestBuilder(GsonBuilder gsonBuilder) {
         this.gson = gsonBuilder.create();
+        this.gsonBuilder = gsonBuilder;
     }
     
     @Override
     public String getBody(T data) {
-        return gson.toJson(gson);
+        return gson.toJson(data);
+    }
+
+    /**
+     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
+     */
+    @Deprecated
+    public GsonBuilder getGsonBuilder() {
+        return gsonBuilder;
+    }
+
+    /**
+     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
+     */
+    @Deprecated
+    public void setGsonBuilder(GsonBuilder gsonBuilder) {
+        this.gsonBuilder = gsonBuilder;
+        this.gson = gsonBuilder.create();
     }
     
 }

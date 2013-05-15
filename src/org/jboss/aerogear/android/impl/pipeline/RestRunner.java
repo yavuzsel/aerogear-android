@@ -1,5 +1,4 @@
 /**
-<<<<<<< HEAD
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
  *
@@ -14,21 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-=======
- * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
- * individual contributors by the
- *
- * @authors tag. See the copyright.txt in the distribution for a full listing of
- * individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
- * applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
- * OF ANY KIND, either express or implied. See the License for the specific
- * language governing permissions and limitations under the License.
->>>>>>> Adding ResponseParser classes
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
@@ -227,13 +211,13 @@ public class RestRunner<T> implements PipeHandler<T> {
         JsonElement httpJsonResult = parser.parse(responseAsString);
         httpJsonResult = getResultElement(httpJsonResult, dataRoot);
         if (httpJsonResult.isJsonArray()) {
-            T[] resultArray = responseParser.handleArrayResponse(httpJsonResult.getAsString(), arrayKlass);
+            T[] resultArray = responseParser.handleArrayResponse(httpJsonResult.toString(), arrayKlass);
             result = Arrays.asList(resultArray);
             if (pageConfig != null) {
                 result = computePagedList(result, httpResponse, filter.getWhere(), requestingPipe);
             }
         } else {
-            T resultObject = responseParser.handleResponse(httpJsonResult.getAsString(), klass);
+            T resultObject = responseParser.handleResponse(httpJsonResult.toString(), klass);
             List<T> resultList = new ArrayList<T>(1);
             resultList.add(resultObject);
             result = resultList;
