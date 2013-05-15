@@ -25,6 +25,7 @@ public class Data implements Comparable<Data> {
     private Integer id;
     private String name;
     private String description;
+    private boolean enable;
 
     public Data(String name, String description) {
         this.name = name;
@@ -35,6 +36,13 @@ public class Data implements Comparable<Data> {
         this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    public Data(Integer id, String name, String description, boolean enable) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.enable = enable;
     }
 
     public Integer getId() {
@@ -59,6 +67,14 @@ public class Data implements Comparable<Data> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     @Override
