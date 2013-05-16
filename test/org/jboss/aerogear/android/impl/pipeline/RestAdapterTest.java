@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
 import com.google.gson.JsonDeserializationContext;
@@ -25,7 +26,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
->>>>>>> Adding tests and fixing implementations
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.io.Serializable;
 import junit.framework.Assert;
