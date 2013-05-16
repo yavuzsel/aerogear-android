@@ -1,8 +1,8 @@
 package org.jboss.aerogear.android.impl.reflection;
 
+import org.jboss.aerogear.android.RecordId;
 import org.jboss.aerogear.android.impl.helper.Data;
 import org.jboss.aerogear.android.impl.helper.DataWithNoIdConfigured;
-import org.jboss.aerogear.android.impl.helper.MyData;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -25,5 +25,22 @@ public class ScanTest {
         String recordIdfieldName = Scan.recordIdFieldNameIn(MyData.class);
         assertEquals("id", recordIdfieldName);
     }
+
+    public static class SuperData {
+
+        @RecordId
+        private Integer id;
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
+
+    }
+
+    public static class MyData extends SuperData {}
 
 }
