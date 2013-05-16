@@ -36,6 +36,10 @@ public final class Scan {
                 return field;
             }
         }
+        Class superclass = klass.getSuperclass();
+        if( superclass != null ) {
+            return recordIdFieldIn(superclass);
+        }
         throw new RecordIdNotFoundException(klass);
     }
 
