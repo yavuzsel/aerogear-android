@@ -27,6 +27,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import junit.framework.Assert;
 import org.jboss.aerogear.android.*;
@@ -54,6 +57,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -251,21 +255,27 @@ public class RestAdapterTest {
     public void testGsonBuilderProperty() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
 
-        final StringBuilder request = new StringBuilder("");
+        final ByteArrayOutputStream request = new ByteArrayOutputStream();
 
         final HttpStubProvider provider = new HttpStubProvider(url) {
             @Override
-            public HeaderAndBody put(String id, String data) {
-                request.delete(0, request.length());
-                request.append(data);
-                return new HeaderAndBody(data.getBytes(), new HashMap<String, Object>());
+            public HeaderAndBody put(String id, byte[] data) {
+                try {
+                    request.write(data);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return new HeaderAndBody(data, new HashMap<String, Object>());
             }
 
             @Override
-            public HeaderAndBody post(String data) {
-                request.delete(0, request.length());
-                request.append(data);
-                return new HeaderAndBody(data.getBytes(), new HashMap<String, Object>());
+            public HeaderAndBody post(byte[] data) {
+                try {
+                    request.write(data);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return new HeaderAndBody(data, new HashMap<String, Object>());
             }
         };
 
@@ -301,7 +311,7 @@ public class RestAdapterTest {
 
         latch.await(20, TimeUnit.SECONDS);
 
-        assertEquals(SERIALIZED_POINTS, request.toString());
+        assertArrayEquals(SERIALIZED_POINTS.getBytes(), request.toByteArray());
         assertEquals(listClass.points, returnedPoints);
     }
 

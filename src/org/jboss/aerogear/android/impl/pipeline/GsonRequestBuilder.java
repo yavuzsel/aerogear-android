@@ -38,8 +38,8 @@ public class GsonRequestBuilder<T> implements RequestBuilder<T> {
     }
     
     @Override
-    public String getBody(T data) {
-        return gson.toJson(data);
+    public byte[] getBody(T data) {
+        return gson.toJson(data).getBytes();
     }
 
     /**

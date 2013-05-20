@@ -166,9 +166,9 @@ public class RestRunner<T> implements PipeHandler<T> {
         Object idObject = new Property(data.getClass(), recordIdFieldName).getValue(data);
         id = idObject == null ? null : idObject.toString();
 
-        String body = requestBuilder.getBody(data);
+        byte[] body = requestBuilder.getBody(data);
         final HttpProvider httpProvider = getHttpProvider();
-
+        
         HeaderAndBody result;
         if (id == null || id.length() == 0) {
             result = httpProvider.post(body);
@@ -295,6 +295,7 @@ public class RestRunner<T> implements PipeHandler<T> {
             URL authorizedURL = addAuthorization(fields.getQueryParameters(), URIUtils.resolve(baseURL.toURI(), relativeUri).toURL());
 
             final HttpProvider httpProvider = httpProviderFactory.get(authorizedURL, timeout);
+            httpProvider.setDefaultHeader("Content-TYpe", requestBuilder.getContentType());
             addAuthHeaders(httpProvider, fields);
             return httpProvider;
         } catch (MalformedURLException ex) {

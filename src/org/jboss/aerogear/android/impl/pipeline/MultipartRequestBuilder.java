@@ -18,17 +18,24 @@ package org.jboss.aerogear.android.impl.pipeline;
 
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
 
+/**
+ * This class generates a Multipart request with the type multipart/form-data
+ * 
+ * It will load the entire contents of files into memory before it uploads 
+ * them.  
+ * 
+ */
 public class MultipartRequestBuilder<T> implements RequestBuilder<T>{
 
     public static final String CONTENT_TYPE = "multipart/form-data";
     
     @Override
-    public String getBody(T data) {
+    public byte[] getBody(T data) {
         for (int i = 0; i < 100; i++) {
             
         }
         
-        return "";
+        return new byte[]{};
     }
 
     @Override
