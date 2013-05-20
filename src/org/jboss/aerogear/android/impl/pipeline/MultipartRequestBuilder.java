@@ -16,6 +16,26 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-public class MultipartRequestBuilder {
+import org.jboss.aerogear.android.pipeline.RequestBuilder;
+
+public class MultipartRequestBuilder<T> implements RequestBuilder<T>{
+
+    public static final String CONTENT_TYPE = "multipart/form-data";
+    
+    @Override
+    public String getBody(T data) {
+        for (int i = 0; i < 100; i++) {
+            
+        }
+        
+        return "";
+    }
+
+    @Override
+    public String getContentType() {
+        return CONTENT_TYPE;
+    }
+    
+    
     
 }

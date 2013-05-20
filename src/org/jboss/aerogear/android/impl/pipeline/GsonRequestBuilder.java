@@ -22,6 +22,8 @@ import org.jboss.aerogear.android.pipeline.RequestBuilder;
 
 public class GsonRequestBuilder<T> implements RequestBuilder<T> {
 
+    public static final String CONTENT_TYPE = "application/json";
+    
     private Gson gson;
     private GsonBuilder gsonBuilder;
     
@@ -55,6 +57,11 @@ public class GsonRequestBuilder<T> implements RequestBuilder<T> {
     public void setGsonBuilder(GsonBuilder gsonBuilder) {
         this.gsonBuilder = gsonBuilder;
         this.gson = gsonBuilder.create();
+    }
+
+    @Override
+    public String getContentType() {
+        return CONTENT_TYPE;
     }
     
 }
