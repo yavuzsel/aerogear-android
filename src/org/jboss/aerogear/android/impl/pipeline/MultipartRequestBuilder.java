@@ -56,7 +56,6 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
     @Override
     public byte[] getBody(T data) {
 
-
         ByteArrayOutputStream binaryStream = new ByteArrayOutputStream();
         DataOutputStream dataOutputStream = new DataOutputStream(binaryStream);
 
