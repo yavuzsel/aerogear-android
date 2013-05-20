@@ -145,6 +145,14 @@ public final class HttpRestProvider implements HttpProvider {
      */
     @Override
     public HeaderAndBody post(String data) throws RuntimeException {
+        return post(data.getBytes());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HeaderAndBody post(byte[] data) throws RuntimeException {
         HttpURLConnection urlConnection = null;
 
         try {
@@ -162,12 +170,20 @@ public final class HttpRestProvider implements HttpProvider {
             }
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public HeaderAndBody put(String id, String data) throws RuntimeException {
+        return put(id, data.getBytes());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HeaderAndBody put(String id, byte[] data) throws RuntimeException {
         HttpURLConnection urlConnection = null;
 
         try {
@@ -186,6 +202,7 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
+    
     /**
      * {@inheritDoc}
      */
@@ -207,7 +224,7 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    private void addBodyRequest(HttpURLConnection urlConnection, String data)
+    private void addBodyRequest(HttpURLConnection urlConnection, byte[] data)
             throws IOException {
 
         urlConnection.setDoOutput(true);
@@ -215,7 +232,7 @@ public final class HttpRestProvider implements HttpProvider {
         if (data != null) {
             OutputStream out = new BufferedOutputStream(urlConnection
                     .getOutputStream());
-            out.write(data.getBytes());
+            out.write(data);
             out.flush();
         }
 
