@@ -19,10 +19,12 @@ package org.jboss.aerogear.android.impl.reflection;
 
 import org.jboss.aerogear.android.impl.helper.Data;
 import org.jboss.aerogear.android.impl.helper.DataWithNoPropertyId;
+import org.jboss.aerogear.android.impl.helper.ExtendsData;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
 
 public class PropertyTest {
 
@@ -50,6 +52,12 @@ public class PropertyTest {
 
         Property property = new Property(DataWithNoPropertyId.class, "id");
         property.setValue(data, 1);
+    }
+
+    @Test
+    public void testExtendsData() throws Exception {
+        Property property = new Property(ExtendsData.class, "name");
+        assertNotNull(property);
     }
 
     @Test

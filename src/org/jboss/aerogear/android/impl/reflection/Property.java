@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.android.impl.reflection;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -36,7 +37,7 @@ public class Property {
      *
      * @param klass Class to be manipulated
      * @param fieldName Field to be accessed
-     * 
+     *
      * @throws IllegalArgumentException if either param is null
      * @throws PropertyNotFoundException if property isn't found
      */
@@ -57,9 +58,30 @@ public class Property {
 
     private void setPropertyType() {
         try {
-            type = klass.getDeclaredField(fieldName).getType();
+            type = findFieldInClass(klass, fieldName).getType();
         } catch (NoSuchFieldException e) {
             throw new FieldNotFoundException(klass, fieldName);
+        }
+    }
+
+    /**
+     * Search field in class/superclasses
+     *
+     * @param klass Class to search
+     * @param fieldName Field to search
+     * @return Field with @RecordId
+     *
+     * @throws NoSuchFieldException if field isn't found
+     */
+    private Field findFieldInClass(Class klass, String fieldName) throws NoSuchFieldException {
+        try {
+            return klass.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            Class superclass = klass.getSuperclass();
+            if (superclass != null) {
+                return findFieldInClass(superclass, fieldName);
+            }
+            throw new NoSuchFieldException();
         }
     }
 
