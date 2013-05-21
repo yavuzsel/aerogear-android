@@ -64,6 +64,15 @@ public class Property {
         }
     }
 
+    /**
+     * Search field in class/superclasses
+     *
+     * @param klass Class to search
+     * @param fieldName Field to search
+     * @return Field with @RecordId
+     *
+     * @throws NoSuchFieldException if field isn't found
+     */
     private Field findFieldInClass(Class klass, String fieldName) throws NoSuchFieldException {
         try {
             return klass.getDeclaredField(fieldName);
