@@ -172,6 +172,7 @@
                     <header>${project.basedir}/support/license_header.txt</header>
                     <includes>
                         <include>src/**</include>
+                        <include>test/**</include>
                     </includes>
                     <strictCheck>true</strictCheck>
                 </configuration>
