@@ -18,6 +18,7 @@ package org.jboss.aerogear.android;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.Iterator;
