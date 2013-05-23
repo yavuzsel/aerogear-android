@@ -1,21 +1,20 @@
 /**
- * JBoss, Home of Professional Open Source
- * Copyright Red Hat, Inc., and individual contributors.
+ * JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
+ * individual contributors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jboss.aerogear.android.impl.pipeline;
-
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
@@ -27,7 +26,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -57,7 +55,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,7 +121,7 @@ public class RestAdapterTest {
 
         GsonResponseParser<ListClassId> responseParser = new GsonResponseParser<ListClassId>(builder);
         pc.setResponseParser(responseParser);
-        
+
         Pipe<ListClassId> restPipe = factory.createPipe(ListClassId.class, pc);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
         Field gsonField = restRunner.getClass().getDeclaredField("responseParser");
@@ -315,8 +312,6 @@ public class RestAdapterTest {
         assertEquals(listClass.points, returnedPoints);
     }
 
-
-    
     @Test
     public void runReadWithFilterUsingUri() throws Exception {
 
@@ -458,8 +453,8 @@ public class RestAdapterTest {
                 HashMap<String, Object> headers = new HashMap<String, Object>(1);
                 headers
                         .put(
-                                "Link",
-                                "<http://example.com/TheBook/chapter2>; rel=\"previous\";title=\"previous chapter\",<http://example.com/TheBook/chapter3>; rel=\"next\";title=\"next chapter\"");
+                        "Link",
+                        "<http://example.com/TheBook/chapter2>; rel=\"previous\";title=\"previous chapter\",<http://example.com/TheBook/chapter3>; rel=\"next\";title=\"next chapter\"");
                 HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(), headers));
 
                 return provider;
@@ -486,7 +481,7 @@ public class RestAdapterTest {
 
         RestAdapter adapter = new RestAdapter(Data.class, url, config);
         List<Data> list = new ArrayList<Data>();
-        HeaderAndBody response = new HeaderAndBody(new byte[] {}, new HashMap<String, Object>() {
+        HeaderAndBody response = new HeaderAndBody(new byte[]{}, new HashMap<String, Object>() {
             {
                 put("next", "chapter3");
                 put("previous", "chapter2");
@@ -620,9 +615,9 @@ public class RestAdapterTest {
                     json.getAsJsonObject().getAsJsonPrimitive("y").getAsInt());
         }
     }
-    
+
     public static final class Point implements Serializable {
-        
+
         public int x, y;
 
         public Point() {
@@ -658,8 +653,5 @@ public class RestAdapterTest {
             }
             return true;
         }
-
-        
-        
     }
 }
