@@ -60,4 +60,23 @@ From the command line run the following.  This will clone the aerogear-android g
     mvn install
 
 
-If all goes well you should have the project built and installed.  You can confirm the build was successful by looking into the target subdirectory of aerogear-android.  The library should be there in a jar file. If you have trouble see the troubleshooting section.
+#### If your build fails with "Could not find tool 'aapt'"
+
+Android SDK version r17 broke our Maven build tool, android-maven-plugin.  This is a known issue and will be fixed with version 3.7.0 of the tool.  However, as a workaround (in Linux and Mac envrionments), you can create a symbolic link to the missing binaries.
+
+If you have Jelly Bean MR1 (API Level 17) installed:
+
+     cd $ANDROID_HOME/platform-tools
+     ln -s ../build-tools/android-4.2.2/aapt aapt
+     ln -s ../build-tools/android-4.2.2/lib lib
+     ln -s ../build-tools/android-4.2.2/aidl aidl
+
+Some installations use a slightly different structure such that the following will work instead:
+
+     cd $ANDROID_HOME/platform-tools
+     ln -s ../build-tools/17.0.0/aapt aapt
+     ln -s ../build-tools/17.0.0/lib lib
+     ln -s ../build-tools/17.0.0/aidl aidl
+
+If you are having troubles feel free to contact us via IRC #aerogear or our mailing list aerogear-dev@lists.jboss.org.
+
