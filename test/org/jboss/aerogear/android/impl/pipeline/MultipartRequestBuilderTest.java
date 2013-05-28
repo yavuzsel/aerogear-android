@@ -7,15 +7,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.CharArrayReader;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @RunWith(RobolectricTestRunner.class)
 public class MultipartRequestBuilderTest {
