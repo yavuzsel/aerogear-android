@@ -141,4 +141,8 @@ public class Property {
 
     }
 
+	public String getFieldName() {
+		return fieldName;
+	}
+
 }
