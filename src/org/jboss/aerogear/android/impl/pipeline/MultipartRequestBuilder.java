@@ -125,7 +125,7 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
                 dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
                 dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"files\"" + lineEnd);
                 dataOutputStream.writeBytes("Content-Type: multipart/mixed; boundary=" + newBoundary + lineEnd);
-
+                dataOutputStream.writeBytes(lineEnd);
 
                 for (Map.Entry<String, TypeAndStream> file : files.entrySet()) {
                     TypeAndStream type = file.getValue();
