@@ -16,11 +16,6 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import android.util.Log;
-import android.webkit.MimeTypeMap;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -28,12 +23,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.jboss.aerogear.android.impl.reflection.Property;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
 import org.jboss.aerogear.android.pipeline.TypeAndStream;
+
+import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 /**
  * This class generates a Multipart request with the type multipart/form-data
@@ -58,40 +61,41 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
         DataOutputStream dataOutputStream = new DataOutputStream(binaryStream);
 
         try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(data.getClass());
-            PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
+            List<Property> properties = getProperties(data.getClass());
+        	
+            Map<String, String> fields = new HashMap<String, String>(properties.size());
+            Map<String, TypeAndStream> files = new HashMap<String, TypeAndStream>(properties.size());
 
-            Map<String, String> fields = new HashMap<String, String>(descriptors.length);
-            Map<String, TypeAndStream> files = new HashMap<String, TypeAndStream>(descriptors.length);
+            for (Property propertyDescriptor
+                    : properties) {
 
-            for (PropertyDescriptor propertyDescriptor
-                    : descriptors) {
-
-                Object value = propertyDescriptor.getReadMethod().invoke(data);
-                if (value.getClass().isPrimitive()) {
-                    fields.put(propertyDescriptor.getName(), value.toString());
+                Object value = propertyDescriptor.getValue(data);
+                if (value == null) {
+                	continue;
+                } else if (value.getClass().isPrimitive() || value instanceof String) {
+                    fields.put(propertyDescriptor.getFieldName(), value.toString());
 
                 } else {
                     if (value instanceof byte[]) {
-                        files.put(propertyDescriptor.getName(),
+                        files.put(propertyDescriptor.getFieldName(),
                                 new TypeAndStream(OCTECT_STREAM_MIME_TYPE,
-                                propertyDescriptor.getName(),
+                                propertyDescriptor.getFieldName(),
                                 new ByteArrayInputStream((byte[]) value)));
                     } else if (value instanceof InputStream) {
-                        files.put(propertyDescriptor.getName(),
+                        files.put(propertyDescriptor.getFieldName(),
                                 new TypeAndStream(OCTECT_STREAM_MIME_TYPE,
-                                propertyDescriptor.getName(),
+                                propertyDescriptor.getFieldName(),
                                 (InputStream) value));
                     } else if (value instanceof File) {
-                        files.put(propertyDescriptor.getName(),
+                        files.put(propertyDescriptor.getFieldName(),
                                 new TypeAndStream(getMimeType((File) value),
                                 ((File) value).getName(),
                                 new FileInputStream((File) value)));
                     } else if (value instanceof TypeAndStream) {
-                        files.put(propertyDescriptor.getName(),
+                        files.put(propertyDescriptor.getFieldName(),
                                 (TypeAndStream) value);
                     } else {
-                        throw new IllegalArgumentException(propertyDescriptor.getName() + " is not a supported type for Multipart uplaod");
+                        throw new IllegalArgumentException(propertyDescriptor.getFieldName() + " is not a supported type for Multipart uplaod");
                     }
                 }
             }
@@ -115,6 +119,7 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
                 while ((b = type.getInputStream().read()) != -1) {
                     dataOutputStream.write(b);
                 }
+                dataOutputStream.writeBytes(lineEnd);
             } else if (files.size() > 1) {
                 String newBoundary = UUID.randomUUID().toString();
                 dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
@@ -133,8 +138,11 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
                     while ((b = type.getInputStream().read()) != -1) {
                         dataOutputStream.write(b);
                     }
+                    dataOutputStream.writeBytes(lineEnd);
                 }
+                dataOutputStream.writeBytes(twoHyphens + newBoundary + twoHyphens + lineEnd);
             }
+            dataOutputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
             return binaryStream.toByteArray();
         } catch (Exception ex) {
             Log.e(TAG, ex.getMessage(), ex);
@@ -143,7 +151,20 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
         
     }
 
-    @Override
+    private List<Property> getProperties(Class<? extends Object> baseClass) {
+		
+    	ArrayList<Property> properties = new ArrayList<Property>();
+    	
+    	for (Field field : baseClass.getDeclaredFields()) {
+    		Property property = new Property(baseClass, field.getName());
+    		properties.add(property);
+    	}
+    	
+    	return properties;
+    	
+	}
+
+	@Override
     public String getContentType() {
         return CONTENT_TYPE;
     }
