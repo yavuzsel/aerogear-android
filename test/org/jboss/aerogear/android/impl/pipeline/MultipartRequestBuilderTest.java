@@ -1,18 +1,27 @@
 
 package org.jboss.aerogear.android.impl.pipeline;
 
-import com.xtremelabs.robolectric.RobolectricTestRunner;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import org.jboss.aerogear.android.impl.helper.Data;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
+
+import com.xtremelabs.robolectric.RobolectricTestRunner;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.CharArrayReader;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RunWith(RobolectricTestRunner.class)
 public class MultipartRequestBuilderTest {
 
+    private static final String STRING_DATA = "This is a String";
+    
     @Test
     public void testGetContentType() {
         MultipartRequestBuilder<Object> builder = new MultipartRequestBuilder();
@@ -20,22 +29,85 @@ public class MultipartRequestBuilderTest {
     }
     
     @Test
-    public void testMultipartSetsMultiPart() throws Exception {
+    public void testBuilder() {
         
-        Data d = new Data("nname", "desc");
+        final Queue<String> values = new ArrayDeque<String>(20);
+        values.add("multipart/form-data; boundary=[\\w\\d-]+");
         
-         for (PropertyDescriptor propertyDescriptor
-                    : Introspector.getBeanInfo(Data.class, Object.class).getPropertyDescriptors()) {
-
-                System.out.println(propertyDescriptor.getName() + propertyDescriptor.getReadMethod().invoke(d).toString());
+        values.add("--[\\w\\d-]+\r\n");
+        values.add("Content-Disposition: form-data; name=\"string\"\r\n");
+        values.add("Content-Type: text/plain; charset=US-ASCII\r\n");
+        values.add("Content-Transfer-Encoding: 8bit\r\n");
+        values.add("\r\n");
+        values.add(STRING_DATA + "\r\n");
+        values.add("--[\\w\\d-]+\r\n");
+        values.add("Content-Disposition: form-data; name=\"files\"\r\n");
+        values.add("Content-Type: multipart/mixed; boundary=[\\w\\d-]+\r\n");
+        values.add("\r\n");
+        values.add("--[\\w\\d-]+\r\n");
+        values.add("Content-Disposition: file; filename=\"inputStream\"\r\n");
+        values.add("Content-Type: application/octet-stream\r\n");
+        values.add("Content-Transfer-Encoding: binary\r\n");
+        values.add("\r\n");
+        values.add("abcdef\r\n");
+        values.add("--[\\w\\d-]+\r\n");
+        values.add("Content-Disposition: file; filename=\"byteArray\"\r\n");
+        values.add("Content-Type: application/octet-stream\r\n");
+        values.add("Content-Transfer-Encoding: binary\r\n");
+        values.add("\r\n");
+        values.add("abcdef\r\n");
+        values.add("--[\\w\\d-]+--\r\n");
+        values.add("--[\\w\\d-]+--\r\n");
+        MultiPartData data = new MultiPartData();
+        MultipartRequestBuilder<MultiPartData> dataBuilder = new MultipartRequestBuilder<MultiPartData>();
+        assertTrue(dataBuilder.getContentType().matches(values.poll()));
+        byte[] out = dataBuilder.getBody(data);
+        ByteArrayInputStream stream = new ByteArrayInputStream(out);
+        StringBuilder stringBuilder = new StringBuilder();
+        int readByte;
+        while ((readByte = stream.read()) != -1) {
+            stringBuilder.append((char)readByte);
+            if (((char)readByte) == '\n') {
+                assertTrue(stringBuilder.toString().matches(values.poll()));
+                stringBuilder = new StringBuilder();
             }
+        }
         
-        throw new IllegalStateException("Not yet implemented");
+        
     }
     
-    @Test
-    public void testMultipartUpload() {
-        throw new IllegalStateException("Not yet implemented");
-    }
+    
+    public static class MultiPartData{
+        private byte[] byteArray = {'a','b','c','d','e','f'};
+        private InputStream inputStream = new ByteArrayInputStream(byteArray);
+        private String string = STRING_DATA;
+
+        public byte[] getByteArray() {
+            return byteArray;
+        }
+
+        public InputStream getInputStream() {
+            return inputStream;
+        }
+
+        public String getString() {
+            return string;
+        }
+
+        public void setByteArray(byte[] byteArray) {
+            this.byteArray = byteArray;
+        }
+
+        public void setInputStream(InputStream inputStream) {
+            this.inputStream = inputStream;
+        }
+
+        public void setString(String string) {
+            this.string = string;
+        }
+        
+        
+        
+    } 
     
 }
