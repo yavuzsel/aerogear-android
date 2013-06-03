@@ -19,8 +19,16 @@ package org.jboss.aerogear.android;
 import android.util.Log;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -88,15 +96,39 @@ public class ReadFilter implements Serializable {
 
         if (where != null && where.length() > 0) {
             try {
-                queryBuilder.append(amp).append("where=").append(URLEncoder.encode(where.toString(), UTF_8).replace("%3A", ":"));//The encoder shouldn't encode colons.
+                queryBuilder.append(amp).append(preparePathParam());
             } catch (UnsupportedEncodingException ex) {
                 Log.e(TAG, "UTF-8 isn't supported on this platform", ex);
                 throw new RuntimeException(ex);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             amp = "&";
         }
 
         return queryBuilder.toString();
+    }
+
+    private String preparePathParam() throws UnsupportedEncodingException, JSONException {
+
+        StringBuilder sb = new StringBuilder();
+
+        String amp = "";
+
+        Iterator keys = where.keys();
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            Object value = where.get(key);
+            sb.append(amp);
+            sb.append(String.format("%s=%s",
+                    URLEncoder.encode(key, "UTF-8"),
+                    URLEncoder.encode(value.toString(), "UTF-8")
+            ));
+            amp = "&";
+        }
+
+        return sb.toString();
+
     }
 
 }

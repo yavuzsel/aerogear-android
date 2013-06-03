@@ -16,24 +16,27 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import org.jboss.aerogear.android.impl.pipeline.paging.WrappingPagedList;
 import android.graphics.Point;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.InstanceCreator;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.xtremelabs.robolectric.Robolectric;
+import com.google.gson.*;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import junit.framework.Assert;
+import org.jboss.aerogear.android.*;
+import org.jboss.aerogear.android.authentication.AuthenticationModule;
+import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpProvider;
+import org.jboss.aerogear.android.impl.core.HttpProviderFactory;
+import org.jboss.aerogear.android.impl.helper.Data;
+import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
 import org.jboss.aerogear.android.impl.http.HttpStubProvider;
+import org.jboss.aerogear.android.impl.pipeline.paging.WrappingPagedList;
+import org.jboss.aerogear.android.pipeline.Pipe;
+import org.jboss.aerogear.android.pipeline.paging.PageConfig;
+import org.jboss.aerogear.android.pipeline.paging.PagedList;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -54,24 +57,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
-
-import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.Pipeline;
-import org.jboss.aerogear.android.Provider;
-import org.jboss.aerogear.android.ReadFilter;
-import org.jboss.aerogear.android.RecordId;
-import org.jboss.aerogear.android.authentication.AuthenticationModule;
-import org.jboss.aerogear.android.authentication.AuthorizationFields;
-import org.jboss.aerogear.android.impl.core.HttpProviderFactory;
-import org.jboss.aerogear.android.impl.helper.Data;
-import org.jboss.aerogear.android.impl.helper.UnitTestUtils;
-import org.jboss.aerogear.android.pipeline.Pipe;
-import org.jboss.aerogear.android.pipeline.paging.PageConfig;
-import org.jboss.aerogear.android.pipeline.paging.PagedList;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
@@ -323,7 +308,7 @@ public class RestAdapterTest {
         UnitTestUtils.setPrivateField(restRunner, "httpProviderFactory", factory);
 
         ReadFilter filter = new ReadFilter();
-        filter.setLinkUri(URI.create("?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token"));
+        filter.setLinkUri(URI.create("?limit=10&%7B%22model%22:%22BMW%22%7D&token=token"));
 
         adapter.readWithFilter(filter, new Callback<List<Data>>() {
             @Override
@@ -338,7 +323,7 @@ public class RestAdapterTest {
         });
         latch.await(500, TimeUnit.MILLISECONDS);
 
-        verify(factory).get(eq(new URL(url.toString() + "?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token")), eq(Integer.MAX_VALUE));
+        verify(factory).get(eq(new URL(url.toString() + "?limit=10&%7B%22model%22:%22BMW%22%7D&token=token")), eq(Integer.MAX_VALUE));
     }
 
     @Test
@@ -382,7 +367,7 @@ public class RestAdapterTest {
         });
         latch.await(500, TimeUnit.MILLISECONDS);
 
-        verify(factory).get(new URL(url.toString() + "?limit=10&where=%7B%22model%22:%22BMW%22%7D&token=token"), Integer.MAX_VALUE);
+        verify(factory).get(new URL(url.toString() + "?limit=10&model=BMW&token=token"), Integer.MAX_VALUE);
     }
 
     /**
