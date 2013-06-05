@@ -327,12 +327,16 @@ public class RestAdapterTest {
     }
 
     @Test
-    public void runReadWithFilterAndAuthenticaiton() throws Exception {
+    public void runReadWithFilterAndAuthentication() throws Exception {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
         HttpProviderFactory factory = mock(HttpProviderFactory.class);
-        when(factory.get(anyObject())).thenReturn(mock(HttpProvider.class));
+        HttpProvider provider = mock(HttpProvider.class);
+        HeaderAndBody headerAndBody = mock(HeaderAndBody.class);
+        when(headerAndBody.getBody()).thenReturn("".getBytes());
+        when(provider.get()).thenReturn(headerAndBody);
+        when(factory.get(anyObject(), anyObject())).thenReturn(provider);
 
         AuthorizationFields authFields = new AuthorizationFields();
         authFields.addQueryParameter("token", "token");
