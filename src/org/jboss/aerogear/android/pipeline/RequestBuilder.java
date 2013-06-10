@@ -17,7 +17,7 @@
 package org.jboss.aerogear.android.pipeline;
 
 public interface RequestBuilder<T> {
-    
+
     /**
      * This method creates the body of a request for a Pipe to use.
      * 
@@ -25,9 +25,9 @@ public interface RequestBuilder<T> {
      * @param data an object to form a body out of.
      * 
      * @return A request body which represents the data parameter
-     */ 
+     */
     public byte[] getBody(T data);
-    
+
     /**
      * @return the Content-Type header to be sent to the server.
      */

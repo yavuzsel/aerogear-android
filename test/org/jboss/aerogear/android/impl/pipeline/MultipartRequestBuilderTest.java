@@ -32,19 +32,19 @@ import java.util.Queue;
 public class MultipartRequestBuilderTest {
 
     private static final String STRING_DATA = "This is a String";
-    
+
     @Test
     public void testGetContentType() {
         MultipartRequestBuilder<Object> builder = new MultipartRequestBuilder();
         assertTrue(builder.getContentType().startsWith("multipart/form-data;"));
     }
-    
+
     @Test
     public void testBuilder() {
-        
+
         final Queue<String> values = new ArrayDeque<String>(20);
         values.add("multipart/form-data; boundary=[\\w\\d-]+");
-        
+
         values.add("--[\\w\\d-]+\r\n");
         values.add("Content-Disposition: form-data; name=\"string\"\r\n");
         values.add("Content-Type: text/plain; charset=US-ASCII\r\n");
@@ -77,19 +77,17 @@ public class MultipartRequestBuilderTest {
         StringBuilder stringBuilder = new StringBuilder();
         int readByte;
         while ((readByte = stream.read()) != -1) {
-            stringBuilder.append((char)readByte);
-            if (((char)readByte) == '\n') {
+            stringBuilder.append((char) readByte);
+            if (((char) readByte) == '\n') {
                 assertTrue(stringBuilder.toString().matches(values.poll()));
                 stringBuilder = new StringBuilder();
             }
         }
-        
-        
+
     }
-    
-    
-    public static class MultiPartData{
-        private byte[] byteArray = {'a','b','c','d','e','f'};
+
+    public static class MultiPartData {
+        private byte[] byteArray = { 'a', 'b', 'c', 'd', 'e', 'f' };
         private InputStream inputStream = new ByteArrayInputStream(byteArray);
         private String string = STRING_DATA;
 
@@ -116,9 +114,7 @@ public class MultipartRequestBuilderTest {
         public void setString(String string) {
             this.string = string;
         }
-        
-        
-        
-    } 
-    
+
+    }
+
 }

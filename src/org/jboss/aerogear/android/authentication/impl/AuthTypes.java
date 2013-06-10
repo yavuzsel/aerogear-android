@@ -25,7 +25,6 @@ public enum AuthTypes implements AuthType {
     AG_SECURITY("AG_SECURITY"), 
     HTTP_BASIC("HTTP_BASIC"),
     HTTP_DIGEST("HTTP_DIGEST"),;
-
     private final String typeDescription;
 
     private AuthTypes(String typeDescription) {
@@ -45,5 +44,5 @@ public enum AuthTypes implements AuthType {
         }
         return null;
     }
-    
+
 }

@@ -24,12 +24,11 @@ import org.jboss.aerogear.android.authentication.AuthenticationModule;
  * shared Bundle Parameters.
  */
 public interface LoaderAuthenticationModule extends AuthenticationModule {
- 
+
     public static final String CALLBACK = "org.jboss.aerogear.android.authentication.loader.AuthenticationModuleAdapter.CALLBACK";
     public static final String METHOD = "org.jboss.aerogear.android.authentication.loader.AuthenticationModuleAdapter.METHOD";
     public static final String USERNAME = "org.jboss.aerogear.android.authentication.loader.AuthenticationModuleAdapter.USERNAME";
     public static final String PASSWORD = "org.jboss.aerogear.android.authentication.loader.AuthenticationModuleAdapter.PASSWORD";
     public static final String PARAMS = "org.jboss.aerogear.android.authentication.loader.AuthenticationModuleAdapter.PARAMS";
 
-    
 }

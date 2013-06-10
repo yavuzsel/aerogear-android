@@ -37,7 +37,7 @@ public final class Scan {
             }
         }
         Class superclass = klass.getSuperclass();
-        if( superclass != null ) {
+        if (superclass != null) {
             return recordIdFieldIn(superclass);
         }
         throw new RecordIdNotFoundException(klass);

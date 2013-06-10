@@ -20,11 +20,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jboss.aerogear.android.pipeline.ResponseParser;
 
-public class GsonResponseParser<T> implements ResponseParser<T>{
+public class GsonResponseParser<T> implements ResponseParser<T> {
 
     private Gson gson;
     private GsonBuilder gsonBuilder;
-    
+
     public GsonResponseParser() {
         this.gson = new Gson();
         this.gsonBuilder = new GsonBuilder();
@@ -34,7 +34,7 @@ public class GsonResponseParser<T> implements ResponseParser<T>{
         this.gson = gsonBuilder.create();
         this.gsonBuilder = gsonBuilder;
     }
-    
+
     @Override
     public T handleResponse(String response, Class<T> responseType) {
         return gson.fromJson(response, responseType);
@@ -45,7 +45,6 @@ public class GsonResponseParser<T> implements ResponseParser<T>{
         return gson.fromJson(response, responseType);
     }
 
-    
     /**
      * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
      */
@@ -63,5 +62,4 @@ public class GsonResponseParser<T> implements ResponseParser<T>{
         this.gson = gsonBuilder.create();
     }
 
-    
 }

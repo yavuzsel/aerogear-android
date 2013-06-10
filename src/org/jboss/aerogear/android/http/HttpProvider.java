@@ -44,7 +44,7 @@ public interface HttpProvider {
      */
     public HeaderAndBody post(String data) throws HttpException;
 
-   /**
+    /**
      * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
      *
@@ -53,7 +53,6 @@ public interface HttpProvider {
      */
     public HeaderAndBody post(byte[] data) throws HttpException;
 
-    
     /**
      * Issues an HTTP request, consumes the content, and cleans up
      * after itself.
@@ -63,7 +62,6 @@ public interface HttpProvider {
      */
     public HeaderAndBody put(String id, String data) throws HttpException;
 
-    
     /**
      * Issues an HTTP request, consumes the content, and cleans up
      * after itself.

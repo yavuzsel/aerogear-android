@@ -56,7 +56,7 @@ import com.google.gson.Gson;
 public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.LoaderCallbacks<T> {
 
     private static final String TAG = SupportLoaderAdapter.class.getSimpleName();
-    
+
     private Multimap<String, Integer> idsForNamedPipes;
     private final Fragment fragment;
     private final FragmentActivity activity;

@@ -123,7 +123,7 @@ public class ReadFilter implements Serializable {
             sb.append(String.format("%s=%s",
                     URLEncoder.encode(key, "UTF-8"),
                     URLEncoder.encode(value.toString(), "UTF-8")
-            ));
+                    ));
             amp = "&";
         }
 

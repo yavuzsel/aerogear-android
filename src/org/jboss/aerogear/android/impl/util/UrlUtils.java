@@ -23,10 +23,11 @@ import java.net.URL;
 public final class UrlUtils {
 
     private static final String TAG = UrlUtils.class.getSimpleName();
-    
-    private UrlUtils(){}
-    
-     /**
+
+    private UrlUtils() {
+    }
+
+    /**
      * @param baseURL 
      * @param endpoint
      * @return a new url baseUrl + endpoint
@@ -46,5 +47,5 @@ public final class UrlUtils {
             throw new IllegalArgumentException(message, ex);
         }
     }
-    
+
 }

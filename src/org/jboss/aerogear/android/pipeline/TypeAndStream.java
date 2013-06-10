@@ -29,6 +29,7 @@ public class TypeAndStream {
     private final String mimeType;
     private final InputStream inputStream;
     private final String fileName;
+
     public TypeAndStream(String mimeType, String fileName, InputStream inputStream) {
         this.mimeType = mimeType;
         this.inputStream = inputStream;
@@ -82,5 +83,4 @@ public class TypeAndStream {
         return "TypeAndStream{" + "mimeType=" + mimeType + ", inputTream=" + inputStream + ", fileName=" + fileName + '}';
     }
 
-    
 }

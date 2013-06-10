@@ -48,9 +48,9 @@ public final class HttpRestProvider implements HttpProvider {
     private final Map<String, String> defaultHeaders = new HashMap<String, String>();
     private final Integer timeout;
     private final static java.net.CookieManager cm = new java.net.CookieManager();
-    
+
     static {
-    	java.net.CookieHandler.setDefault(cm);
+        java.net.CookieHandler.setDefault(cm);
     }
     /**
      * The get method of this provider optionally takes a String which is the id 
@@ -82,7 +82,7 @@ public final class HttpRestProvider implements HttpProvider {
             try {
                 urlConnection = (HttpURLConnection) resourceURL
                         .openConnection();
-                
+
             } catch (IOException ex) {
                 Log.e(TAG, String.format("Failed to open %s", resourceURL
                         .toString()), ex);
@@ -170,7 +170,7 @@ public final class HttpRestProvider implements HttpProvider {
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -202,7 +202,6 @@ public final class HttpRestProvider implements HttpProvider {
         }
     }
 
-    
     /**
      * {@inheritDoc}
      */
@@ -246,7 +245,7 @@ public final class HttpRestProvider implements HttpProvider {
         HttpURLConnection connection = connectionPreparer.get(id);
         connection.setReadTimeout(timeout);
         connection.setConnectTimeout(timeout);
-        return connection;        
+        return connection;
     }
 
     private String appendIdToURL(String id) {

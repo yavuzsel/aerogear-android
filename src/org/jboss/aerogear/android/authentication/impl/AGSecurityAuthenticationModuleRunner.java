@@ -63,4 +63,5 @@ class AGSecurityAuthenticationModuleRunner extends AbstractAuthenticationModuleR
         HttpProvider provider = httpProviderFactory.get(logoutURL, timeout);
         provider.post("");
     }
+
 }

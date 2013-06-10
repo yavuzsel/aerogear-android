@@ -52,7 +52,7 @@ import org.jboss.aerogear.android.pipeline.support.AbstractSupportFragmentCallba
 public class SupportAuthenticationModuleAdapter implements LoaderAuthenticationModule, LoaderManager.LoaderCallbacks<HeaderAndBody> {
 
     private static final String TAG = SupportAuthenticationModuleAdapter.class.getSimpleName();
-    
+
     static enum Methods {
 
         LOGIN, LOGOUT, ENROLL

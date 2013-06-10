@@ -61,16 +61,15 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
 
         try {
             List<Property> properties = getProperties(data.getClass());
-        	
+
             Map<String, String> fields = new HashMap<String, String>(properties.size());
             Map<String, TypeAndStream> files = new HashMap<String, TypeAndStream>(properties.size());
 
-            for (Property propertyDescriptor
-                    : properties) {
+            for (Property propertyDescriptor : properties) {
 
                 Object value = propertyDescriptor.getValue(data);
                 if (value == null) {
-                	continue;
+                    continue;
                 } else if (value.getClass().isPrimitive() || value instanceof String) {
                     fields.put(propertyDescriptor.getFieldName(), value.toString());
 
@@ -78,18 +77,18 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
                     if (value instanceof byte[]) {
                         files.put(propertyDescriptor.getFieldName(),
                                 new TypeAndStream(OCTECT_STREAM_MIME_TYPE,
-                                propertyDescriptor.getFieldName(),
-                                new ByteArrayInputStream((byte[]) value)));
+                                        propertyDescriptor.getFieldName(),
+                                        new ByteArrayInputStream((byte[]) value)));
                     } else if (value instanceof InputStream) {
                         files.put(propertyDescriptor.getFieldName(),
                                 new TypeAndStream(OCTECT_STREAM_MIME_TYPE,
-                                propertyDescriptor.getFieldName(),
-                                (InputStream) value));
+                                        propertyDescriptor.getFieldName(),
+                                        (InputStream) value));
                     } else if (value instanceof File) {
                         files.put(propertyDescriptor.getFieldName(),
                                 new TypeAndStream(getMimeType((File) value),
-                                ((File) value).getName(),
-                                new FileInputStream((File) value)));
+                                        ((File) value).getName(),
+                                        new FileInputStream((File) value)));
                     } else if (value instanceof TypeAndStream) {
                         files.put(propertyDescriptor.getFieldName(),
                                 (TypeAndStream) value);
@@ -99,19 +98,17 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
                 }
             }
 
-
             for (Map.Entry<String, String> field : fields.entrySet()) {
                 setField(dataOutputStream, field.getKey(), field.getValue());
             }
 
-            
             if (files.size() == 1) {
                 Map.Entry<String, TypeAndStream> pair = files.entrySet().iterator().next();
                 TypeAndStream type = pair.getValue();
                 String name = pair.getKey();
                 dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                dataOutputStream.writeBytes("Content-Disposition: form-data; name=\""+name+"\"; filename=\""+type.getFileName()+"\"" + lineEnd);
-                dataOutputStream.writeBytes("Content-Type: "+ type.getMimeType() + lineEnd);
+                dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + type.getFileName() + "\"" + lineEnd);
+                dataOutputStream.writeBytes("Content-Type: " + type.getMimeType() + lineEnd);
                 dataOutputStream.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
                 dataOutputStream.writeBytes(lineEnd);
                 int b;
@@ -130,7 +127,7 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
                     TypeAndStream type = file.getValue();
                     dataOutputStream.writeBytes(twoHyphens + newBoundary + lineEnd);
                     dataOutputStream.writeBytes("Content-Disposition: file; filename=\"" + type.getFileName() + "\"" + lineEnd);
-                    dataOutputStream.writeBytes("Content-Type: "+ type.getMimeType() + lineEnd);
+                    dataOutputStream.writeBytes("Content-Type: " + type.getMimeType() + lineEnd);
                     dataOutputStream.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
                     dataOutputStream.writeBytes(lineEnd);
                     int b;
@@ -147,23 +144,23 @@ public class MultipartRequestBuilder<T> implements RequestBuilder<T> {
             Log.e(TAG, ex.getMessage(), ex);
             throw new IllegalStateException(ex);
         }
-        
+
     }
 
     private List<Property> getProperties(Class<? extends Object> baseClass) {
-		
-    	ArrayList<Property> properties = new ArrayList<Property>();
-    	
-    	for (Field field : baseClass.getDeclaredFields()) {
-    		Property property = new Property(baseClass, field.getName());
-    		properties.add(property);
-    	}
-    	
-    	return properties;
-    	
-	}
 
-	@Override
+        ArrayList<Property> properties = new ArrayList<Property>();
+
+        for (Field field : baseClass.getDeclaredFields()) {
+            Property property = new Property(baseClass, field.getName());
+            properties.add(property);
+        }
+
+        return properties;
+
+    }
+
+    @Override
     public String getContentType() {
         return CONTENT_TYPE;
     }
