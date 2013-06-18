@@ -16,11 +16,13 @@
  */
 package org.jboss.aerogear.android.pipeline;
 
-import com.google.gson.Gson;
 import java.net.URL;
 import java.util.List;
+
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.ReadFilter;
+
+import com.google.gson.Gson;
 
 /**
  * A {@link Pipe} represents a server connection. An object of this class is responsible to communicate

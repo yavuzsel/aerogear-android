@@ -16,9 +16,10 @@
  */
 package org.jboss.aerogear.android.authentication;
 
-import android.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.util.Pair;
 
 /**
  * This class wraps up fields which need to be applied to a 

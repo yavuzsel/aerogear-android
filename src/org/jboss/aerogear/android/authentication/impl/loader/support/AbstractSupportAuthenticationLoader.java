@@ -16,13 +16,13 @@
  */
 package org.jboss.aerogear.android.authentication.impl.loader.support;
 
-import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
-
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.impl.loader.AbstractAuthenticationLoader;
 import org.jboss.aerogear.android.http.HeaderAndBody;
+
+import android.content.Context;
+import android.support.v4.content.AsyncTaskLoader;
 
 /**
  * This class provides a reference to the callback, authentication module, and

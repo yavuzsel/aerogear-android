@@ -16,12 +16,14 @@
  */
 package org.jboss.aerogear.android.impl.pipeline.paging;
 
-import com.google.common.collect.ForwardingList;
 import java.util.List;
+
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.paging.PagedList;
+
+import com.google.common.collect.ForwardingList;
 
 /**
  * Wraps a resultSet in a ForwardingList and provides paging methods.

@@ -16,9 +16,10 @@
  */
 package org.jboss.aerogear.android.impl.util;
 
-import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import android.util.Log;
 
 public final class UrlUtils {
 

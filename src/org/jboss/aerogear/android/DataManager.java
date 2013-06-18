@@ -18,6 +18,7 @@ package org.jboss.aerogear.android;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.jboss.aerogear.android.datamanager.IdGenerator;
 import org.jboss.aerogear.android.datamanager.Store;
 import org.jboss.aerogear.android.datamanager.StoreFactory;

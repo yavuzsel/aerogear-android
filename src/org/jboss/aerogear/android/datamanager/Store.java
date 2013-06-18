@@ -19,6 +19,7 @@ package org.jboss.aerogear.android.datamanager;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+
 import org.jboss.aerogear.android.ReadFilter;
 
 /**

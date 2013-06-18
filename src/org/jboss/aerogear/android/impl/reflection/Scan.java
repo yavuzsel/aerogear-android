@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.impl.reflection;
 
 import java.lang.reflect.Field;
+
 import org.jboss.aerogear.android.RecordId;
 
 /**

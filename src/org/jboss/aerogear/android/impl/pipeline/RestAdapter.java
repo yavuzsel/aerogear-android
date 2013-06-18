@@ -16,25 +16,27 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import org.jboss.aerogear.android.impl.pipeline.paging.DefaultParameterProvider;
-import android.util.Log;
-import com.google.common.base.Objects;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.net.URL;
-import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.ReadFilter;
-import org.jboss.aerogear.android.pipeline.Pipe;
-import org.jboss.aerogear.android.pipeline.PipeType;
-
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.ReadFilter;
+import org.jboss.aerogear.android.impl.pipeline.paging.DefaultParameterProvider;
+import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
+import org.jboss.aerogear.android.pipeline.PipeType;
 import org.jboss.aerogear.android.pipeline.paging.ParameterProvider;
+
+import android.util.Log;
+
+import com.google.common.base.Objects;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Rest implementation of {@link Pipe}.

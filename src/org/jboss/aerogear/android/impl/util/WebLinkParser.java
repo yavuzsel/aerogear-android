@@ -16,10 +16,12 @@
  */
 package org.jboss.aerogear.android.impl.util;
 
-import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.jboss.aerogear.android.impl.pipeline.paging.WebLink;
+
+import android.util.Log;
 
 /**
  * A utility class to parse WebLink headers. 

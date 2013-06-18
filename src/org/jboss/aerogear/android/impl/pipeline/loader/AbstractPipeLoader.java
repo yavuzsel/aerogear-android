@@ -16,10 +16,11 @@
  */
 package org.jboss.aerogear.android.impl.pipeline.loader;
 
-import android.content.AsyncTaskLoader;
-import android.content.Context;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.impl.pipeline.loader.support.AbstractSupportPipeLoader;
+
+import android.content.AsyncTaskLoader;
+import android.content.Context;
 
 /**
  * This class maintains references to the callback to be called when a Loader

@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.android.impl.core;
 
+import java.net.URL;
+
 import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.impl.http.HttpRestProvider;
-
-import java.net.URL;
 
 public class HttpProviderFactory implements Provider<HttpProvider> {
 

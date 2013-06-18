@@ -16,13 +16,15 @@
  */
 package org.jboss.aerogear.android.authentication.impl.loader.support;
 
-import android.content.Context;
-import android.support.v4.content.Loader;
-import android.util.Log;
 import java.util.concurrent.CountDownLatch;
+
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
+
+import android.content.Context;
+import android.support.v4.content.Loader;
+import android.util.Log;
 
 /**
  * This class is a {@link Loader} which performs an logout operation on behalf 

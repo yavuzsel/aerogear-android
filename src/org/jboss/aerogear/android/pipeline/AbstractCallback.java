@@ -16,8 +16,9 @@
  */
 package org.jboss.aerogear.android.pipeline;
 
-import com.google.common.base.Objects;
 import org.jboss.aerogear.android.Callback;
+
+import com.google.common.base.Objects;
 
 /**
  * This class provides a hashcode method for a callback based on constructor

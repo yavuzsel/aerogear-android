@@ -16,12 +16,14 @@
  */
 package org.jboss.aerogear.android.impl.pipeline.loader;
 
-import android.content.Context;
 import java.util.List;
+
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
+
+import android.content.Context;
 
 /**
  * This class performs a read operation on behalf of a Pipe using the Loader

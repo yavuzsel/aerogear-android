@@ -16,10 +16,6 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import android.util.Log;
-import android.util.Pair;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
@@ -31,6 +27,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.http.client.utils.URIUtils;
 import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.ReadFilter;
@@ -56,6 +53,12 @@ import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 import org.jboss.aerogear.android.pipeline.paging.ParameterProvider;
 import org.json.JSONObject;
+
+import android.util.Log;
+import android.util.Pair;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 public class RestRunner<T> implements PipeHandler<T> {
 

@@ -16,9 +16,10 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
+import org.jboss.aerogear.android.pipeline.ResponseParser;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.jboss.aerogear.android.pipeline.ResponseParser;
 
 public class GsonResponseParser<T> implements ResponseParser<T> {
 

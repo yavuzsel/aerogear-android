@@ -16,16 +16,11 @@
  */
 package org.jboss.aerogear.android;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
-import android.support.v4.app.FragmentActivity;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.jboss.aerogear.android.impl.pipeline.DefaultPipeFactory;
 import org.jboss.aerogear.android.impl.pipeline.LoaderAdapter;
 import org.jboss.aerogear.android.impl.pipeline.PipeConfig;
@@ -33,6 +28,14 @@ import org.jboss.aerogear.android.impl.pipeline.SupportLoaderAdapter;
 import org.jboss.aerogear.android.pipeline.LoaderPipe;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeFactory;
+
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka

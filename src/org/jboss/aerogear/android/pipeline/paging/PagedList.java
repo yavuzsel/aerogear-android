@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.pipeline.paging;
 
 import java.util.List;
+
 import org.jboss.aerogear.android.Callback;
 
 /**

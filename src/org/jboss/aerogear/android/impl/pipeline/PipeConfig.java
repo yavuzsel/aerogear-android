@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import com.google.gson.GsonBuilder;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+
 import org.jboss.aerogear.android.Pipeline;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.pipeline.Pipe;
@@ -28,6 +28,8 @@ import org.jboss.aerogear.android.pipeline.PipeType;
 import org.jboss.aerogear.android.pipeline.RequestBuilder;
 import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
+
+import com.google.gson.GsonBuilder;
 
 /**
  * Specifies configurations for {@link Pipe} to be build by {@link Pipeline}

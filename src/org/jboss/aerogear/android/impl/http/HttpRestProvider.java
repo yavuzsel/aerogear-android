@@ -17,16 +17,8 @@
 package org.jboss.aerogear.android.impl.http;
 
 import android.text.TextUtils;
-import android.util.Log;
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.jboss.aerogear.android.Provider;
-import org.jboss.aerogear.android.http.HeaderAndBody;
-import org.jboss.aerogear.android.http.HttpException;
-import org.jboss.aerogear.android.http.HttpProvider;
-import org.apache.http.HttpStatus;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -36,6 +28,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.apache.http.HttpStatus;
+import org.jboss.aerogear.android.Provider;
+import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.http.HttpException;
+import org.jboss.aerogear.android.http.HttpProvider;
+
+import android.util.Log;
 
 /**
  * These are tuned for AeroGear, assume the body is String data, and that the
