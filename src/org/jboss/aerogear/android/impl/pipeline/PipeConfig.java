@@ -55,6 +55,7 @@ public final class PipeConfig {
     private String dataRoot = "";
     private Charset encoding = Charset.forName("UTF-8");
     private RequestBuilder requestBuilder = new GsonRequestBuilder();
+    private GsonBuilder gsonBulder = new GsonBuilder();
 
     public PipeConfig(URL baseURL, Class klass) {
         this.baseURL = baseURL;
@@ -142,13 +143,13 @@ public final class PipeConfig {
      * GsonResponseParser
      *
      */
-    //    public GsonBuilder getGsonBuilder() {
-    //        if (responseParser instanceof GsonResponseParser) {
-    //            return ((GsonResponseParser) responseParser).getGsonBuilder();
-    //        } else {
-    //            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
-    //        }
-    //    }
+        public GsonBuilder getGsonBuilder() {
+            if (responseParser instanceof GsonResponseParser) {
+                return this.gsonBulder;
+            } else {
+                throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
+            }
+        }
 
     /**
      *
@@ -167,6 +168,7 @@ public final class PipeConfig {
         if (!(responseParser instanceof GsonResponseParser && requestBuilder instanceof GsonRequestBuilder)) {
             throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
         } else {
+            this.gsonBulder = gsonBuilder;
             ((GsonResponseParser) responseParser).setGson(gsonBuilder.create());
             ((GsonRequestBuilder) requestBuilder).setGson(gsonBuilder.create());
         }
