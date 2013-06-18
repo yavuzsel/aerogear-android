@@ -32,7 +32,7 @@ import android.util.Log;
  */
 public class ReadFilter implements Serializable {
 
-    private static final String UTF_8 = "UTF-8";
+    private static final long serialVersionUID = 1L;
     private static final String TAG = ReadFilter.class.getSimpleName();
 
     private Integer limit = Integer.MAX_VALUE;
@@ -105,6 +105,7 @@ public class ReadFilter implements Serializable {
         return queryBuilder.toString();
     }
 
+    @SuppressWarnings( { "rawtypes" })
     private String preparePathParam() throws UnsupportedEncodingException, JSONException {
 
         StringBuilder sb = new StringBuilder();

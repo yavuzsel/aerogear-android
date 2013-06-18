@@ -19,6 +19,7 @@ package org.jboss.aerogear.android.impl.pipeline;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Locale;
 
 import org.jboss.aerogear.android.Pipeline;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
@@ -34,6 +35,7 @@ import com.google.gson.GsonBuilder;
 /**
  * Specifies configurations for {@link Pipe} to be build by {@link Pipeline}
  */
+@SuppressWarnings("rawtypes")
 public final class PipeConfig {
 
     private URL baseURL;
@@ -56,7 +58,7 @@ public final class PipeConfig {
 
     public PipeConfig(URL baseURL, Class klass) {
         this.baseURL = baseURL;
-        this.name = klass.getSimpleName().toLowerCase();
+        this.name = klass.getSimpleName().toLowerCase(Locale.US);
         this.endpoint = name;
         this.type = PipeTypes.REST;
     }
@@ -140,13 +142,13 @@ public final class PipeConfig {
      * GsonResponseParser
      *
      */
-    public GsonBuilder getGsonBuilder() {
-        if (responseParser instanceof GsonResponseParser) {
-            return ((GsonResponseParser) responseParser).getGsonBuilder();
-        } else {
-            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
-        }
-    }
+    //    public GsonBuilder getGsonBuilder() {
+    //        if (responseParser instanceof GsonResponseParser) {
+    //            return ((GsonResponseParser) responseParser).getGsonBuilder();
+    //        } else {
+    //            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
+    //        }
+    //    }
 
     /**
      *
@@ -165,8 +167,8 @@ public final class PipeConfig {
         if (!(responseParser instanceof GsonResponseParser && requestBuilder instanceof GsonRequestBuilder)) {
             throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
         } else {
-            ((GsonResponseParser) responseParser).setGsonBuilder(gsonBuilder);
-            ((GsonRequestBuilder) requestBuilder).setGsonBuilder(gsonBuilder);
+            ((GsonResponseParser) responseParser).setGson(gsonBuilder.create());
+            ((GsonRequestBuilder) requestBuilder).setGson(gsonBuilder.create());
         }
     }
 

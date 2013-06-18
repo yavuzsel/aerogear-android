@@ -93,6 +93,7 @@ public interface Pipe<T> {
      * 
      * @return the gson instance servicing this pipe.
      */
+    @Deprecated
     Gson getGson();
 
     /**
@@ -106,5 +107,19 @@ public interface Pipe<T> {
      * @return the handler performing operations for this Pipe.  May be the Pipe itself.
      */
     PipeHandler<T> getHandler();
+
+    /**
+     * The {@link RequestBuilder} is responsible for turning objects in bodies of requests. 
+     * 
+     * @return the current RequestBuilder instance
+     */
+    RequestBuilder<T> getRequestBuilder();
+
+    /**
+     * The {@link ResponseParser} is responsible for turning responses from a SAVE into an object 
+     * 
+     * @return the current ResponseParser instance
+     */
+    ResponseParser<T> getResponsParser();
 
 }

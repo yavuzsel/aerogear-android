@@ -26,16 +26,13 @@ public class GsonRequestBuilder<T> implements RequestBuilder<T> {
     public static final String CONTENT_TYPE = "application/json";
 
     private Gson gson;
-    private GsonBuilder gsonBuilder;
 
     public GsonRequestBuilder() {
         this.gson = new Gson();
-        this.gsonBuilder = new GsonBuilder();
     }
 
-    public GsonRequestBuilder(GsonBuilder gsonBuilder) {
-        this.gson = gsonBuilder.create();
-        this.gsonBuilder = gsonBuilder;
+    public GsonRequestBuilder(Gson gson) {
+        this.gson = gson;
     }
 
     @Override
@@ -44,20 +41,19 @@ public class GsonRequestBuilder<T> implements RequestBuilder<T> {
     }
 
     /**
-     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
+     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGson(com.google.gson.GsonBuilder) }
      */
     @Deprecated
-    public GsonBuilder getGsonBuilder() {
-        return gsonBuilder;
+    public Gson getGson() {
+        return gson;
     }
 
     /**
-     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
+     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGson(com.google.gson.GsonBuilder) }
      */
     @Deprecated
-    public void setGsonBuilder(GsonBuilder gsonBuilder) {
-        this.gsonBuilder = gsonBuilder;
-        this.gson = gsonBuilder.create();
+    public void setGson(Gson gson) {
+        this.gson = gson;
     }
 
     @Override

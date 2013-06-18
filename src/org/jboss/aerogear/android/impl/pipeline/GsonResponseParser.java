@@ -19,21 +19,17 @@ package org.jboss.aerogear.android.impl.pipeline;
 import org.jboss.aerogear.android.pipeline.ResponseParser;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class GsonResponseParser<T> implements ResponseParser<T> {
 
     private Gson gson;
-    private GsonBuilder gsonBuilder;
 
     public GsonResponseParser() {
         this.gson = new Gson();
-        this.gsonBuilder = new GsonBuilder();
     }
 
-    public GsonResponseParser(GsonBuilder gsonBuilder) {
-        this.gson = gsonBuilder.create();
-        this.gsonBuilder = gsonBuilder;
+    public GsonResponseParser(Gson gson) {
+        this.gson = gson;
     }
 
     @Override
@@ -47,20 +43,19 @@ public class GsonResponseParser<T> implements ResponseParser<T> {
     }
 
     /**
-     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
+     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGson(com.google.gson.GsonBuilder) }
      */
     @Deprecated
-    public GsonBuilder getGsonBuilder() {
-        return gsonBuilder;
+    public Gson getGson() {
+        return gson;
     }
 
     /**
-     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
+     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGson(com.google.gson.GsonBuilder) }
      */
     @Deprecated
-    public void setGsonBuilder(GsonBuilder gsonBuilder) {
-        this.gsonBuilder = gsonBuilder;
-        this.gson = gsonBuilder.create();
+    public void setGson(Gson gson) {
+        this.gson = gson;
     }
 
 }
