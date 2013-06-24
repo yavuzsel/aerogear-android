@@ -176,6 +176,11 @@ public class HttpBasicAuthenticationModule extends AbstractAuthenticationModule 
         return fields;
     }
 
+    @Override
+    public boolean retryLogin() {
+        return false;
+    }
+
     /**
      * HTTP Basic defines a base 64 encoded hash to be pass as a header to serve
      * as authentication. This method calculates the value of that header.

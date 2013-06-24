@@ -89,4 +89,14 @@ public interface AuthenticationModule {
      */
     public AuthorizationFields getAuthorizationFields();
 
+    /**
+     * Some authorization schemes (HTTP Digest, OAUTH) have a mechanism for retrying 
+     * a login to fetch fresh credentials after the credentials expire.
+     * 
+     * This method signals to the AeroGear system that in the even of a 401 it 
+     * should call login again and retry the request before returning the fail result 
+     * to the user.
+     */
+    public boolean retryLogin();
+    
 }

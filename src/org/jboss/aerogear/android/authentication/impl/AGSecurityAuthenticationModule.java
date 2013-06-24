@@ -158,4 +158,11 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
         return fields;
     }
 
+    @Override
+    public boolean retryLogin() {
+        return false;
+    }
+    
+    
+
 }

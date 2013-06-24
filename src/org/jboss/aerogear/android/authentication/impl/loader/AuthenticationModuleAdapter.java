@@ -145,6 +145,11 @@ public class AuthenticationModuleAdapter implements LoaderAuthenticationModule, 
     }
 
     @Override
+    public boolean retryLogin() {
+        return module.retryLogin();
+    }
+
+    @Override
     public Loader<HeaderAndBody> onCreateLoader(int id, Bundle bundle) {
         AuthenticationModuleAdapter.Methods method = (AuthenticationModuleAdapter.Methods) bundle.get(METHOD);
         Callback callback = (Callback) bundle.get(CALLBACK);
