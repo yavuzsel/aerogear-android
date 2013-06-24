@@ -124,7 +124,7 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
         this.handler = new Handler(Looper.getMainLooper());
         this.activity = null;
         this.fragment = fragment;
-        this.responseParser = pipe.getResponsParser();
+        this.responseParser = pipe.getResponseParser();
     }
 
     public SupportLoaderAdapter(FragmentActivity activity, Pipe<T> pipe, String name) {
@@ -136,7 +136,7 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
         this.handler = new Handler(Looper.getMainLooper());
         this.activity = activity;
         this.fragment = null;
-        this.responseParser = pipe.getResponsParser();
+        this.responseParser = pipe.getResponseParser();
     }
 
     @Override
@@ -238,7 +238,7 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
     }
 
     @Override
-    public ResponseParser<T> getResponsParser() {
+    public ResponseParser<T> getResponseParser() {
         return responseParser;
     }
 

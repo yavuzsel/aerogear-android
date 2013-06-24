@@ -113,7 +113,7 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
             String name) {
         this.pipe = pipe;
         this.requestBuilder = pipe.getRequestBuilder();
-        this.responseParser = pipe.getResponsParser();
+        this.responseParser = pipe.getResponseParser();
         this.manager = activity.getLoaderManager();
         this.applicationContext = activity.getApplicationContext();
         this.name = name;
@@ -126,7 +126,7 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
         this.pipe = pipe;
         this.manager = fragment.getLoaderManager();
         this.requestBuilder = pipe.getRequestBuilder();
-        this.responseParser = pipe.getResponsParser();
+        this.responseParser = pipe.getResponseParser();
         this.applicationContext = applicationContext;
         this.name = name;
         this.handler = new Handler(Looper.getMainLooper());
@@ -208,7 +208,7 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
     }
 
     @Override
-    public ResponseParser<T> getResponsParser() {
+    public ResponseParser<T> getResponseParser() {
         return responseParser;
     }
 

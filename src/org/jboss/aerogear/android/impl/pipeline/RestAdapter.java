@@ -236,7 +236,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     }
 
     @Override
-    public ResponseParser<T> getResponsParser() {
+    public ResponseParser<T> getResponseParser() {
         return this.responseParser;
     }
 
