@@ -16,9 +16,14 @@
  */
 package org.jboss.aerogear.android.authentication.impl;
 
+import android.util.Log;
 import java.net.URL;
+import java.util.Map;
+import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AbstractAuthenticationModule;
+import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.http.HeaderAndBody;
 
 /**
  * This class provides Authentication using HTTP Digest
@@ -36,34 +41,128 @@ import org.jboss.aerogear.android.authentication.AuthorizationFields;
  */
 public class HttpDigestAuthenticationModule extends AbstractAuthenticationModule {
 
+    private static final String TAG = AGSecurityAuthenticationModule.class.getSimpleName();
+
+    private boolean isLoggedIn = false;
+
+    private final DigestAuthenticationModuleRunner runner;
+
+    /**
+     *
+     * @param baseURL
+     * @param config
+     * @throws IllegalArgumentException if an endpoint can not be appended to
+     * baseURL
+     */
+    public HttpDigestAuthenticationModule(URL baseURL, AuthenticationConfig config) {
+        this.runner = new DigestAuthenticationModuleRunner(baseURL, config);
+    }
+    
     @Override
     public URL getBaseURL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return runner.getBaseURL();
     }
 
     @Override
     public String getLoginEndpoint() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return runner.getLoginEndpoint();
     }
 
     @Override
     public String getLogoutEndpoint() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return runner.getLogoutEndpoint();
     }
 
     @Override
     public String getEnrollEndpoint() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return runner.getEnrollEndpoint();
+    }
+
+    @Override
+    public void enroll(final Map<String, String> userData,
+            final Callback<HeaderAndBody> callback) {
+        THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                HeaderAndBody result = null;
+                Exception exception = null;
+                try {
+                    result = runner.onEnroll(userData);
+                    isLoggedIn = true;
+                } catch (Exception e) {
+                    Log.e(TAG, "error enrolling", e);
+                    exception = e;
+                }
+
+                if (exception == null) {
+                    callback.onSuccess(result);
+                } else {
+                    callback.onFailure(exception);
+                }
+
+            }
+        });
+
+    }
+
+    @Override
+    public void login(final String username, final String password,
+            final Callback<HeaderAndBody> callback) {
+        THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                HeaderAndBody result = null;
+                Exception exception = null;
+
+                try {
+                    result = runner.onLogin(username, password);
+                    isLoggedIn = true;
+                } catch (Exception e) {
+                    Log.e(TAG, "Error with Login", e);
+                    exception = e;
+                }
+                if (exception == null) {
+                    callback.onSuccess(result);
+                } else {
+                    callback.onFailure(exception);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void logout(final Callback<Void> callback) {
+        THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                Exception exception = null;
+                try {
+                    runner.onLogout();
+                    isLoggedIn = false;
+                } catch (Exception e) {
+                    Log.e(TAG, "Error with Login", e);
+                    exception = e;
+                }
+                if (exception == null) {
+                    callback.onSuccess(null);
+                } else {
+                    callback.onFailure(exception);
+                }
+            }
+        });
+
     }
 
     @Override
     public boolean isLoggedIn() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return isLoggedIn;
     }
 
     @Override
     public AuthorizationFields getAuthorizationFields() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AuthorizationFields fields = new AuthorizationFields();
+        return fields;
     }
 
     @Override
