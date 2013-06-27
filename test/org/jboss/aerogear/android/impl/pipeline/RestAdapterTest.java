@@ -542,36 +542,6 @@ public class RestAdapterTest {
         return resultRef.get();
     }
 
-    /**
-     * Runs a read method, returns the result of the call back and rethrows the
-     * underlying exception
-     *
-     * @param restPipe
-     */
-    private <T> List<T> runReadForException(Pipe<T> restPipe, ReadFilter readFilter) throws InterruptedException, Exception {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicBoolean hasException = new AtomicBoolean(false);
-        final AtomicReference<Exception> exceptionref = new AtomicReference<Exception>();
-        restPipe.readWithFilter(readFilter, new Callback<List<T>>() {
-            @Override
-            public void onSuccess(List<T> data) {
-                latch.countDown();
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                hasException.set(true);
-                exceptionref.set(e);
-                latch.countDown();
-            }
-        });
-
-        latch.await(2, TimeUnit.SECONDS);
-        Assert.assertTrue(hasException.get());
-
-        throw exceptionref.get();
-    }
-
     public final static class ListClassId {
 
         List<Point> points = new ArrayList<Point>(10);
