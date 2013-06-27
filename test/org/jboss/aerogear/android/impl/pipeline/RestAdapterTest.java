@@ -521,7 +521,7 @@ public class RestAdapterTest {
         final AtomicBoolean hasException = new AtomicBoolean(false);
         final AtomicReference<List<T>> resultRef = new AtomicReference<List<T>>();
 
-        restPipe.readWithFilter(readFilter, new Callback<List<T>>() {
+        restPipe.read(readFilter, new Callback<List<T>>() {
             @Override
             public void onSuccess(List<T> data) {
                 resultRef.set(data);
