@@ -28,9 +28,9 @@ public interface PageParameterExtractor<T extends PageConfig> {
      * 
      * Extracts a usable ReadFilter from the response of a server for the "next" result set.
      * 
-     * @param response the server's response from a Pipe.read or Pipe.readWithFilter call.
+     * @param response the server's response from a Pipe.read call.
      * @param config the Pipe's PageConfig.
-     * @return a ReadFilter to be used to get the "next" page from Pipe.readWithFilter.  
+     * @return a ReadFilter to be used to get the "next" page from Pipe.read.  
      */
     public ReadFilter getNextFilter(HeaderAndBody response, T config);
 
@@ -38,9 +38,9 @@ public interface PageParameterExtractor<T extends PageConfig> {
      * 
      * Extracts a usable ReadFilter from the response of a server for the "previous" result set.
      * 
-     * @param response the server's response from a Pipe.read or Pipe.readWithFilter call.
+     * @param response the server's response from a Pipe.read call.
      * @param config the Pipe's PageConfig.
-     * @return a ReadFilter to be used to get the "previous" page from Pipe.readWithFilter.  
+     * @return a ReadFilter to be used to get the "previous" page from Pipe.read.  
      */
     public ReadFilter getPreviousFilter(HeaderAndBody response, T config);
 }
