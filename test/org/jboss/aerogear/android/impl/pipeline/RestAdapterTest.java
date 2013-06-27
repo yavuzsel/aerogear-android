@@ -310,7 +310,7 @@ public class RestAdapterTest {
         ReadFilter filter = new ReadFilter();
         filter.setLinkUri(URI.create("?limit=10&%7B%22model%22:%22BMW%22%7D&token=token"));
 
-        adapter.readWithFilter(filter, new Callback<List<Data>>() {
+        adapter.read(filter, new Callback<List<Data>>() {
             @Override
             public void onSuccess(List<Data> data) {
                 latch.countDown();
@@ -357,7 +357,7 @@ public class RestAdapterTest {
         filter.setLimit(10);
         filter.setWhere(new JSONObject("{\"model\":\"BMW\"}"));
 
-        adapter.readWithFilter(filter, new Callback<List<Data>>() {
+        adapter.read(filter, new Callback<List<Data>>() {
             @Override
             public void onSuccess(List<Data> data) {
                 latch.countDown();

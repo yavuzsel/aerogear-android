@@ -45,8 +45,8 @@ public class PagedListTest {
         list.next(mock(Callback.class));
         list.previous(mock(Callback.class));
 
-        verify(pipe).readWithFilter(eq(next), any(Callback.class));
-        verify(pipe).readWithFilter(eq(previous), any(Callback.class));
+        verify(pipe).read(eq(next), any(Callback.class));
+        verify(pipe).read(eq(previous), any(Callback.class));
 
     }
 

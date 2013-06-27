@@ -121,6 +121,11 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
 
     @Override
     public void readWithFilter(ReadFilter filter, Callback<List<T>> callback) {
+        read(filter, callback);
+    }
+    
+    @Override
+    public void read(ReadFilter filter, Callback<List<T>> callback) {
         int id = Objects.hashCode(name, filter, callback);
         Bundle bundle = new Bundle();
         bundle.putSerializable(CALLBACK, callback);

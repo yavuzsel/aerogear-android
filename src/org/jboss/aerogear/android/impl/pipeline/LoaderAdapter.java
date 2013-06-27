@@ -39,6 +39,9 @@ import org.jboss.aerogear.android.impl.pipeline.loader.SaveLoader;
 import org.jboss.aerogear.android.pipeline.AbstractActivityCallback;
 import org.jboss.aerogear.android.pipeline.AbstractFragmentCallback;
 import org.jboss.aerogear.android.pipeline.LoaderPipe;
+import static org.jboss.aerogear.android.pipeline.LoaderPipe.CALLBACK;
+import static org.jboss.aerogear.android.pipeline.LoaderPipe.FILTER;
+import static org.jboss.aerogear.android.pipeline.LoaderPipe.METHOD;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
 import org.jboss.aerogear.android.pipeline.PipeType;
@@ -115,6 +118,12 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
 
     @Override
     public void readWithFilter(ReadFilter filter, Callback<List<T>> callback) {
+        read(filter, callback);
+    }
+    
+    
+    @Override
+    public void read(ReadFilter filter, Callback<List<T>> callback) {
         int id = Objects.hashCode(name, filter, callback);
         Bundle bundle = new Bundle();
         bundle.putSerializable(CALLBACK, callback);

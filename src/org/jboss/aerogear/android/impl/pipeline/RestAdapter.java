@@ -102,6 +102,11 @@ public final class RestAdapter<T> implements Pipe<T> {
 
     @Override
     public void readWithFilter(ReadFilter filter, final Callback<List<T>> callback) {
+        read(filter, callback);
+    }
+    
+    @Override
+    public void read(ReadFilter filter, final Callback<List<T>> callback) {
         if (filter == null) {
             filter = new ReadFilter();
         }
