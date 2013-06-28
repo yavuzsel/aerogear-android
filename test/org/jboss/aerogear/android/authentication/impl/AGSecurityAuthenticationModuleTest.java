@@ -53,8 +53,8 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AuthenticationConfig());
         Object runner = UnitTestUtils.getPrivateField(module, "runner");
-        HttpProvider provider = (HttpProvider) UnitTestUtils.getPrivateField(runner,
-                "httpProviderFactory", Provider.class).get(SIMPLE_URL);
+        HttpProvider provider = (HttpProvider) ((Provider)UnitTestUtils.getSuperPrivateField(runner,
+                "httpProviderFactory")).get(SIMPLE_URL);
         Assert.assertEquals(SIMPLE_URL, provider.getUrl());
 
         Assert.assertEquals(SIMPLE_URL, module.getBaseURL());
