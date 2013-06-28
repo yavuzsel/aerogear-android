@@ -17,6 +17,8 @@
 package org.jboss.aerogear.android.http;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * If an HTTP Request does not return status code 200 then this will
@@ -32,18 +34,28 @@ public class HttpException extends RuntimeException {
     private final byte[] data;
 
     /**
+     * The headers returned
+     */
+    private final Map<String, String> headers = new HashMap<String, String>();
+    
+    /**
      * The returned status code
      */
     private final int statusCode;
 
     public HttpException(byte[] data, int statusCode) {
-        this(data, statusCode, String.format(DEFAULT_MESSAGE, statusCode));
+        this(data, statusCode, String.format(DEFAULT_MESSAGE, statusCode), new HashMap<String, String>());
+    }
+    
+    public HttpException(byte[] data, int statusCode, Map<String, String> headers) {
+        this(data, statusCode, String.format(DEFAULT_MESSAGE, statusCode), headers);
     }
 
-    public HttpException(byte[] data, int statusCode, String message) {
+    public HttpException(byte[] data, int statusCode, String message, Map<String, String> headers) {
         super(message);
         this.data = data;
         this.statusCode = statusCode;
+        this.headers.putAll(headers);
     }
 
     public byte[] getData() {
@@ -54,4 +66,8 @@ public class HttpException extends RuntimeException {
         return statusCode;
     }
 
+    public Map<String, String> getHeaders() {
+        return new HashMap<String, String>(headers);
+    }
+    
 }
