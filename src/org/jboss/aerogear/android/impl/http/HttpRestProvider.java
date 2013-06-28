@@ -16,7 +16,12 @@
  */
 package org.jboss.aerogear.android.impl.http;
 
+import android.text.TextUtils;
 import android.util.Log;
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
@@ -268,8 +273,17 @@ public final class HttpRestProvider implements HttpProvider {
                         .getErrorStream());
 
             byte[] errData = readBytes(err);
-
-            throw new HttpException(errData, statusCode);
+            
+            Map<String, String> errorHeaders = Maps.transformValues(urlConnection.getHeaderFields(), 
+                    new Function<List<String>, String>() {
+                    @Override
+                    public String apply(List<String> input) {
+                        return TextUtils.join(",", input);
+                    }
+                });
+            
+            
+            throw new HttpException(errData, statusCode, errorHeaders);
 
         }
 
@@ -278,7 +292,7 @@ public final class HttpRestProvider implements HttpProvider {
                 headers.size()));
 
         for (Map.Entry<String, List<String>> header : headers.entrySet()) {
-            result.setHeader(header.getKey(), header.getValue().get(0));
+            result.setHeader(header.getKey(), TextUtils.join(",", header.getValue()));
         }
 
         return result;
