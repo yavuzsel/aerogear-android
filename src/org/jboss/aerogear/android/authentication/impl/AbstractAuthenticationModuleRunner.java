@@ -24,7 +24,6 @@ import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.impl.core.HttpProviderFactory;
 import org.jboss.aerogear.android.impl.util.UrlUtils;
-import org.json.JSONObject;
 
 public abstract class AbstractAuthenticationModuleRunner {
 
@@ -59,8 +58,6 @@ public abstract class AbstractAuthenticationModuleRunner {
 
     }
 
-    abstract String buildLoginData(String username, String password);
-
     public URL getBaseURL() {
         return baseURL;
     }
@@ -77,20 +74,9 @@ public abstract class AbstractAuthenticationModuleRunner {
         return logoutEndpoint;
     }
 
-    public HeaderAndBody onEnroll(final Map<String, String> userData) {
-        HttpProvider provider = httpProviderFactory.get(enrollURL, timeout);
-        String enrollData = new JSONObject(userData).toString();
-        return provider.post(enrollData);
-    }
+    abstract HeaderAndBody onEnroll(final Map<String, String> userData);
 
-    public HeaderAndBody onLogin(final String username, final String password) {
-        HttpProvider provider = httpProviderFactory.get(loginURL, timeout);
-        String loginData = buildLoginData(username, password);
-        return provider.post(loginData);
-    }
+    abstract HeaderAndBody onLogin(final String username, final String password);
 
-    public void onLogout() {
-        HttpProvider provider = httpProviderFactory.get(logoutURL, timeout);
-        provider.post("");
-    }
+    abstract void onLogout();
 }

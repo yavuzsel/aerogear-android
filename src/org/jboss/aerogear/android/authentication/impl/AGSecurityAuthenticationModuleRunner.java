@@ -18,7 +18,11 @@ package org.jboss.aerogear.android.authentication.impl;
 
 import com.google.gson.JsonObject;
 import java.net.URL;
+import java.util.Map;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
+import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.http.HttpProvider;
+import org.json.JSONObject;
 
 class AGSecurityAuthenticationModuleRunner extends AbstractAuthenticationModuleRunner {
 
@@ -33,11 +37,30 @@ class AGSecurityAuthenticationModuleRunner extends AbstractAuthenticationModuleR
         super(baseURL, config);
     }
     
-    @Override
     String buildLoginData(String username, String password) {
         JsonObject response = new JsonObject();
         response.addProperty("username", username);
         response.addProperty("password", password);
         return response.toString();
+    }
+    
+    @Override
+    public HeaderAndBody onEnroll(final Map<String, String> userData) {
+        HttpProvider provider = httpProviderFactory.get(enrollURL, timeout);
+        String enrollData = new JSONObject(userData).toString();
+        return provider.post(enrollData);
+    }
+
+    @Override
+    public HeaderAndBody onLogin(final String username, final String password) {
+        HttpProvider provider = httpProviderFactory.get(loginURL, timeout);
+        String loginData = buildLoginData(username, password);
+        return provider.post(loginData);
+    }
+
+    @Override
+    public void onLogout() {
+        HttpProvider provider = httpProviderFactory.get(logoutURL, timeout);
+        provider.post("");
     }
 }
