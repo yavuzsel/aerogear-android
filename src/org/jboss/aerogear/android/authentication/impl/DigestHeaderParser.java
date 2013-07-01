@@ -1,44 +1,86 @@
 package org.jboss.aerogear.android.authentication.impl;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class DigestHeaderParser {
 
-    private static final String DIGEST = "Digest";
-    private static final String DELIMITERS = "[\\s,]";
     
-    public static Map<String, String> extractValues(String authenticateHeader) {
-        Map<String, String> values = new HashMap<String, String>();
-        List<String> tokenList = Arrays.asList(authenticateHeader.split( DELIMITERS));
-        tokenList = Lists.newArrayList(Collections2.filter(tokenList, new Predicate<String>() {
+    private static enum States {
 
-            @Override
-            public boolean apply(String input) {
-                return !Strings.isNullOrEmpty(input);
-            }
-        }));
+        DIGEST, KEY, VALUE
+    };
+    private static final String DIGEST = "Digest";
+    private static final String WHITESPACE = "\\s";
+    private static final String COMMA = ",";
+    private static final String QUOTE = "\"";
+    private static final String EQ = "=";
+    
+
+    public static Map<String, String> extractValues(String authenticateHeader) {
+        States state = States.DIGEST;
+        StringBuilder word = new StringBuilder();
+        String key = "";
+        String value = "";
+        String valueTerminator = COMMA;
         
-        if (!tokenList.remove(0).equals(DIGEST)) {
+        Map<String, String> values = new HashMap<String, String>();
+        authenticateHeader = authenticateHeader.trim();
+        if (!authenticateHeader.startsWith(DIGEST)) {
             throw new IllegalArgumentException(authenticateHeader + " Did not begin with the Digest challenge string.");
         }
-        
-        for (String token : tokenList) {
-            String[] pair = token.split("=", 2);
-            String key = pair[0];
-            String value = pair[1];
-            value = value.replaceAll("^\"", "").replaceAll("\"$", "");
-            values.put(key, value);
+
+        for (Character character : authenticateHeader.toCharArray()) {
+            if (matches(character, WHITESPACE)){
+                continue;
+            } 
+            switch (state) {
+                case DIGEST:
+                    word.append(character);
+                    if (word.lastIndexOf(DIGEST) != -1) {
+                        word = new StringBuilder();
+                        state = States.KEY;
+                    }
+                    break;
+                case KEY:
+                    if (matches(character, EQ)) {
+                        key = word.toString();
+                        word = new StringBuilder();
+                        state = States.VALUE;
+                        break;
+                    } else if (matches(character, COMMA)){
+                        break;
+                    } else {
+                        word.append(character);
+                    }
+                    break;
+                case VALUE:
+                    if (matches(character, valueTerminator)) {
+                        value = word.toString();
+                        word = new StringBuilder();
+                        valueTerminator = COMMA;
+                        values.put(key, value);
+                        state = States.KEY;
+                        break;
+                    } else {
+                        if (matches(character, QUOTE)) {
+                            valueTerminator = QUOTE;
+                            break;
+                        } else {
+                            word.append(character);
+                        }
+                    }
+                    break;
+            }
         }
-        
+
         return values;
-        
+
     }
     
+    private static boolean matches(Character character, String regex) {
+        String str = character.toString();
+        return str.matches(regex);
+    }
+
 }
