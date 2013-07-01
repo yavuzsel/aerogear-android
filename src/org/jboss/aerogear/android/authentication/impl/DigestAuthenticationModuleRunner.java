@@ -19,6 +19,7 @@ package org.jboss.aerogear.android.authentication.impl;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+import java.util.UUID;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
@@ -35,6 +36,18 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
     private static final String STALE = "stale";
     private static final String ALGORITHM = "algorithm";
     private static final String QOP_OPTIONS = "qop";
+    private static final String OPAQUE = "opaque";
+    
+    private String cnonce = UUID.randomUUID().toString();
+    private int nonce_count = 0;
+    private String nonce = "";
+    private String qop = "";
+    private String realm;
+    private String domain;
+    private String algorithm;
+    private String stale;
+    private String opaque;
+    
     
     /**
      * @param baseURL
@@ -70,22 +83,58 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
             }
             
             Map<String, String> authenticateHeaders = DigestHeaderParser.extractValues(exception.getHeaders().get(WWW_AUTHENTICATE_HEADER));
-            String realm = authenticateHeaders.get(REALM);
-            String domain = authenticateHeaders.get(DOMAIN);
-            String nonce = authenticateHeaders.get(NONCE);
-            String algorithm = authenticateHeaders.get(ALGORITHM);
-            String qop = authenticateHeaders.get(QOP_OPTIONS);
-            String stale = authenticateHeaders.get(STALE);
+            realm = authenticateHeaders.get(REALM);
+            domain = authenticateHeaders.get(DOMAIN);
+            nonce = authenticateHeaders.get(NONCE);
+            algorithm = authenticateHeaders.get(ALGORITHM);
+            qop = authenticateHeaders.get(QOP_OPTIONS);
+            stale = authenticateHeaders.get(STALE);
+            opaque = authenticateHeaders.get(OPAQUE);
             
+            checkQop(qop);
+            
+            return provider.get();
         }   
-        String loginData = buildLoginData(username, password);
-        return provider.post(loginData);
+        
+        
     }
 
     @Override
     public void onLogout() {
         HttpProvider provider = httpProviderFactory.get(logoutURL, timeout);
         provider.post("");
+    }
+
+    /*
+     * Currently only supports auth.
+     */
+    private void checkQop(String qop) {
+        
+        
+        
+        if (qop == null) {
+            return;
+        } else {
+            for (String option : qop.split(",")) {
+                if ("auth".equals(option)) {
+                    return;
+                }
+            }
+        }
+            
+        
+            throw new IllegalArgumentException(String.format("%s is not a supported qop type.", qop));
+        
+    }
+    
+    public String getAuthorizationHeader() {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Digest ")
+                .append("opaque=\"").append(opaque).append('"');
+        
+        
+        return sb.toString();
     }
     
 }
