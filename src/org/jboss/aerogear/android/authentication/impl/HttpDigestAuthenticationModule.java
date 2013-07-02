@@ -174,7 +174,7 @@ public class HttpDigestAuthenticationModule extends AbstractAuthenticationModule
     
     @Override
     public boolean retryLogin() {
-        return true;
+        return runner.retryLogin();
     }
     
     

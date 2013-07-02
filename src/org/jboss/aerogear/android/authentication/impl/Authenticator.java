@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
+import static org.jboss.aerogear.android.authentication.impl.AuthTypes.HTTP_BASIC;
 import org.jboss.aerogear.android.authentication.impl.loader.AuthenticationModuleAdapter;
 import org.jboss.aerogear.android.authentication.impl.loader.support.SupportAuthenticationModuleAdapter;
 
@@ -89,6 +90,9 @@ public class Authenticator {
             break;
         case HTTP_BASIC:
             modules.put(name, new HttpBasicAuthenticationModule(baseURL));
+            break;
+        case HTTP_DIGEST:
+            modules.put(name, new HttpDigestAuthenticationModule(baseURL, config));
             break;
         default:
 

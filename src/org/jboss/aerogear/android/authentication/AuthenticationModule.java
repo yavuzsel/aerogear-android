@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.Map;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.pipeline.Pipe;
 
@@ -114,10 +115,15 @@ public interface AuthenticationModule {
      * Some authorization schemes (HTTP Digest, OAUTH) have a mechanism for retrying 
      * a login to fetch fresh credentials after the credentials expire.
      * 
-     * This method signals to the AeroGear system that in the even of a 401 it 
-     * should call login again and retry the request before returning the fail result 
-     * to the user.
+     * In the event of a 401 error, this method should retry the login.  If the 
+     * system does not support retrying or if the retry fails then it will return false.
+     * 
+     * Otherwise it returns true and refreshes the various credentials.
+     * 
+     * This method is blocking and it should NOT be called by the user directly.
+     * 
+     * @return whether or not retrying the login succeeded.
      */
-    public boolean retryLogin();
+    public boolean retryLogin() throws HttpException;
     
 }

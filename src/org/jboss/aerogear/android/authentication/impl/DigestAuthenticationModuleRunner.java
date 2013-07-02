@@ -209,4 +209,10 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
         return DigestHeaderUtils.computeMD5Hash(a2Builder.toString().getBytes());
 
     }
+
+    boolean retryLogin() {
+        onLogin(username, password);
+        
+        return true;
+    }
 }
