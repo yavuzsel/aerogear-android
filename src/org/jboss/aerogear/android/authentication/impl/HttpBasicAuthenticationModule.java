@@ -177,6 +177,11 @@ public class HttpBasicAuthenticationModule extends AbstractAuthenticationModule 
     }
 
     @Override
+    public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
+        return getAuthorizationFields();
+    }
+
+    @Override
     public boolean retryLogin() {
         return false;
     }

@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.android.authentication;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 import org.jboss.aerogear.android.Callback;
@@ -85,10 +86,30 @@ public interface AuthenticationModule {
      * directly before a call.
      * 
      * @return the current AuthorizationFields for security
+     *
+     * @deprecated This method has been superseded by {@link  AuthenticationModule#getAuthorizationFields(java.net.URI, byte[]) }
      * 
      */
+    @Deprecated
     public AuthorizationFields getAuthorizationFields();
 
+    /**
+     * This method is called be {@link Pipe} implementations when they need
+     * security applied to their {@link HttpProvider}. The headers/data/query
+     * parameters returned should be applied to the Url and HttpProvider
+     * directly before a call.
+     * 
+     * @param requestUri the Request-Line URI.
+     * @param method the HTTP method being used
+     * @param requestBody the body of the request.  This method promises to not 
+     * modify the body.
+     * 
+     * @return the current AuthorizationFields for security
+     * 
+     */
+    public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody);
+
+    
     /**
      * Some authorization schemes (HTTP Digest, OAUTH) have a mechanism for retrying 
      * a login to fetch fresh credentials after the credentials expire.

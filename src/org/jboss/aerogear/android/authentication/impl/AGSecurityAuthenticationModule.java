@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.authentication.impl;
 
 import android.util.Log;
+import java.net.URI;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AbstractAuthenticationModule;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
@@ -158,6 +159,13 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
         return fields;
     }
 
+    @Override
+    public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
+        return getAuthorizationFields();
+    }
+
+    
+    
     @Override
     public boolean retryLogin() {
         return false;

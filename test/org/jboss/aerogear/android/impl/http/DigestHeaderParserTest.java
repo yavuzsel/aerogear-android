@@ -2,7 +2,7 @@ package org.jboss.aerogear.android.impl.http;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import java.util.Map;
-import org.jboss.aerogear.android.authentication.impl.DigestHeaderParser;
+import org.jboss.aerogear.android.authentication.impl.DigestHeaderUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -22,7 +22,7 @@ public class DigestHeaderParserTest  {
     
     @Test
     public void testSingleHeaderPasses() {
-        Map<String, String> values = DigestHeaderParser.extractValues(PASSING_HEADER_SINGLE_QOP);
+        Map<String, String> values = DigestHeaderUtils.extractValues(PASSING_HEADER_SINGLE_QOP);
         assertEquals("default", values.get(REALM));
         assertEquals("/aerogear-controller-demo", values.get(DOMAIN));
         assertEquals("MTM3MjQ0MTQzNDE5MTozMzRhMWY1NC1mNWE1LTQ4Y2EtODkyYi01NWJjMWM4ZWIwM2Y=", values.get(NONCE));
@@ -34,7 +34,7 @@ public class DigestHeaderParserTest  {
     
     @Test
     public void testMultiHeaderPasses() {
-        Map<String, String> values = DigestHeaderParser.extractValues(PASSING_HEADER_MULTI_QOP);
+        Map<String, String> values = DigestHeaderUtils.extractValues(PASSING_HEADER_MULTI_QOP);
         assertEquals("default", values.get(REALM));
         assertEquals("/aerogear-controller-demo", values.get(DOMAIN));
         assertEquals("MTM3MjQ0MTQzNDE5MTozMzRhMWY1NC1mNWE1LTQ4Y2EtODkyYi01NWJjMWM4ZWIwM2Y=", values.get(NONCE));
@@ -46,7 +46,7 @@ public class DigestHeaderParserTest  {
     @Test
     public void testHeaderFails() {
         try {
-            DigestHeaderParser.extractValues(FAILING_HEADER);
+            DigestHeaderUtils.extractValues(FAILING_HEADER);
             fail();
         } catch (IllegalArgumentException ex) {
             assertEquals(FAILING_HEADER + " Did not begin with the Digest challenge string.", ex.getMessage());                

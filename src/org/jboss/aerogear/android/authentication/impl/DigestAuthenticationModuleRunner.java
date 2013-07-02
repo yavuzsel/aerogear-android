@@ -16,7 +16,9 @@
  */
 package org.jboss.aerogear.android.authentication.impl;
 
+import com.google.common.base.Strings;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
@@ -29,7 +31,6 @@ import org.json.JSONObject;
 public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModuleRunner {
 
     private static String WWW_AUTHENTICATE_HEADER = "WWW-Authenticate";
-    
     private static final String REALM = "realm";
     private static final String DOMAIN = "domain";
     private static final String NONCE = "nonce";
@@ -37,18 +38,18 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
     private static final String ALGORITHM = "algorithm";
     private static final String QOP_OPTIONS = "qop";
     private static final String OPAQUE = "opaque";
-    
     private String cnonce = UUID.randomUUID().toString();
     private int nonce_count = 0;
-    private String nonce = "";
-    private String qop = "";
+    private String nonce;
+    private String qop;
     private String realm;
     private String domain;
     private String algorithm;
     private String stale;
     private String opaque;
-    
-    
+    private String username;
+    private String password;
+
     /**
      * @param baseURL
      * @param config
@@ -58,11 +59,11 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
     public DigestAuthenticationModuleRunner(URL baseURL, AuthenticationConfig config) {
         super(baseURL, config);
     }
-    
+
     String buildLoginData(String username, String password) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public HeaderAndBody onEnroll(final Map<String, String> userData) {
         HttpProvider provider = httpProviderFactory.get(enrollURL, timeout);
@@ -81,8 +82,8 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
             if (exception.getStatusCode() != HttpURLConnection.HTTP_FORBIDDEN) {
                 throw exception;
             }
-            
-            Map<String, String> authenticateHeaders = DigestHeaderParser.extractValues(exception.getHeaders().get(WWW_AUTHENTICATE_HEADER));
+
+            Map<String, String> authenticateHeaders = DigestHeaderUtils.extractValues(exception.getHeaders().get(WWW_AUTHENTICATE_HEADER));
             realm = authenticateHeaders.get(REALM);
             domain = authenticateHeaders.get(DOMAIN);
             nonce = authenticateHeaders.get(NONCE);
@@ -90,13 +91,16 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
             qop = authenticateHeaders.get(QOP_OPTIONS);
             stale = authenticateHeaders.get(STALE);
             opaque = authenticateHeaders.get(OPAQUE);
-            
+            this.username = username;
+            this.password = password;
+
             checkQop(qop);
-            
+            checkAlgorithm(algorithm);
+
             return provider.get();
-        }   
-        
-        
+        }
+
+
     }
 
     @Override
@@ -109,32 +113,100 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
      * Currently only supports auth.
      */
     private void checkQop(String qop) {
-        
-        
-        
+
+
+
         if (qop == null) {
             return;
         } else {
             for (String option : qop.split(",")) {
                 if ("auth".equals(option)) {
+                    this.qop = "auth";
                     return;
                 }
             }
         }
-            
-        
-            throw new IllegalArgumentException(String.format("%s is not a supported qop type.", qop));
-        
+
+
+        throw new IllegalArgumentException(String.format("%s is not a supported qop type.", qop));
+
     }
-    
-    public String getAuthorizationHeader() {
+
+    public String getAuthorizationHeader(URI uri, String method, byte[] entityBody) {
+        nonce_count++;
         StringBuilder sb = new StringBuilder();
-        
+        String digestResponse;
+        String HA1 = calculateHA1();
+        String HA2 = calculateHA2(method, uri, entityBody);
+
+        if (qop == null) {
+            StringBuilder responseBuilder = new StringBuilder();
+            responseBuilder.append(HA1).append(":").append(nonce).append(":").append(HA2);
+            digestResponse = DigestHeaderUtils.computeMD5Hash(responseBuilder.toString().getBytes());
+        } else {
+            StringBuilder responseBuilder = new StringBuilder();
+            responseBuilder.append(HA1).append(":")
+                    .append(nonce).append(":")
+                    .append(nonce_count).append(":")
+                    .append(cnonce).append(":")
+                    .append(qop).append(":")
+                    .append(HA2);
+            digestResponse = DigestHeaderUtils.computeMD5Hash(responseBuilder.toString().getBytes());
+        }
+
+
+
         sb.append("Digest ")
-                .append("opaque=\"").append(opaque).append('"');
-        
-        
+                .append("username=\"").append(username).append('"')
+                .append(",realm=\"").append(realm).append('"')
+                .append(",nonce=\"").append(nonce).append('"')
+                .append(",uri=\"").append(uri.toString()).append('"')
+                .append(",response=\"").append(digestResponse).append('"');
+        if (!Strings.isNullOrEmpty(qop)) {
+            sb.append(",qop=").append(qop)
+                    .append(",nc=").append(nonce_count)
+                    .append(",cnonce=\"").append(cnonce).append('"')
+                    .append(",opaque=\"").append(opaque).append('"');
+        }
+
         return sb.toString();
     }
-    
+
+    private void checkAlgorithm(String algorithm) {
+        if (algorithm == null) {
+            return;
+        } else {
+            for (String option : algorithm.split(",")) {
+                if ("MD5".equals(option) || "MD5-sess".equals(option)) {
+                    this.algorithm = option;
+                    return;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("%s is not a supported algorithm type.", algorithm));
+    }
+
+    private String calculateHA1() {
+        StringBuilder a1Builder = new StringBuilder();
+        a1Builder.append(username).append(":").append(realm).append(":").append(password);
+        if ("MD5-sess".equals(algorithm)) {
+            String tempA1 = DigestHeaderUtils.computeMD5Hash(a1Builder.toString().getBytes());
+            a1Builder = new StringBuilder();
+            a1Builder.append(tempA1).append(":").append(nonce).append(":").append(cnonce);
+        }
+        return DigestHeaderUtils.computeMD5Hash(a1Builder.toString().getBytes());
+    }
+
+    private String calculateHA2(String method, URI uri, byte[] entityBody) {
+        StringBuilder a2Builder = new StringBuilder();
+        if ("auth-int".equals(qop)) {
+            a2Builder.append(method).append(":").append(uri).append(":").append(DigestHeaderUtils.computeMD5Hash(entityBody));
+        } else {
+            a2Builder.append(method).append(":").append(uri);
+        }
+
+        return DigestHeaderUtils.computeMD5Hash(a2Builder.toString().getBytes());
+
+    }
 }

@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.authentication.impl;
 
 import android.util.Log;
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 import org.jboss.aerogear.android.Callback;
@@ -161,10 +162,16 @@ public class HttpDigestAuthenticationModule extends AbstractAuthenticationModule
 
     @Override
     public AuthorizationFields getAuthorizationFields() {
-        AuthorizationFields fields = new AuthorizationFields();
-        return fields;
+        throw new UnsupportedOperationException("Not supported");
     }
 
+    @Override
+    public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
+        AuthorizationFields fields = new AuthorizationFields();
+        fields.addHeader("Authorization", runner.getAuthorizationHeader(requestUri, method, requestBody));
+        return fields;
+    }
+    
     @Override
     public boolean retryLogin() {
         return true;
