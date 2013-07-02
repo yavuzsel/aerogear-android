@@ -275,7 +275,7 @@ public final class PipeConfig {
 
     /**
      * Timeout is the length of time in milliseconds that a Pipe will wait for a
-     * response from a call to read, readWithfilter, save or remove
+     * response from a call to read, save or remove
      *
      * @return the current timeout.
      */
@@ -285,7 +285,7 @@ public final class PipeConfig {
 
     /**
      * Timeout is the length of time in milliseconds that a Pipe will wait for a
-     * response from a call to read, readWithfilter, save or remove
+     * response from a call to read, save or remove
      *
      * @param timeout a new
      */

@@ -56,12 +56,12 @@ public class WrappingPagedList<T> extends ForwardingList<T> implements PagedList
 
     @Override
     public void next(Callback<List<T>> callback) {
-        pipe.readWithFilter(nextFilter, callback);
+        pipe.read(nextFilter, callback);
     }
 
     @Override
     public void previous(Callback<List<T>> callback) {
-        pipe.readWithFilter(previousFilter, callback);
+        pipe.read(previousFilter, callback);
     }
 
     public ReadFilter getNextFilter() {

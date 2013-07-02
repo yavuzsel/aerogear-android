@@ -65,8 +65,8 @@ public class AuthenticationConfig {
     }
 
     /**
-     * Timeout is the length of time in milliseconds that a Pipe will wait for a
-     * response from a call to read, readWithfilter, save or remove
+     * Timeout is the length of time in milliseconds that a Module will wait for a
+     * response from a call to login, logout, or enroll
      *
      * @return the current timeout.
      */
@@ -75,10 +75,10 @@ public class AuthenticationConfig {
     }
 
     /**
-     * Timeout is the length of time in milliseconds that a Pipe will wait for a
-     * response from a call to read, readWithfilter, save or remove
+     * Timeout is the length of time in milliseconds that a Module will wait for a
+     * response from a call to login, logout, or enroll
      *
-     * @param timeout a new
+     * @param timeout the current timeout.
      */
     public void setTimeout(Integer timeout) {
         this.timeout = timeout;

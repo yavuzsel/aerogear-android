@@ -310,7 +310,7 @@ public class RestAdapterTest {
         ReadFilter filter = new ReadFilter();
         filter.setLinkUri(URI.create("?limit=10&%7B%22model%22:%22BMW%22%7D&token=token"));
 
-        adapter.readWithFilter(filter, new Callback<List<Data>>() {
+        adapter.read(filter, new Callback<List<Data>>() {
             @Override
             public void onSuccess(List<Data> data) {
                 latch.countDown();
@@ -357,7 +357,7 @@ public class RestAdapterTest {
         filter.setLimit(10);
         filter.setWhere(new JSONObject("{\"model\":\"BMW\"}"));
 
-        adapter.readWithFilter(filter, new Callback<List<Data>>() {
+        adapter.read(filter, new Callback<List<Data>>() {
             @Override
             public void onSuccess(List<Data> data) {
                 latch.countDown();
@@ -521,7 +521,7 @@ public class RestAdapterTest {
         final AtomicBoolean hasException = new AtomicBoolean(false);
         final AtomicReference<List<T>> resultRef = new AtomicReference<List<T>>();
 
-        restPipe.readWithFilter(readFilter, new Callback<List<T>>() {
+        restPipe.read(readFilter, new Callback<List<T>>() {
             @Override
             public void onSuccess(List<T> data) {
                 resultRef.set(data);
@@ -540,36 +540,6 @@ public class RestAdapterTest {
         Assert.assertFalse(hasException.get());
 
         return resultRef.get();
-    }
-
-    /**
-     * Runs a read method, returns the result of the call back and rethrows the
-     * underlying exception
-     *
-     * @param restPipe
-     */
-    private <T> List<T> runReadForException(Pipe<T> restPipe, ReadFilter readFilter) throws InterruptedException, Exception {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicBoolean hasException = new AtomicBoolean(false);
-        final AtomicReference<Exception> exceptionref = new AtomicReference<Exception>();
-        restPipe.readWithFilter(readFilter, new Callback<List<T>>() {
-            @Override
-            public void onSuccess(List<T> data) {
-                latch.countDown();
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                hasException.set(true);
-                exceptionref.set(e);
-                latch.countDown();
-            }
-        });
-
-        latch.await(2, TimeUnit.SECONDS);
-        Assert.assertTrue(hasException.get());
-
-        throw exceptionref.get();
     }
 
     public final static class ListClassId {
