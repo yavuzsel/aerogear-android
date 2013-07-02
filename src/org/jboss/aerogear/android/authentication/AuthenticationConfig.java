@@ -78,7 +78,7 @@ public class AuthenticationConfig {
      * Timeout is the length of time in milliseconds that a Module will wait for a
      * response from a call to login, logout, or enroll
      *
-     * @return the current timeout.
+     * @param timeout the current timeout.
      */
     public void setTimeout(Integer timeout) {
         this.timeout = timeout;
