@@ -1,5 +1,8 @@
 language: java
 
+notifications:
+  irc: "irc.freenode.org#aerogear"
+
 before_install:
 
   # download the latest android sdk and unzip
