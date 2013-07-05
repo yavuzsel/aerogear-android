@@ -30,7 +30,7 @@ import org.jboss.aerogear.android.http.HeaderAndBody;
  * This class provides Authentication using HTTP Digest
  *
  * As per the <a href="http://www.ietf.org/rfc/rfc2617.txt">HTTP RFC</a> this
- * class will cache credentials and consumed by {@link Pipe} requests. This
+ * class will cache credentials and consumed by {@link org.jboss.aerogear.android.pipeline.Pipe} requests. This
  * module assumes that credentials provided are valid and will never fail on {@link #login(java.lang.String, java.lang.String, org.jboss.aerogear.android.Callback)
  * }
  * or {@link AGSecurityAuthenticationModule#logout(org.jboss.aerogear.android.Callback)

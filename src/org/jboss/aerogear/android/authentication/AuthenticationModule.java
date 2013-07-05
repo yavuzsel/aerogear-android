@@ -88,7 +88,7 @@ public interface AuthenticationModule {
      * 
      * @return the current AuthorizationFields for security
      *
-     * @deprecated This method has been superseded by {@link  AuthenticationModule#getAuthorizationFields(java.net.URI, byte[]) }
+     * @deprecated This method has been superseded by {@link  AuthenticationModule#getAuthorizationFields(java.net.URI, String, byte[]) }
      * 
      */
     @Deprecated
