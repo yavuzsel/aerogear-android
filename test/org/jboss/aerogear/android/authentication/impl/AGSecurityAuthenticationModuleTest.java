@@ -167,9 +167,10 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
     public void logoutSucceeds() throws Exception {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AuthenticationConfig());
-        SimpleCallback callback = new SimpleCallback();
-
+        
         final CountDownLatch latch = new CountDownLatch(1);
+        SimpleCallback callback = new SimpleCallback(latch);
+
         Object runner = UnitTestUtils.getPrivateField(module, "runner");
         UnitTestUtils.setPrivateField(runner, "httpProviderFactory",
                 new Provider<HttpProvider>() {
@@ -179,13 +180,9 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                             @Override
                             public HeaderAndBody post(String ignore)
                                     throws RuntimeException {
-                                try {
                                     HashMap<String, Object> headers = new HashMap<String, Object>();
                                     return new HeaderAndBody(new byte[1],
                                             headers);
-                                } finally {
-                                    latch.countDown();
-                                }
                             }
                         };
                     }
@@ -199,9 +196,10 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         Assert.assertNotNull(callback.data);
         Assert.assertTrue(module.isLoggedIn());
 
-        VoidCallback voidCallback = new VoidCallback();
 
         final CountDownLatch latch2 = new CountDownLatch(1);
+        VoidCallback voidCallback = new VoidCallback(latch2);
+        
         UnitTestUtils.setPrivateField(runner, "httpProviderFactory",
                 new Provider<HttpProvider>() {
                     @Override
@@ -210,14 +208,10 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                             @Override
                             public HeaderAndBody post(String ignore)
                                     throws RuntimeException {
-                                try {
                                     HashMap<String, Object> headers = new HashMap<String, Object>();
 
                                     return new HeaderAndBody(new byte[1],
                                             headers);
-                                } finally {
-                                    latch2.countDown();
-                                }
                             }
                         };
                     }

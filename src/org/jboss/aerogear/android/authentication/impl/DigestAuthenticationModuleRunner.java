@@ -16,12 +16,16 @@
  */
 package org.jboss.aerogear.android.authentication.impl;
 
+import android.util.Log;
 import com.google.common.base.Strings;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
@@ -79,7 +83,7 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
             throw new IllegalStateException("Login Called on service which was already logged in.");
         } catch (HttpException exception) {
             //If an exception occured that was not a failed login
-            if (exception.getStatusCode() != HttpURLConnection.HTTP_FORBIDDEN) {
+            if (exception.getStatusCode() != HttpURLConnection.HTTP_UNAUTHORIZED) {
                 throw exception;
             }
 
@@ -96,7 +100,13 @@ public class DigestAuthenticationModuleRunner extends AbstractAuthenticationModu
 
             checkQop(qop);
             checkAlgorithm(algorithm);
-
+            try {
+                provider.setDefaultHeader("Authorization", getAuthorizationHeader(loginURL.toURI(), "GET", new byte[]{}));
+            } catch (URISyntaxException ex) {
+                Log.e(TAG, ex.getMessage(), ex);
+                throw new RuntimeException(ex);
+            }
+            
             return provider.get();
         }
 
