@@ -38,6 +38,7 @@ import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.impl.core.HttpProviderFactory;
 import org.jboss.aerogear.android.impl.pipeline.paging.DefaultParameterProvider;
@@ -182,7 +183,18 @@ public class RestRunner<T> implements PipeHandler<T> {
         } else {
             httpProvider = getHttpProvider(filter.getLinkUri());
         }
-        HeaderAndBody httpResponse = httpProvider.get();
+        
+        HeaderAndBody httpResponse;
+        
+        try {
+            httpResponse = httpProvider.get();
+        } catch (HttpException exception) {
+            if (exception.getStatusCode() == 401 && retryAuth(authModule)) {
+                httpResponse = httpProvider.get();
+            } else {
+                throw exception;
+            }
+        }
         byte[] responseBody = httpResponse.getBody();
         String responseAsString = new String(responseBody, encoding);
         JsonParser parser = new JsonParser();
@@ -268,7 +280,7 @@ public class RestRunner<T> implements PipeHandler<T> {
 
     private HttpProvider getHttpProvider(URI relativeUri) {
         try {
-            AuthorizationFields fields = loadAuth();
+            AuthorizationFields fields = loadAuth(relativeUri, "GET");
 
             URL authorizedURL = addAuthorization(fields.getQueryParameters(), URIUtils.resolve(baseURL.toURI(), relativeUri).toURL());
 
@@ -287,10 +299,10 @@ public class RestRunner<T> implements PipeHandler<T> {
     /**
      * Apply authentication if the token is present
      */
-    private AuthorizationFields loadAuth() {
+    private AuthorizationFields loadAuth(URI relativeURI, String httpMethod) {
 
         if (authModule != null && authModule.isLoggedIn()) {
-            return authModule.getAuthorizationFields();
+            return authModule.getAuthorizationFields(relativeURI, httpMethod, new byte[] {});
         }
 
         return new AuthorizationFields();
@@ -419,5 +431,9 @@ public class RestRunner<T> implements PipeHandler<T> {
 
     protected Gson getGSON() {
         return gson;
+    }
+
+    private boolean retryAuth(AuthenticationModule authModule) {
+        return authModule != null && authModule.isLoggedIn() && authModule.retryLogin();
     }
 }

@@ -35,7 +35,7 @@ public class HttpHelperTest {
     public void testHttpExceptionConstructor() {
         HttpException exception = new HttpException(SIMPLE_DATA, NOT_FOUND);
         HttpException exceptionWithMessage = new HttpException(SIMPLE_DATA,
-                NOT_FOUND, SAMPLE_MESSAGE);
+                NOT_FOUND, SAMPLE_MESSAGE, new HashMap<String, String>());
 
         assertNotSame(SIMPLE_DATA, exception.getData());
         assertArrayEquals(SIMPLE_DATA, exception.getData());

@@ -343,7 +343,7 @@ public class RestAdapterTest {
 
         AuthenticationModule urlModule = mock(AuthenticationModule.class);
         when(urlModule.isLoggedIn()).thenReturn(true);
-        when(urlModule.getAuthorizationFields()).thenReturn(authFields);
+        when(urlModule.getAuthorizationFields((URI)anyObject(), anyString(), (byte[]) anyObject())).thenReturn(authFields);
 
         PipeConfig config = new PipeConfig(url, Data.class);
         config.setAuthModule(urlModule);
@@ -369,7 +369,7 @@ public class RestAdapterTest {
                 Logger.getLogger(getClass().getSimpleName()).log(Level.SEVERE, TAG, e);
             }
         });
-        latch.await(500, TimeUnit.MILLISECONDS);
+        latch.await(50000, TimeUnit.MILLISECONDS);
 
         verify(factory).get(new URL(url.toString() + "?limit=10&model=BMW&token=token"), Integer.MAX_VALUE);
     }

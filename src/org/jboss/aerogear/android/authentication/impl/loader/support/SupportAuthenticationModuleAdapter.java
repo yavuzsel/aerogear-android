@@ -27,6 +27,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import com.google.common.base.Objects;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -145,6 +146,16 @@ public class SupportAuthenticationModuleAdapter implements LoaderAuthenticationM
         return module.getAuthorizationFields();
     }
 
+    @Override
+    public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
+        return module.getAuthorizationFields(requestUri, method, requestBody);
+    }
+
+    @Override
+    public boolean retryLogin() {
+        return module.retryLogin();
+    }
+    
     @Override
     public Loader<HeaderAndBody> onCreateLoader(int id, Bundle bundle) {
         SupportAuthenticationModuleAdapter.Methods method = (SupportAuthenticationModuleAdapter.Methods) bundle.get(METHOD);

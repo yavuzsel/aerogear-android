@@ -27,6 +27,7 @@ import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import com.google.common.base.Objects;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -142,6 +143,16 @@ public class AuthenticationModuleAdapter implements LoaderAuthenticationModule, 
     @Override
     public AuthorizationFields getAuthorizationFields() {
         return module.getAuthorizationFields();
+    }
+
+    @Override
+    public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
+        return module.getAuthorizationFields(requestUri, method, requestBody);
+    }
+
+    @Override
+    public boolean retryLogin() {
+        return module.retryLogin();
     }
 
     @Override

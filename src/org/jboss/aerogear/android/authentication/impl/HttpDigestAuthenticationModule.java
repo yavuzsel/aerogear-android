@@ -18,28 +18,35 @@ package org.jboss.aerogear.android.authentication.impl;
 
 import android.util.Log;
 import java.net.URI;
+import java.net.URL;
+import java.util.Map;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AbstractAuthenticationModule;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.authentication.AuthorizationFields;
 import org.jboss.aerogear.android.http.HeaderAndBody;
-import java.net.URL;
-import java.util.Map;
 
 /**
- * A module for authenticating with restful AG services.
+ * This class provides Authentication using HTTP Digest
  *
- * @see <a
- * href="https://github.com/aerogear/aerogear-security#endpoints-definition">AG
- * Security Endpoint Doc</a>
+ * As per the <a href="http://www.ietf.org/rfc/rfc2617.txt">HTTP RFC</a> this
+ * class will cache credentials and consumed by {@link org.jboss.aerogear.android.pipeline.Pipe} requests. This
+ * module assumes that credentials provided are valid and will never fail on {@link #login(java.lang.String, java.lang.String, org.jboss.aerogear.android.Callback)
+ * }
+ * or {@link AGSecurityAuthenticationModule#logout(org.jboss.aerogear.android.Callback)
+ * }.
+ *
+ * {@link #enroll(java.util.Map, org.jboss.aerogear.android.Callback) } is not
+ * supported and will always fail.
+ *
  */
-public final class AGSecurityAuthenticationModule extends AbstractAuthenticationModule {
+public class HttpDigestAuthenticationModule extends AbstractAuthenticationModule {
 
     private static final String TAG = AGSecurityAuthenticationModule.class.getSimpleName();
 
     private boolean isLoggedIn = false;
 
-    private final AGSecurityAuthenticationModuleRunner runner;
+    private final DigestAuthenticationModuleRunner runner;
 
     /**
      *
@@ -48,10 +55,10 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
      * @throws IllegalArgumentException if an endpoint can not be appended to
      * baseURL
      */
-    public AGSecurityAuthenticationModule(URL baseURL, AuthenticationConfig config) {
-        this.runner = new AGSecurityAuthenticationModuleRunner(baseURL, config);
+    public HttpDigestAuthenticationModule(URL baseURL, AuthenticationConfig config) {
+        this.runner = new DigestAuthenticationModuleRunner(baseURL, config);
     }
-
+    
     @Override
     public URL getBaseURL() {
         return runner.getBaseURL();
@@ -155,22 +162,21 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
 
     @Override
     public AuthorizationFields getAuthorizationFields() {
-        AuthorizationFields fields = new AuthorizationFields();
-        return fields;
+        throw new UnsupportedOperationException("Not supported");
     }
 
     @Override
     public AuthorizationFields getAuthorizationFields(URI requestUri, String method, byte[] requestBody) {
-        return getAuthorizationFields();
+        AuthorizationFields fields = new AuthorizationFields();
+        fields.addHeader("Authorization", runner.getAuthorizationHeader(requestUri, method, requestBody));
+        return fields;
     }
-
-    
     
     @Override
     public boolean retryLogin() {
-        return false;
+        return runner.retryLogin();
     }
     
     
-
+    
 }
