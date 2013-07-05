@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.android.authentication.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import org.jboss.aerogear.android.Provider;
@@ -24,6 +26,8 @@ import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.impl.core.HttpProviderFactory;
 import org.jboss.aerogear.android.impl.util.UrlUtils;
+
+import android.util.Log;
 
 public abstract class AbstractAuthenticationModuleRunner {
 
@@ -62,6 +66,15 @@ public abstract class AbstractAuthenticationModuleRunner {
         return baseURL;
     }
 
+    public URI getBaseURI() {
+        try {
+			return baseURL.toURI();
+		} catch (URISyntaxException e) {
+			Log.e(TAG, e.getMessage(), e);
+			throw new RuntimeException(e);
+		}
+    }
+    
     public String getEnrollEndpoint() {
         return enrollEndpoint;
     }
