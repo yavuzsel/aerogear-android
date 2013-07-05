@@ -51,6 +51,10 @@ public class HttpException extends RuntimeException {
         this(data, statusCode, String.format(DEFAULT_MESSAGE, statusCode), headers);
     }
 
+    public HttpException(byte[] data, int statusCode, String message) {
+        this(data, statusCode, message, new HashMap<String, String>());
+    }
+    
     public HttpException(byte[] data, int statusCode, String message, Map<String, String> headers) {
         super(message);
         this.data = data;
