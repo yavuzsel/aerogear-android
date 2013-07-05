@@ -143,13 +143,13 @@ public final class PipeConfig {
      * GsonResponseParser
      *
      */
-        public GsonBuilder getGsonBuilder() {
-            if (responseParser instanceof GsonResponseParser) {
-                return this.gsonBulder;
-            } else {
-                throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
-            }
+    public GsonBuilder getGsonBuilder() {
+        if (responseParser instanceof GsonResponseParser) {
+            return this.gsonBulder;
+        } else {
+            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
         }
+    }
 
     /**
      *

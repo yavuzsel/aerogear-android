@@ -157,8 +157,7 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
     public void readWithFilter(ReadFilter filter, Callback<List<T>> callback) {
         read(filter, callback);
     }
-    
-    
+
     @Override
     public void read(ReadFilter filter, Callback<List<T>> callback) {
         int id = Objects.hashCode(name, filter, callback);

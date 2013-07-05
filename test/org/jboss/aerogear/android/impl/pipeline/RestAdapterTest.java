@@ -454,8 +454,8 @@ public class RestAdapterTest {
                 HashMap<String, Object> headers = new HashMap<String, Object>(1);
                 headers
                         .put(
-                        "Link",
-                        "<http://example.com/TheBook/chapter2>; rel=\"previous\";title=\"previous chapter\",<http://example.com/TheBook/chapter3>; rel=\"next\";title=\"next chapter\"");
+                                "Link",
+                                "<http://example.com/TheBook/chapter2>; rel=\"previous\";title=\"previous chapter\",<http://example.com/TheBook/chapter3>; rel=\"next\";title=\"next chapter\"");
                 HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(), headers));
 
                 return provider;
@@ -482,7 +482,7 @@ public class RestAdapterTest {
 
         RestAdapter adapter = new RestAdapter(Data.class, url, config);
         List<Data> list = new ArrayList<Data>();
-        HeaderAndBody response = new HeaderAndBody(new byte[]{}, new HashMap<String, Object>() {
+        HeaderAndBody response = new HeaderAndBody(new byte[] {}, new HashMap<String, Object>() {
             {
                 put("next", "chapter3");
                 put("previous", "chapter2");
