@@ -26,10 +26,10 @@ public interface RequestBuilder<T> {
      * 
      * @return A request body which represents the data parameter
      */
-    public byte[] getBody(T data);
+    byte[] getBody(T data);
 
     /**
      * @return the Content-Type header to be sent to the server.
      */
-    public String getContentType();
+    String getContentType();
 }
