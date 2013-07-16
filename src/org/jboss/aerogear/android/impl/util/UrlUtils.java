@@ -16,17 +16,19 @@
  */
 package org.jboss.aerogear.android.impl.util;
 
-import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import android.util.Log;
 
 public final class UrlUtils {
 
     private static final String TAG = UrlUtils.class.getSimpleName();
-    
-    private UrlUtils(){}
-    
-     /**
+
+    private UrlUtils() {
+    }
+
+    /**
      * @param baseURL 
      * @param endpoint
      * @return a new url baseUrl + endpoint
@@ -46,5 +48,5 @@ public final class UrlUtils {
             throw new IllegalArgumentException(message, ex);
         }
     }
-    
+
 }

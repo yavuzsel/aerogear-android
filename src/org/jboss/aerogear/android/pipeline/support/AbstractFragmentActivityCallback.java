@@ -16,13 +16,16 @@
  */
 package org.jboss.aerogear.android.pipeline.support;
 
-import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
-import com.google.common.base.Objects;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.authentication.impl.loader.support.AbstractSupportAuthenticationLoader;
 import org.jboss.aerogear.android.impl.pipeline.loader.support.AbstractSupportPipeLoader;
-import org.jboss.aerogear.android.pipeline.*;
+import org.jboss.aerogear.android.pipeline.AbstractCallback;
+import org.jboss.aerogear.android.pipeline.LoaderPipe;
+
+import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
+
+import com.google.common.base.Objects;
 
 /**
  * 

@@ -16,9 +16,19 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import android.graphics.Point;
-import com.google.gson.*;
+import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import junit.framework.Assert;
 import org.jboss.aerogear.android.*;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
@@ -45,6 +55,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,14 +120,16 @@ public class RestAdapterTest {
         DefaultPipeFactory factory = new DefaultPipeFactory();
         PipeConfig pc = new PipeConfig(url, ListClassId.class);
 
-        pc.setGsonBuilder(builder);
+        GsonResponseParser<ListClassId> responseParser = new GsonResponseParser<ListClassId>(builder.create());
+        pc.setResponseParser(responseParser);
+
         Pipe<ListClassId> restPipe = factory.createPipe(ListClassId.class, pc);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
-        Field gsonField = restRunner.getClass().getDeclaredField("gson");
+        Field gsonField = restRunner.getClass().getDeclaredField("responseParser");
         gsonField.setAccessible(true);
-        Gson gson = (Gson) gsonField.get(restRunner);
+        GsonResponseParser gson = (GsonResponseParser) gsonField.get(restRunner);
 
-        gson.toJson(new ListClassId());
+        assertEquals(responseParser, gson);
 
     }
 
@@ -128,7 +141,7 @@ public class RestAdapterTest {
         final HttpStubProvider provider = new HttpStubProvider(url, new HeaderAndBody(SERIALIZED_POINTS.getBytes(utf_16), new HashMap<String, Object>()));
 
         PipeConfig config = new PipeConfig(url, ListClassId.class);
-        config.setGsonBuilder(builder);
+        config.setRequestBuilder(new GsonRequestBuilder(builder.create()));
         config.setEncoding(utf_16);
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
@@ -152,7 +165,7 @@ public class RestAdapterTest {
         Pipeline pipeline = new Pipeline(url);
         PipeConfig config = new PipeConfig(url, ListClassId.class);
         config.setEncoding(utf_16);
-        config.setGsonBuilder(builder);
+        config.setRequestBuilder(new GsonRequestBuilder(builder.create()));
 
         RestAdapter<ListClassId> restPipe = (RestAdapter<ListClassId>) pipeline
                 .pipe(ListClassId.class, config);
@@ -168,7 +181,7 @@ public class RestAdapterTest {
         final HttpStubProvider provider = new HttpStubProvider(url, response);
 
         PipeConfig config = new PipeConfig(url, ListClassId.class);
-        config.setGsonBuilder(builder);
+        config.setRequestBuilder(new GsonRequestBuilder(builder.create()));
 
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
@@ -192,7 +205,7 @@ public class RestAdapterTest {
         final HttpStubProvider provider = new HttpStubProvider(url, response);
 
         PipeConfig config = new PipeConfig(url, ListClassId.class);
-        config.setGsonBuilder(builder);
+        config.setRequestBuilder(new GsonRequestBuilder(builder.create()));
         config.setDataRoot("result.points");
 
         RestAdapter<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
@@ -218,7 +231,7 @@ public class RestAdapterTest {
         final HttpStubProvider provider = new HttpStubProvider(url, response);
 
         PipeConfig config = new PipeConfig(url, ListClassId.class);
-        config.setGsonBuilder(builder);
+        config.setRequestBuilder(new GsonRequestBuilder(builder.create()));
         config.setDataRoot("");
 
         RestAdapter<Point> restPipe = new RestAdapter<Point>(Point.class, url, config);
@@ -240,26 +253,32 @@ public class RestAdapterTest {
     public void testGsonBuilderProperty() throws Exception {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
 
-        final StringBuilder request = new StringBuilder("");
+        final ByteArrayOutputStream request = new ByteArrayOutputStream();
 
         final HttpStubProvider provider = new HttpStubProvider(url) {
             @Override
-            public HeaderAndBody put(String id, String data) {
-                request.delete(0, request.length());
-                request.append(data);
-                return new HeaderAndBody(data.getBytes(), new HashMap<String, Object>());
+            public HeaderAndBody put(String id, byte[] data) {
+                try {
+                    request.write(data);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return new HeaderAndBody(data, new HashMap<String, Object>());
             }
 
             @Override
-            public HeaderAndBody post(String data) {
-                request.delete(0, request.length());
-                request.append(data);
-                return new HeaderAndBody(data.getBytes(), new HashMap<String, Object>());
+            public HeaderAndBody post(byte[] data) {
+                try {
+                    request.write(data);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return new HeaderAndBody(data, new HashMap<String, Object>());
             }
         };
 
         PipeConfig config = new PipeConfig(url, ListClassId.class);
-        config.setGsonBuilder(builder);
+        config.setResponseParser(new GsonResponseParser(builder.create()));
 
         Pipe<ListClassId> restPipe = new RestAdapter<ListClassId>(ListClassId.class, url, config);
         Object restRunner = UnitTestUtils.getPrivateField(restPipe, "restRunner");
@@ -288,13 +307,12 @@ public class RestAdapterTest {
             }
         });
 
-        latch.await(2, TimeUnit.SECONDS);
-        assertEquals(SERIALIZED_POINTS, request.toString());
+        latch.await(20, TimeUnit.SECONDS);
+
+        assertArrayEquals(SERIALIZED_POINTS.getBytes(), request.toByteArray());
         assertEquals(listClass.points, returnedPoints);
     }
 
-
-    
     @Test
     public void runReadWithFilterUsingUri() throws Exception {
 
@@ -388,7 +406,7 @@ public class RestAdapterTest {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
 
         PipeConfig pipeConfig = new PipeConfig(url, ListClassId.class);
-        pipeConfig.setGsonBuilder(builder);
+        pipeConfig.setRequestBuilder(new GsonRequestBuilder(builder.create()));
         pipeConfig.setPageConfig(pageConfig);
 
         Pipe<ListClassId> dataPipe = pipeline.pipe(ListClassId.class, pipeConfig);
@@ -424,7 +442,7 @@ public class RestAdapterTest {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Point.class, new RestAdapterTest.PointTypeAdapter());
 
         PipeConfig pipeConfig = new PipeConfig(url, ListClassId.class);
-        pipeConfig.setGsonBuilder(builder);
+        pipeConfig.setRequestBuilder(new GsonRequestBuilder(builder.create()));
         pipeConfig.setPageConfig(pageConfig);
 
         Pipe<ListClassId> dataPipe = pipeline.pipe(ListClassId.class, pipeConfig);
@@ -596,6 +614,45 @@ public class RestAdapterTest {
         public Object deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             return new Point(json.getAsJsonObject().getAsJsonPrimitive("x").getAsInt(),
                     json.getAsJsonObject().getAsJsonPrimitive("y").getAsInt());
+        }
+    }
+
+    public static final class Point implements Serializable {
+
+        public int x, y;
+
+        public Point() {
+        }
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 19 * hash + this.x;
+            hash = 19 * hash + this.y;
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Point other = (Point) obj;
+            if (this.x != other.x) {
+                return false;
+            }
+            if (this.y != other.y) {
+                return false;
+            }
+            return true;
         }
     }
 }

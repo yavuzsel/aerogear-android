@@ -16,9 +16,10 @@
  */
 package org.jboss.aerogear.android.impl.pipeline.loader;
 
-import android.content.Context;
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
+
+import android.content.Context;
 
 /**
  * This class performs a remove operation on behalf of a Pipe using the Loader

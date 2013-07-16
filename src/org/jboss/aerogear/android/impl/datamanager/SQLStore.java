@@ -16,19 +16,6 @@
  */
 package org.jboss.aerogear.android.impl.datamanager;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.util.Pair;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.datamanager.IdGenerator;
@@ -45,6 +33,21 @@ import org.jboss.aerogear.android.datamanager.Store;
 import org.jboss.aerogear.android.datamanager.StoreType;
 import org.jboss.aerogear.android.impl.reflection.Property;
 import org.jboss.aerogear.android.impl.reflection.Scan;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.util.Pair;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
 

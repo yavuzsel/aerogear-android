@@ -16,27 +16,24 @@
  */
 package org.jboss.aerogear.android;
 
-import android.util.Log;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 /**
  * This class wraps and builds the query parameters for filtering and pagination
  */
 public class ReadFilter implements Serializable {
 
-    private static final String UTF_8 = "UTF-8";
+    private static final long serialVersionUID = 1L;
     private static final String TAG = ReadFilter.class.getSimpleName();
 
     private Integer limit = Integer.MAX_VALUE;
@@ -109,6 +106,7 @@ public class ReadFilter implements Serializable {
         return queryBuilder.toString();
     }
 
+    @SuppressWarnings( { "rawtypes" })
     private String preparePathParam() throws UnsupportedEncodingException, JSONException {
 
         StringBuilder sb = new StringBuilder();
@@ -123,7 +121,7 @@ public class ReadFilter implements Serializable {
             sb.append(String.format("%s=%s",
                     URLEncoder.encode(key, "UTF-8"),
                     URLEncoder.encode(value.toString(), "UTF-8")
-            ));
+                    ));
             amp = "&";
         }
 

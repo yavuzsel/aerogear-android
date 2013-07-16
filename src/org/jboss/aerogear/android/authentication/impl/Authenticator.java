@@ -16,19 +16,21 @@
  */
 package org.jboss.aerogear.android.authentication.impl;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import static org.jboss.aerogear.android.authentication.impl.AuthTypes.HTTP_BASIC;
 import org.jboss.aerogear.android.authentication.impl.loader.AuthenticationModuleAdapter;
 import org.jboss.aerogear.android.authentication.impl.loader.support.SupportAuthenticationModuleAdapter;
+
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 
 /**
  * This is the default implementation of Authenticator.

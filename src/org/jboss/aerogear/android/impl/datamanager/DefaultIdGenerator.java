@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.impl.datamanager;
 
 import java.util.UUID;
+
 import org.jboss.aerogear.android.datamanager.IdGenerator;
 
 /**

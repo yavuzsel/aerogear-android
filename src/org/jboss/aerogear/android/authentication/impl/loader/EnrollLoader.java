@@ -16,14 +16,16 @@
  */
 package org.jboss.aerogear.android.authentication.impl.loader;
 
-import android.content.Context;
-import android.content.Loader;
-import android.util.Log;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.http.HeaderAndBody;
+
+import android.content.Context;
+import android.content.Loader;
+import android.util.Log;
 
 /**
  * This class is a {@link Loader} which performs an enroll operation on behalf 

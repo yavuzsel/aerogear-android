@@ -31,7 +31,7 @@ import android.util.Log;
 
 public abstract class AbstractAuthenticationModuleRunner {
 
-    protected static final String TAG = AGSecurityAuthenticationModuleRunner.class.getSimpleName();
+    protected static final String TAG = AbstractAuthenticationModuleRunner.class.getSimpleName();
     protected final URL baseURL;
     protected final String enrollEndpoint;
     protected final URL enrollURL;

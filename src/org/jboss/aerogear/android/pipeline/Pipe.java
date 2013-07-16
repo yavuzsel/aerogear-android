@@ -16,11 +16,13 @@
  */
 package org.jboss.aerogear.android.pipeline;
 
-import com.google.gson.Gson;
 import java.net.URL;
 import java.util.List;
+
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.ReadFilter;
+
+import com.google.gson.Gson;
 
 /**
  * A {@link Pipe} represents a server connection. An object of this class is responsible to communicate
@@ -91,6 +93,7 @@ public interface Pipe<T> {
      * 
      * @return the gson instance servicing this pipe.
      */
+    @Deprecated
     Gson getGson();
 
     /**
@@ -104,5 +107,19 @@ public interface Pipe<T> {
      * @return the handler performing operations for this Pipe.  May be the Pipe itself.
      */
     PipeHandler<T> getHandler();
+
+    /**
+     * The {@link RequestBuilder} is responsible for turning objects in bodies of requests. 
+     * 
+     * @return the current RequestBuilder instance
+     */
+    RequestBuilder<T> getRequestBuilder();
+
+    /**
+     * The {@link ResponseParser} is responsible for turning responses from a SAVE into an object 
+     * 
+     * @return the current ResponseParser instance
+     */
+    ResponseParser<T> getResponseParser();
 
 }

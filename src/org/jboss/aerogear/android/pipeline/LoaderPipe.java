@@ -28,27 +28,27 @@ public interface LoaderPipe<T> extends Pipe<T> {
      * Bundle key for callbacks handed to Pipe methods.
      */
     public static final String CALLBACK = "org.jboss.aerogear.android.impl.pipeline.LoaderPipe.CALLBACK";
-    
+
     /**
      * Bundle key for the Pipe method which was called
      */
     public static final String METHOD = "org.jboss.aerogear.android.impl.pipeline.LoaderPipe.METHOD";
-    
+
     /**
      * Bundle key for the ReadFilter param
      */
     public static final String FILTER = "org.jboss.aerogear.android.impl.pipeline.LoaderPipe.FILTER";
-    
+
     /**
      * Bundle key for the item to be saved
      */
     public static final String ITEM = "org.jboss.aerogear.android.impl.pipeline.LoaderPipe.ITEM";
-    
+
     /**
      * Bundle key for the id of the item to remove
      */
     public static final String REMOVE_ID = "org.jboss.aerogear.android.impl.pipeline.LoaderPipe.REMOVIE_ID";
-    
+
     /**
      * Calls reset on all loaders associated with this pipe.
      */

@@ -16,27 +16,20 @@
  */
 package org.jboss.aerogear.android.pipeline;
 
-import java.util.List;
+public interface RequestBuilder<T> {
 
-import org.jboss.aerogear.android.ReadFilter;
-
-/**
- * Classes which implement this interface provide the logic for how pipes 
- * interact with services.
- */
-public interface PipeHandler<T> {
     /**
-     * This method is called after a call to read.  It performs the actual load of data
-     * and returns.
+     * This method creates the body of a request for a Pipe to use.
      * 
-     * @return a List of data.
+     * This is basically a serialization style operation.
+     * @param data an object to form a body out of.
      * 
+     * @return A request body which represents the data parameter
      */
-    List<T> onRead(Pipe<T> requestingPipe);
+    byte[] getBody(T data);
 
-    List<T> onReadWithFilter(ReadFilter filter, Pipe<T> requestingPipe);
-
-    T onSave(T item);
-
-    void onRemove(String id);
+    /**
+     * @return the Content-Type header to be sent to the server.
+     */
+    String getContentType();
 }

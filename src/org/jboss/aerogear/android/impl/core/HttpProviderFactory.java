@@ -16,23 +16,23 @@
  */
 package org.jboss.aerogear.android.impl.core;
 
+import java.net.URL;
+
 import org.jboss.aerogear.android.Provider;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.jboss.aerogear.android.impl.http.HttpRestProvider;
-
-import java.net.URL;
 
 public class HttpProviderFactory implements Provider<HttpProvider> {
 
     @Override
     public HttpProvider get(Object... in) {
         switch (in.length) {
-            case 1:
-                return new HttpRestProvider((URL) in[0]);
-            case 2:
-                return new HttpRestProvider((URL) in[0], (Integer) in[1]);
-            default:
-                throw new IllegalArgumentException("Wrong number of Arguments.  This method expects a URL or a URL and a Integer");
+        case 1:
+            return new HttpRestProvider((URL) in[0]);
+        case 2:
+            return new HttpRestProvider((URL) in[0], (Integer) in[1]);
+        default:
+            throw new IllegalArgumentException("Wrong number of Arguments.  This method expects a URL or a URL and a Integer");
         }
     }
 }

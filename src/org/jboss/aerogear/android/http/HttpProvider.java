@@ -51,7 +51,25 @@ public interface HttpProvider {
      * @return the HeaderAndBody response from the server
      * @throws HttpException if the http request doesn't return status 200
      */
+    public HeaderAndBody post(byte[] data) throws HttpException;
+
+    /**
+     * Issues an HTTP request, consumes the content, and cleans up
+     * after itself.
+     *
+     * @return the HeaderAndBody response from the server
+     * @throws HttpException if the http request doesn't return status 200
+     */
     public HeaderAndBody put(String id, String data) throws HttpException;
+
+    /**
+     * Issues an HTTP request, consumes the content, and cleans up
+     * after itself.
+     *
+     * @return the HeaderAndBody response from the server
+     * @throws HttpException if the http request doesn't return status 200
+     */
+    public HeaderAndBody put(String id, byte[] data) throws HttpException;
 
     /**
      * Issues an HTTP request, consumes the content, and cleans up

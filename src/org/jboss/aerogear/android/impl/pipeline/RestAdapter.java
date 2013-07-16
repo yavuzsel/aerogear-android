@@ -16,25 +16,25 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import org.jboss.aerogear.android.impl.pipeline.paging.DefaultParameterProvider;
-import android.util.Log;
-import com.google.common.base.Objects;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.net.URL;
-import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.ReadFilter;
-import org.jboss.aerogear.android.pipeline.Pipe;
-import org.jboss.aerogear.android.pipeline.PipeType;
-
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.ReadFilter;
+import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
-import org.jboss.aerogear.android.pipeline.paging.ParameterProvider;
+import org.jboss.aerogear.android.pipeline.PipeType;
+import org.jboss.aerogear.android.pipeline.RequestBuilder;
+import org.jboss.aerogear.android.pipeline.ResponseParser;
+
+import android.util.Log;
+
+import com.google.gson.Gson;
 
 /**
  * Rest implementation of {@link Pipe}.
@@ -49,8 +49,7 @@ public final class RestAdapter<T> implements Pipe<T> {
             new LinkedBlockingQueue<Runnable>(10);
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, WORK_QUEUE);
-    private ParameterProvider parameterProvider = new DefaultParameterProvider();
-    
+
     /**
      * A class of the Generic type this pipe wraps. This is used by GSON for
      * deserializing.
@@ -62,24 +61,29 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     private final URL baseURL;
     private final PipeHandler<T> restRunner;
-    private final Gson gson;
+    private final RequestBuilder<T> requestBuilder;
+    private final ResponseParser<T> responseParser;
 
     public RestAdapter(Class<T> klass, URL baseURL) {
-        this.restRunner = new RestRunner(klass, baseURL);
+        this.restRunner = new RestRunner<T>(klass, baseURL);
         this.klass = klass;
-        this.gson = new Gson();
         this.baseURL = baseURL;
+        this.requestBuilder = new GsonRequestBuilder<T>();
+        this.responseParser = new GsonResponseParser<T>();
     }
 
+    @SuppressWarnings("unchecked")
     public RestAdapter(Class<T> klass, URL baseURL, PipeConfig config) {
         this.klass = klass;
         this.baseURL = baseURL;
-        this.gson = Objects.firstNonNull(config.getGsonBuilder(), new GsonBuilder()).create();
+
+        this.requestBuilder = config.getRequestBuilder();
+        this.responseParser = config.getResponseParser();
 
         if (config.getHandler() != null) {
-            this.restRunner = config.getHandler();
+            this.restRunner = (PipeHandler<T>) config.getHandler();
         } else {
-            this.restRunner = new RestRunner(klass, baseURL, config);
+            this.restRunner = new RestRunner<T>(klass, baseURL, config);
         }
 
     }
@@ -104,7 +108,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     public void readWithFilter(ReadFilter filter, final Callback<List<T>> callback) {
         read(filter, callback);
     }
-    
+
     @Override
     public void read(ReadFilter filter, final Callback<List<T>> callback) {
         if (filter == null) {
@@ -212,7 +216,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     }
 
     @Override
-    public PipeHandler getHandler() {
+    public PipeHandler<T> getHandler() {
         return restRunner;
     }
 
@@ -223,6 +227,17 @@ public final class RestAdapter<T> implements Pipe<T> {
 
     @Override
     public Gson getGson() {
-        return gson;
+        return requestBuilder instanceof GsonRequestBuilder ? ((GsonRequestBuilder<T>) requestBuilder).getGson() : null;
     }
+
+    @Override
+    public RequestBuilder<T> getRequestBuilder() {
+        return this.requestBuilder;
+    }
+
+    @Override
+    public ResponseParser<T> getResponseParser() {
+        return this.responseParser;
+    }
+
 }

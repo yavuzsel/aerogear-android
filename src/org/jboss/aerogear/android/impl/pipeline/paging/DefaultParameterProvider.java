@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.impl.pipeline.paging;
 
 import java.net.URI;
+
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.pipeline.paging.ParameterProvider;
 

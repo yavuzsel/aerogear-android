@@ -27,11 +27,11 @@ public class AuthenticationConfig {
     private String loginEndpoint = "/auth/login";
     private String logoutEndpoint = "/auth/logout";
     private String enrollEndpoint = "/auth/enroll";
-    
+
     private AuthType authType = AuthTypes.AG_SECURITY;
 
     private Integer timeout = Integer.MAX_VALUE;
-    
+
     public String getLoginEndpoint() {
         return loginEndpoint;
     }
@@ -83,5 +83,5 @@ public class AuthenticationConfig {
     public void setTimeout(Integer timeout) {
         this.timeout = timeout;
     }
-    
+
 }

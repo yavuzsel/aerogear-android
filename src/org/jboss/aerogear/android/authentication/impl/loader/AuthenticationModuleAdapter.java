@@ -16,6 +16,18 @@
  */
 package org.jboss.aerogear.android.authentication.impl.loader;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.authentication.AuthenticationModule;
+import org.jboss.aerogear.android.authentication.AuthorizationFields;
+import org.jboss.aerogear.android.authentication.impl.loader.support.SupportAuthenticationModuleAdapter;
+import org.jboss.aerogear.android.http.HeaderAndBody;
+import org.jboss.aerogear.android.pipeline.AbstractActivityCallback;
+import org.jboss.aerogear.android.pipeline.AbstractFragmentCallback;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -26,18 +38,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+
 import com.google.common.base.Objects;
 import java.net.URI;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.authentication.AuthenticationModule;
-import org.jboss.aerogear.android.authentication.AuthorizationFields;
-import org.jboss.aerogear.android.authentication.impl.loader.support.SupportAuthenticationModuleAdapter;
-import org.jboss.aerogear.android.http.HeaderAndBody;
-import org.jboss.aerogear.android.pipeline.AbstractActivityCallback;
-import org.jboss.aerogear.android.pipeline.AbstractFragmentCallback;
+
 
 /**
  * This class manages the relationship between Android's Loader framework and
@@ -51,7 +55,7 @@ import org.jboss.aerogear.android.pipeline.AbstractFragmentCallback;
 public class AuthenticationModuleAdapter implements LoaderAuthenticationModule, LoaderManager.LoaderCallbacks<HeaderAndBody> {
 
     private static final String TAG = AuthenticationModuleAdapter.class.getSimpleName();
-    
+
     private static enum Methods {
 
         LOGIN, LOGOUT, ENROLL

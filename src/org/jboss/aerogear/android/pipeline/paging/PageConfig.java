@@ -36,6 +36,7 @@ public class PageConfig {
             return value;
         }
     }
+
     private MetadataLocation metadataLocation = MetadataLocations.WEB_LINKING;
     private String nextIdentifier = "next";
     private String previousIdentifier = "previous";
@@ -176,6 +177,7 @@ public class PageConfig {
     public PageParameterExtractor getPageParameterExtractor() {
         return pageParameterExtractor;
     }
+
     /**
      * PageParameterExtractor is the a {@link PageParameterExtractor} which
      * parses the response and provides data to a Pipe for the "next" and

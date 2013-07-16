@@ -16,12 +16,14 @@
  */
 package org.jboss.aerogear.android.impl.datamanager;
 
-import android.content.Context;
-import com.google.gson.GsonBuilder;
 import org.jboss.aerogear.android.datamanager.IdGenerator;
 import org.jboss.aerogear.android.datamanager.Store;
 import org.jboss.aerogear.android.datamanager.StoreFactory;
 import org.jboss.aerogear.android.datamanager.StoreType;
+
+import android.content.Context;
+
+import com.google.gson.GsonBuilder;
 
 /**
  * This class bundles up all of the possible variables which may be used to instantiate a {@link Store}

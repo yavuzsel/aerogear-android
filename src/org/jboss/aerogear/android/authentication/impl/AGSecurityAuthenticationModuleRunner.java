@@ -19,6 +19,8 @@ package org.jboss.aerogear.android.authentication.impl;
 import com.google.gson.JsonObject;
 import java.net.URL;
 import java.util.Map;
+
+
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpProvider;
@@ -26,6 +28,8 @@ import org.json.JSONObject;
 
 class AGSecurityAuthenticationModuleRunner extends AbstractAuthenticationModuleRunner {
 
+    private static final String TAG = AGSecurityAuthenticationModuleRunner.class.getSimpleName();
+    
     
     /**
      * @param baseURL
@@ -63,4 +67,5 @@ class AGSecurityAuthenticationModuleRunner extends AbstractAuthenticationModuleR
         HttpProvider provider = httpProviderFactory.get(logoutURL, timeout);
         provider.post("");
     }
+
 }

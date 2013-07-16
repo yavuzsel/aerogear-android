@@ -16,27 +16,10 @@
  */
 package org.jboss.aerogear.android.pipeline;
 
-import java.util.List;
+public interface ResponseParser<T> {
 
-import org.jboss.aerogear.android.ReadFilter;
+    T handleResponse(String response, Class<T> responseType);
 
-/**
- * Classes which implement this interface provide the logic for how pipes 
- * interact with services.
- */
-public interface PipeHandler<T> {
-    /**
-     * This method is called after a call to read.  It performs the actual load of data
-     * and returns.
-     * 
-     * @return a List of data.
-     * 
-     */
-    List<T> onRead(Pipe<T> requestingPipe);
+    T[] handleArrayResponse(String response, Class<T[]> responseType);
 
-    List<T> onReadWithFilter(ReadFilter filter, Pipe<T> requestingPipe);
-
-    T onSave(T item);
-
-    void onRemove(String id);
 }

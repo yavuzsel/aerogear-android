@@ -16,16 +16,11 @@
  */
 package org.jboss.aerogear.android;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
-import android.support.v4.app.FragmentActivity;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.jboss.aerogear.android.impl.pipeline.DefaultPipeFactory;
 import org.jboss.aerogear.android.impl.pipeline.LoaderAdapter;
 import org.jboss.aerogear.android.impl.pipeline.PipeConfig;
@@ -33,6 +28,14 @@ import org.jboss.aerogear.android.impl.pipeline.SupportLoaderAdapter;
 import org.jboss.aerogear.android.pipeline.LoaderPipe;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeFactory;
+
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * A {@link Pipeline} represents a ‘collection’ of server connections (aka
@@ -43,6 +46,7 @@ import org.jboss.aerogear.android.pipeline.PipeFactory;
  * purposes. This class is made non-final ONLY for testing/mocking/academic
  * purposes.
  */
+@SuppressWarnings( { "rawtypes", "unchecked" })
 public class Pipeline {
 
     private final URL baseURL;
@@ -142,7 +146,7 @@ public class Pipeline {
      */
     public LoaderPipe get(String name, Activity activity) {
         Pipe pipe = pipes.get(name);
-        LoaderAdapter adapter = new LoaderAdapter(activity, pipe, pipe.getGson(), name);
+        LoaderAdapter adapter = new LoaderAdapter(activity, pipe, name);
         adapter.setLoaderIds(loaderIdsForNamed);
         return adapter;
     }
@@ -159,7 +163,7 @@ public class Pipeline {
      */
     public LoaderPipe get(String name, Fragment fragment, Context applicationContext) {
         Pipe pipe = pipes.get(name);
-        LoaderAdapter adapter = new LoaderAdapter(fragment, applicationContext, pipe, pipe.getGson(), name);
+        LoaderAdapter adapter = new LoaderAdapter(fragment, applicationContext, pipe, name);
         adapter.setLoaderIds(loaderIdsForNamed);
         return adapter;
     }
@@ -174,7 +178,7 @@ public class Pipeline {
      */
     public LoaderPipe get(String name, FragmentActivity activity) {
         Pipe pipe = pipes.get(name);
-        SupportLoaderAdapter adapter = new SupportLoaderAdapter(activity, pipe, pipe.getGson(), name);
+        SupportLoaderAdapter adapter = new SupportLoaderAdapter(activity, pipe, name);
         adapter.setLoaderIds(loaderIdsForNamed);
         return adapter;
     }
@@ -191,7 +195,7 @@ public class Pipeline {
      */
     public LoaderPipe get(String name, android.support.v4.app.Fragment fragment, Context applicationContext) {
         Pipe pipe = pipes.get(name);
-        LoaderPipe adapter = new SupportLoaderAdapter(fragment, applicationContext, pipe, pipe.getGson(), name);
+        LoaderPipe adapter = new SupportLoaderAdapter(fragment, applicationContext, pipe, name);
         adapter.setLoaderIds(loaderIdsForNamed);
         return adapter;
     }

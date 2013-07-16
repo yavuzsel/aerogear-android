@@ -16,16 +16,19 @@
  */
 package org.jboss.aerogear.android.impl.pipeline.paging;
 
-import android.util.Log;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import org.jboss.aerogear.android.ReadFilter;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
 import org.jboss.aerogear.android.pipeline.paging.PageParameterExtractor;
+
+import android.util.Log;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 /**
  * This class assumes the response body paging properties are URI's and parses them 

@@ -16,20 +16,26 @@
  */
 package org.jboss.aerogear.android.impl.pipeline;
 
-import com.google.gson.GsonBuilder;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Locale;
+
 import org.jboss.aerogear.android.Pipeline;
 import org.jboss.aerogear.android.authentication.AuthenticationModule;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
 import org.jboss.aerogear.android.pipeline.PipeType;
+import org.jboss.aerogear.android.pipeline.RequestBuilder;
+import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.paging.PageConfig;
+
+import com.google.gson.GsonBuilder;
 
 /**
  * Specifies configurations for {@link Pipe} to be build by {@link Pipeline}
  */
+@SuppressWarnings("rawtypes")
 public final class PipeConfig {
 
     private URL baseURL;
@@ -37,10 +43,10 @@ public final class PipeConfig {
     private String endpoint;
     private PipeType type = PipeTypes.REST;
     private PageConfig pageConfig;
-    private GsonBuilder gsonBuilder;
     private AuthenticationModule authModule;
     private PipeHandler handler;
     private Integer timeout = Integer.MAX_VALUE;
+    private ResponseParser responseParser = new GsonResponseParser();
     /**
      * Where the data elements the pipe wants to extract are found in the
      * response from the server. Defaults to the root of the data structure
@@ -48,10 +54,12 @@ public final class PipeConfig {
      */
     private String dataRoot = "";
     private Charset encoding = Charset.forName("UTF-8");
+    private RequestBuilder requestBuilder = new GsonRequestBuilder();
+    private GsonBuilder gsonBulder = new GsonBuilder();
 
     public PipeConfig(URL baseURL, Class klass) {
         this.baseURL = baseURL;
-        this.name = klass.getSimpleName().toLowerCase();
+        this.name = klass.getSimpleName().toLowerCase(Locale.US);
         this.endpoint = name;
         this.type = PipeTypes.REST;
     }
@@ -125,19 +133,45 @@ public final class PipeConfig {
     }
 
     /**
+     * @deprecated Pipes are moving to a more generic RequestBuilder interface.
+     * {@link GsonRequestBuilder}
+     *
      * @return the current GSONBuilder which will be used to generate GSON
      * objects to be used by Pipes with this config.
+     *
+     * @throws IllegalStateException if ResponseBuilder is not an instance of
+     * GsonResponseParser
+     *
      */
     public GsonBuilder getGsonBuilder() {
-        return gsonBuilder;
+        if (responseParser instanceof GsonResponseParser) {
+            return this.gsonBulder;
+        } else {
+            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
+        }
     }
 
     /**
+     *
+     * @deprecated Pipes are moving to a more generic RequestBuilder interface.
+     * {@link GsonRequestBuilder}
+     *
      * @param gsonBuilder GSONBuilder which will be used to generate GSON
      * objects to be used by Pipes with this config.
+     *
+     * @throws IllegalStateException if ResponseBuilder is not an instance of
+     * GsonResponseParser
+     *
      */
+    @Deprecated
     public void setGsonBuilder(GsonBuilder gsonBuilder) {
-        this.gsonBuilder = gsonBuilder;
+        if (!(responseParser instanceof GsonResponseParser && requestBuilder instanceof GsonRequestBuilder)) {
+            throw new IllegalStateException("responseBuilder is not an instance of GsonResponseBuilder");
+        } else {
+            this.gsonBulder = gsonBuilder;
+            ((GsonResponseParser) responseParser).setGson(gsonBuilder.create());
+            ((GsonRequestBuilder) requestBuilder).setGson(gsonBuilder.create());
+        }
     }
 
     /**
@@ -291,5 +325,49 @@ public final class PipeConfig {
      */
     public void setTimeout(Integer timeout) {
         this.timeout = timeout;
+    }
+
+    /**
+     * A request builder is responsible for turning an object into a request
+     * used in a Pipe's save methods.
+     *
+     * This value defaults to {@link GsonRequestBuilder}
+     *
+     * @param requestBuilder a new request builder
+     */
+    public void setRequestBuilder(RequestBuilder requestBuilder) {
+        this.requestBuilder = requestBuilder;
+    }
+
+    /**
+     * A request builder is responsible for turning an object into a request
+     * used in a Pipe's save methods.
+     *
+     * This value defaults to {@link GsonRequestBuilder}
+     *
+     * @return the current request builder.
+     */
+    public RequestBuilder getRequestBuilder() {
+        return this.requestBuilder;
+    }
+
+    /**
+     * A ResponseParser is responsible for parsing a String value of the
+     * response from a remote source into a object instance.
+     *
+     * @return
+     *
+     */
+    public ResponseParser getResponseParser() {
+        return responseParser;
+    }
+
+    /**
+     * A ResponseParser is responsible for parsing a String value of the
+     * response from a remote source into a object instance.
+     *
+     */
+    public void setResponseParser(ResponseParser responseParser) {
+        this.responseParser = responseParser;
     }
 }

@@ -57,6 +57,7 @@ public class ScanTest {
 
     }
 
-    public static class MyData extends SuperData {}
+    public static class MyData extends SuperData {
+    }
 
 }

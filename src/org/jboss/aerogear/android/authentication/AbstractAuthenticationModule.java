@@ -16,15 +16,15 @@
  */
 package org.jboss.aerogear.android.authentication;
 
-import org.jboss.aerogear.android.Callback;
-import org.jboss.aerogear.android.http.HeaderAndBody;
-
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.jboss.aerogear.android.Callback;
+import org.jboss.aerogear.android.http.HeaderAndBody;
 
 /**
  * This class stubs out the enroll, login, and logout methods. If you call these

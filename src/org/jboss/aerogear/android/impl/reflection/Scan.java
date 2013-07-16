@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.impl.reflection;
 
 import java.lang.reflect.Field;
+
 import org.jboss.aerogear.android.RecordId;
 
 /**
@@ -37,7 +38,7 @@ public final class Scan {
             }
         }
         Class superclass = klass.getSuperclass();
-        if( superclass != null ) {
+        if (superclass != null) {
             return recordIdFieldIn(superclass);
         }
         throw new RecordIdNotFoundException(klass);

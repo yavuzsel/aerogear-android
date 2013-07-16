@@ -29,6 +29,8 @@ import org.jboss.aerogear.android.pipeline.LoaderPipe;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.jboss.aerogear.android.pipeline.PipeHandler;
 import org.jboss.aerogear.android.pipeline.PipeType;
+import org.jboss.aerogear.android.pipeline.RequestBuilder;
+import org.jboss.aerogear.android.pipeline.ResponseParser;
 import org.jboss.aerogear.android.pipeline.support.AbstractFragmentActivityCallback;
 import org.jboss.aerogear.android.pipeline.support.AbstractSupportFragmentCallback;
 
@@ -53,10 +55,11 @@ import com.google.gson.Gson;
  * Android devices &lt; version 3.0, consider using {@link LoaderAdapter}
  *
  */
+@SuppressWarnings( { "rawtypes", "unchecked" })
 public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.LoaderCallbacks<T> {
 
     private static final String TAG = SupportLoaderAdapter.class.getSimpleName();
-    
+
     private Multimap<String, Integer> idsForNamedPipes;
     private final Fragment fragment;
     private final FragmentActivity activity;
@@ -70,32 +73,70 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
     private final Context applicationContext;
     private final Pipe<T> pipe;
     private final LoaderManager manager;
-    private final Gson gson;
+    private final RequestBuilder<T> requestBuilder;
+    private final ResponseParser<T> responseParser;
     /**
      * The name referred to in the idsForNamedPipes
      */
     private final String name;
 
+    @Deprecated
+    /**
+     * This constructor is reprecated and will be replaced with 
+     * SupportLoaderAdapter(FragmentActivity activity, Pipe<T> pipe, String name)
+     */
     public SupportLoaderAdapter(FragmentActivity activity, Pipe<T> pipe, Gson gson, String name) {
         this.pipe = pipe;
-        this.gson = gson;
         this.manager = activity.getSupportLoaderManager();
         this.applicationContext = activity.getApplicationContext();
         this.name = name;
         this.handler = new Handler(Looper.getMainLooper());
         this.activity = activity;
         this.fragment = null;
+        this.requestBuilder = new GsonRequestBuilder<T>(gson);
+        this.responseParser = new GsonResponseParser<T>(gson);
     }
 
+    @Deprecated
+    /**
+     * 
+     * This constructor is deprecated and will be replaced with 
+     * SupportLoaderAdapter(Fragment fragment, Context applicationContext, Pipe<T> pipe, String name)
+     */
     public SupportLoaderAdapter(Fragment fragment, Context applicationContext, Pipe<T> pipe, Gson gson, String name) {
         this.pipe = pipe;
         this.manager = fragment.getLoaderManager();
-        this.gson = gson;
+        this.requestBuilder = new GsonRequestBuilder<T>(gson);
         this.applicationContext = applicationContext;
         this.name = name;
         this.handler = new Handler(Looper.getMainLooper());
         this.activity = null;
         this.fragment = fragment;
+        this.responseParser = new GsonResponseParser<T>(gson);
+    }
+
+    public SupportLoaderAdapter(Fragment fragment, Context applicationContext, Pipe<T> pipe, String name) {
+        this.pipe = pipe;
+        this.manager = fragment.getLoaderManager();
+        this.requestBuilder = pipe.getRequestBuilder();
+        this.applicationContext = applicationContext;
+        this.name = name;
+        this.handler = new Handler(Looper.getMainLooper());
+        this.activity = null;
+        this.fragment = fragment;
+        this.responseParser = pipe.getResponseParser();
+    }
+
+    public SupportLoaderAdapter(FragmentActivity activity, Pipe<T> pipe, String name) {
+        this.pipe = pipe;
+        this.requestBuilder = pipe.getRequestBuilder();
+        this.manager = activity.getSupportLoaderManager();
+        this.applicationContext = activity.getApplicationContext();
+        this.name = name;
+        this.handler = new Handler(Looper.getMainLooper());
+        this.activity = activity;
+        this.fragment = null;
+        this.responseParser = pipe.getResponseParser();
     }
 
     @Override
@@ -123,7 +164,7 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
     public void readWithFilter(ReadFilter filter, Callback<List<T>> callback) {
         read(filter, callback);
     }
-    
+
     @Override
     public void read(ReadFilter filter, Callback<List<T>> callback) {
         int id = Objects.hashCode(name, filter, callback);
@@ -139,7 +180,7 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
         int id = Objects.hashCode(name, item, callback);
         Bundle bundle = new Bundle();
         bundle.putSerializable(CALLBACK, callback);
-        bundle.putSerializable(ITEM, gson.toJson(item));//item may not be serializable, but it has to be gsonable
+        bundle.putSerializable(ITEM, requestBuilder.getBody(item));//item may not be serializable, but it has to be able to be handled by the requestBuilder
         bundle.putSerializable(METHOD, Methods.SAVE);
         manager.initLoader(id, bundle, this);
     }
@@ -172,13 +213,13 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
         }
             break;
         case REMOVE: {
-            String toRemove = bundle.getString(REMOVE_ID, "-1");
+            String toRemove = Objects.firstNonNull(bundle.getString(REMOVE_ID), "-1");
             loader = new SupportRemoveLoader(applicationContext, callback, pipe.getHandler(), toRemove);
         }
             break;
         case SAVE: {
             String json = bundle.getString(ITEM);
-            T item = gson.fromJson(json, pipe.getKlass());
+            T item = responseParser.handleResponse(json, pipe.getKlass());
             loader = new SupportSaveLoader(applicationContext, callback, pipe.getHandler(), item);
         }
             break;
@@ -188,7 +229,17 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
 
     @Override
     public Gson getGson() {
-        return gson;
+        return requestBuilder instanceof GsonRequestBuilder ? ((GsonRequestBuilder) requestBuilder).getGson() : null;
+    }
+
+    @Override
+    public RequestBuilder<T> getRequestBuilder() {
+        return requestBuilder;
+    }
+
+    @Override
+    public ResponseParser<T> getResponseParser() {
+        return responseParser;
     }
 
     @Override
