@@ -1,4 +1,4 @@
-aerogear-android
+aerogear-android [![Build Status](https://travis-ci.org/aerogear/aerogear-android.png)](https://travis-ci.org/aerogear/aerogear-android)
 ================
 
 This project is the core Aerogear library for Android.  It is build using Maven as an apk lib.
