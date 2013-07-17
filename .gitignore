@@ -3,6 +3,7 @@
 *.iml
 .idea/
 out/
+gen-external-apklibs/
 
 ########## Eclipse ##########
 
