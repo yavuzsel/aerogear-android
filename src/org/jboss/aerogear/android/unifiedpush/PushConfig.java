@@ -23,11 +23,11 @@ import android.content.BroadcastReceiver;
 import com.google.common.collect.ImmutableSet;
 
 public class PushConfig implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-	
     private String deviceToken;
     private String mobileVariantId;
+    private String mobileSecret;
     private String deviceType = "ANDROID";
     private String mobileOperatingSystem = "android";
     private String osVersion = android.os.Build.VERSION.RELEASE;
@@ -35,24 +35,23 @@ public class PushConfig implements Serializable {
     private String category;
     private Class<? extends BroadcastReceiver> broadCastReceiver = AGPushMessageReceiver.class;
     private Object[] broadCastReceiverParams;
-    
     public final ImmutableSet<String> senderIds;
-    
+
     public PushConfig(String... senderId) {
         senderIds = ImmutableSet.copyOf(senderId);
     }
-    
+
     /**
-     * The device token Identifies the device within its Push Network.
-     * It is the value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
+     * The device token Identifies the device within its Push Network. It is the
+     * value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
      */
     public String getDeviceToken() {
         return deviceToken;
     }
 
     /**
-     * The device token Identifies the device within its Push Network.
-     * It is the value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
+     * The device token Identifies the device within its Push Network. It is the
+     * value = GoogleCloudMessaging.getInstance(context).register(SENDER_ID);
      */
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
@@ -60,20 +59,38 @@ public class PushConfig implements Serializable {
 
     /**
      * Mobile variant id is the id of the application in Aerogear Push service.
-     */ 
+     */
     public String getMobileVariantId() {
         return mobileVariantId;
     }
 
     /**
      * Mobile variant id is the id of the application in Aerogear Push service.
-     */ 
+     */
     public void setMobileVariantId(String mobileVariantId) {
         this.mobileVariantId = mobileVariantId;
     }
 
     /**
-     * Device type determines which cloud messaging system will be used by the 
+     * Mobile secret of the application in Aerogear Push service.
+     *
+     * @return
+     */
+    public String getMobileSecret() {
+        return mobileSecret;
+    }
+
+    /**
+     * Mobile secret of the application in Aerogear Push service.
+     *
+     * @param mobileSecret
+     */
+    public void setMobileSecret(String mobileSecret) {
+        this.mobileSecret = mobileSecret;
+    }
+
+    /**
+     * Device type determines which cloud messaging system will be used by the
      * AeroGear Unified Push Server
      *
      * Defaults to ANDROID
@@ -83,9 +100,9 @@ public class PushConfig implements Serializable {
     }
 
     /**
-     * Device type determines which cloud messaging system will be used by the 
+     * Device type determines which cloud messaging system will be used by the
      * AeroGear Unified Push Server.
-     * 
+     *
      * Defaults to ANDROID
      */
     public void setDeviceType(String deviceType) {
@@ -93,24 +110,22 @@ public class PushConfig implements Serializable {
     }
 
     /**
-     * The name of the operating system.
-     * Defaults to Android
+     * The name of the operating system. Defaults to Android
      */
     public String getMobileOperatingSystem() {
         return mobileOperatingSystem;
     }
 
     /**
-     * The name of the operating system.
-     * Defaults to Android
+     * The name of the operating system. Defaults to Android
      */
     public void setMobileOperatingSystem(String mobileOperatingSystem) {
         this.mobileOperatingSystem = mobileOperatingSystem;
     }
 
     /**
-     * The version of the operating system running. 
-     * 
+     * The version of the operating system running.
+     *
      * Defaults to the value provided by android.os.Build.VERSION.RELEASE
      */
     public String getOsVersion() {
@@ -118,8 +133,8 @@ public class PushConfig implements Serializable {
     }
 
     /**
-     * The version of the operating system running. 
-     * 
+     * The version of the operating system running.
+     *
      * Defaults to the value provided by android.os.Build.VERSION.RELEASE
      */
     public void setOsVersion(String osVersion) {
@@ -128,9 +143,9 @@ public class PushConfig implements Serializable {
 
     /**
      * The Alias is an identifier of the user of the system.
-     * 
+     *
      * Examples are an email address or a username
-     * 
+     *
      */
     public String getAlias() {
         return alias;
@@ -138,9 +153,9 @@ public class PushConfig implements Serializable {
 
     /**
      * The Alias is an identifier of the user of the system.
-     * 
+     *
      * Examples are an email address or a username
-     * 
+     *
      */
     public void setAlias(String alias) {
         this.alias = alias;
@@ -161,36 +176,39 @@ public class PushConfig implements Serializable {
     }
 
     /**
-     * The broadcastReceiver is a class which will be registered as a receiver of Push messages.
-     *  
-     *  It will receive Intents named com.google.android.c2dm.intent.RECEIVE
+     * The broadcastReceiver is a class which will be registered as a receiver
+     * of Push messages.
+     *
+     * It will receive Intents named com.google.android.c2dm.intent.RECEIVE
      */
     public Class<? extends BroadcastReceiver> getBroadCastReceiver() {
-            return broadCastReceiver;
+        return broadCastReceiver;
     }
 
     /**
-     * The broadcastReceiver is a class which will be registered as a receiver of Push messages.
-     *  
-     *  It will receive Intents named com.google.android.c2dm.intent.RECEIVE
+     * The broadcastReceiver is a class which will be registered as a receiver
+     * of Push messages.
+     *
+     * It will receive Intents named com.google.android.c2dm.intent.RECEIVE
      */
     public void setBroadCastReceiver(
-                    Class<? extends BroadcastReceiver> broadCastReceiver) {
-            this.broadCastReceiver = broadCastReceiver;
+            Class<? extends BroadcastReceiver> broadCastReceiver) {
+        this.broadCastReceiver = broadCastReceiver;
     }
 
     /**
-     * BroadCastReceiverParams represent the constructor params for the BroadcastReceiver
+     * BroadCastReceiverParams represent the constructor params for the
+     * BroadcastReceiver
      */
     public Object[] getBroadCastReceiverParams() {
-            return broadCastReceiverParams;
+        return broadCastReceiverParams;
     }
 
     /**
-     * BroadCastReceiverParams represent the constructor params for the BroadcastReceiver
+     * BroadCastReceiverParams represent the constructor params for the
+     * BroadcastReceiver
      */
     public void setBroadCastReceiverParams(Object[] broadCastReceiverParams) {
-            this.broadCastReceiverParams = broadCastReceiverParams;
+        this.broadCastReceiverParams = broadCastReceiverParams;
     }
-
 }
