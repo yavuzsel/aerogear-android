@@ -26,8 +26,8 @@ public class PushConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String deviceToken;
-    private String mobileVariantId;
-    private String mobileSecret;
+    private String variantID;
+    private String secret;
     private String deviceType = "ANDROID";
     private String mobileOperatingSystem = "android";
     private String osVersion = android.os.Build.VERSION.RELEASE;
@@ -58,35 +58,39 @@ public class PushConfig implements Serializable {
     }
 
     /**
-     * Mobile variant id is the id of the application in Aerogear Push service.
-     */
-    public String getMobileVariantId() {
-        return mobileVariantId;
+    * ID of the Variant from the AeroGear UnifiedPush Server.
+    *
+    * @return
+    */
+    public String getVariantID() {
+        return variantID;
     }
 
     /**
-     * Mobile variant id is the id of the application in Aerogear Push service.
+     * ID of the Variant from the AeroGear UnifiedPush Server.
+     *
+     * @param variantID
      */
-    public void setMobileVariantId(String mobileVariantId) {
-        this.mobileVariantId = mobileVariantId;
+    public void setVariantID(String variantID) {
+        this.variantID = variantID;
     }
 
     /**
-     * Mobile secret of the application in Aerogear Push service.
+     * Secret of the Variant from the AeroGear UnifiedPush Server.
      *
      * @return
      */
-    public String getMobileSecret() {
-        return mobileSecret;
+    public String getSecret() {
+        return secret;
     }
 
     /**
-     * Mobile secret of the application in Aerogear Push service.
+     * Secret of the Variant from the AeroGear UnifiedPush Server.
      *
-     * @param mobileSecret
+     * @param secret
      */
-    public void setMobileSecret(String mobileSecret) {
-        this.mobileSecret = mobileSecret;
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
     /**
