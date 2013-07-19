@@ -355,7 +355,7 @@ public final class PipeConfig {
      * A ResponseParser is responsible for parsing a String value of the
      * response from a remote source into a object instance.
      *
-     * @return
+     * @return the current value of the ResponseParser field
      *
      */
     public ResponseParser getResponseParser() {
