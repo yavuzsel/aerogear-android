@@ -41,7 +41,7 @@ public class GsonRequestBuilder<T> implements RequestBuilder<T> {
     }
 
     /**
-     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGson(com.google.gson.GsonBuilder) }
+     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
      */
     @Deprecated
     public Gson getGson() {
@@ -49,7 +49,7 @@ public class GsonRequestBuilder<T> implements RequestBuilder<T> {
     }
 
     /**
-     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGson(com.google.gson.GsonBuilder) }
+     * @deprecated This method exists to support another deprecated method while we transition off of it.  {@link  PipeConfig#setGsonBuilder(com.google.gson.GsonBuilder) }
      */
     @Deprecated
     public void setGson(Gson gson) {
