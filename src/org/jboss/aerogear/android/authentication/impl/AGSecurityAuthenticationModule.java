@@ -26,6 +26,7 @@ import org.jboss.aerogear.android.http.HeaderAndBody;
 
 import android.util.Log;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -39,6 +40,9 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
 
     private static final String TAG = AGSecurityAuthenticationModule.class.getSimpleName();
 
+    static final String USERNAME_PARAMETER_NAME = "loginName";
+    static final String PASSWORD_PARAMETER_NAME = "password";
+    
     private boolean isLoggedIn = false;
 
     private final AGSecurityAuthenticationModuleRunner runner;
@@ -104,29 +108,38 @@ public final class AGSecurityAuthenticationModule extends AbstractAuthentication
     @Override
     public void login(final String username, final String password,
             final Callback<HeaderAndBody> callback) {
+        Map<String, String> loginData = new HashMap<String, String>(2);
+        loginData.put(USERNAME_PARAMETER_NAME, username);
+        loginData.put(PASSWORD_PARAMETER_NAME, password);
+        login(loginData, callback);
+    }
+
+    public void login(final Map<String, String> loginData,
+            final Callback<HeaderAndBody> callback) {
         THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 HeaderAndBody result = null;
                 Exception exception = null;
-
                 try {
-                    result = runner.onLogin(username, password);
+                    result = runner.onLogin(loginData);
                     isLoggedIn = true;
                 } catch (Exception e) {
-                    Log.e(TAG, "Error with Login", e);
+                    Log.e(TAG, "error logging in", e);
                     exception = e;
                 }
+
                 if (exception == null) {
                     callback.onSuccess(result);
                 } else {
                     callback.onFailure(exception);
                 }
+
             }
         });
 
     }
-
+    
     @Override
     public void logout(final Callback<Void> callback) {
         THREAD_POOL_EXECUTOR.execute(new Runnable() {

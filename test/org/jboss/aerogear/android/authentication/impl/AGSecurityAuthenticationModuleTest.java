@@ -34,6 +34,10 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import static org.jboss.aerogear.android.authentication.impl.AuthenticationModuleTest.LOGIN_PASSWORD;
+import static org.jboss.aerogear.android.authentication.impl.AuthenticationModuleTest.PASSING_USERNAME;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @RunWith(RobolectricTestRunner.class)
 public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleTest {
@@ -93,12 +97,13 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
     }
 
     @Test(timeout = 500L)
-    public void loginSucceeds() throws IOException, NoSuchFieldException,
+    public void loginSucceedsLoginMap() throws IOException, NoSuchFieldException,
             InterruptedException, IllegalArgumentException,
-            IllegalAccessException {
+            IllegalAccessException, JSONException {
         AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
                 SIMPLE_URL, new AuthenticationConfig());
         final CountDownLatch latch = new CountDownLatch(1);
+        final StringBuilder requestData = new StringBuilder();
         Object runner = UnitTestUtils.getPrivateField(module, "runner");
         UnitTestUtils.setPrivateField(runner, "httpProviderFactory",
                 new Provider<HttpProvider>() {
@@ -106,9 +111,55 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
                     public HttpProvider get(Object... in) {
                         return new HttpStubProvider(SIMPLE_URL) {
                             @Override
-                            public HeaderAndBody post(String ignore)
+                            public HeaderAndBody post(String request)
                                     throws RuntimeException {
                                 HashMap<String, Object> headers = new HashMap<String, Object>();
+                                requestData.append(request);
+                                return new HeaderAndBody(new byte[1], headers);
+
+                            }
+                        };
+                    }
+                });
+
+        SimpleCallback callback = new SimpleCallback(latch);
+        Map<String, String> loginData = new HashMap<String, String>(2);
+        
+        loginData.put("username", PASSING_USERNAME);
+        
+        loginData.put("password", LOGIN_PASSWORD);
+        module.login(loginData, callback);
+        latch.await();
+
+        Assert.assertNull(callback.exception);
+        Assert.assertNotNull(callback.data);
+        Assert.assertTrue(module.isLoggedIn());
+        
+        JSONObject request = new JSONObject(requestData.toString());
+        Assert.assertEquals(PASSING_USERNAME, request.getString("username"));
+        Assert.assertEquals(LOGIN_PASSWORD, request.getString("password"));
+        
+    }
+    
+    @Test(timeout = 500L)
+    public void loginSucceedsUsernamePassword() throws IOException, NoSuchFieldException,
+            InterruptedException, IllegalArgumentException,
+            IllegalAccessException, JSONException {
+        AGSecurityAuthenticationModule module = new AGSecurityAuthenticationModule(
+                SIMPLE_URL, new AuthenticationConfig());
+        final CountDownLatch latch = new CountDownLatch(1);
+        final StringBuilder requestData = new StringBuilder();
+        Object runner = UnitTestUtils.getPrivateField(module, "runner");
+        UnitTestUtils.setPrivateField(runner, "httpProviderFactory",
+                new Provider<HttpProvider>() {
+                    @Override
+                    public HttpProvider get(Object... in) {
+                        return new HttpStubProvider(SIMPLE_URL) {
+                            @Override
+                            public HeaderAndBody post(String request)
+                                    throws RuntimeException {
+                                HashMap<String, Object> headers = new HashMap<String, Object>();
+                                requestData.append(request);
                                 return new HeaderAndBody(new byte[1], headers);
 
                             }
@@ -123,6 +174,11 @@ public class AGSecurityAuthenticationModuleTest implements AuthenticationModuleT
         Assert.assertNull(callback.exception);
         Assert.assertNotNull(callback.data);
         Assert.assertTrue(module.isLoggedIn());
+        
+        JSONObject request = new JSONObject(requestData.toString());
+        Assert.assertEquals(PASSING_USERNAME, request.getString(AGSecurityAuthenticationModule.USERNAME_PARAMETER_NAME));
+        Assert.assertEquals(LOGIN_PASSWORD, request.getString(AGSecurityAuthenticationModule.PASSWORD_PARAMETER_NAME));
+        
     }
 
     @Test(timeout = 500L)
