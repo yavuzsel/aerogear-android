@@ -29,8 +29,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpException;
@@ -71,19 +69,6 @@ public class DigestAuthenticationModuleRunner extends
 	public DigestAuthenticationModuleRunner(URL baseURL,
 			AuthenticationConfig config) {
 		super(baseURL, config);
-	}
-
-	String buildLoginData(String username, String password) {
-		throw new UnsupportedOperationException("Not supported yet."); // To
-																		// change
-																		// body
-																		// of
-																		// generated
-																		// methods,
-																		// choose
-																		// Tools
-																		// |
-																		// Templates.
 	}
 
 	@Override
