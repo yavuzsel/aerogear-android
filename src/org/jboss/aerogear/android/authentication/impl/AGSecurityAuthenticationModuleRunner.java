@@ -18,10 +18,12 @@ package org.jboss.aerogear.android.authentication.impl;
 
 import com.google.gson.JsonObject;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 
 import org.jboss.aerogear.android.authentication.AuthenticationConfig;
+import static org.jboss.aerogear.android.authentication.impl.AGSecurityAuthenticationModule.*;
 import org.jboss.aerogear.android.http.HeaderAndBody;
 import org.jboss.aerogear.android.http.HttpProvider;
 import org.json.JSONObject;
@@ -29,7 +31,6 @@ import org.json.JSONObject;
 class AGSecurityAuthenticationModuleRunner extends AbstractAuthenticationModuleRunner {
 
     private static final String TAG = AGSecurityAuthenticationModuleRunner.class.getSimpleName();
-    
     
     /**
      * @param baseURL
@@ -43,7 +44,7 @@ class AGSecurityAuthenticationModuleRunner extends AbstractAuthenticationModuleR
     
     String buildLoginData(String username, String password) {
         JsonObject response = new JsonObject();
-        response.addProperty("username", username);
+        response.addProperty("loginName", username);
         response.addProperty("password", password);
         return response.toString();
     }
@@ -56,10 +57,20 @@ class AGSecurityAuthenticationModuleRunner extends AbstractAuthenticationModuleR
     }
 
     @Override
-    public HeaderAndBody onLogin(final String username, final String password) {
+    HeaderAndBody onLogin(String username, String password) {
+        Map<String, String> loginData = new HashMap<String, String>(2);
+        loginData.put(USERNAME_PARAMETER_NAME, username);
+        loginData.put(PASSWORD_PARAMETER_NAME, password);       
+        return onLogin(loginData);
+    }
+
+
+    
+    
+    public HeaderAndBody onLogin(final Map<String, String> loginData) {
         HttpProvider provider = httpProviderFactory.get(loginURL, timeout);
-        String loginData = buildLoginData(username, password);
-        return provider.post(loginData);
+        String loginRequest = new JSONObject(loginData).toString();
+        return provider.post(loginRequest);
     }
 
     @Override
