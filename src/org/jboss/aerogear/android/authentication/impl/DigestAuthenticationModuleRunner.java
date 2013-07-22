@@ -40,6 +40,8 @@ import org.json.JSONObject;
 public class DigestAuthenticationModuleRunner extends
 		AbstractAuthenticationModuleRunner {
 
+        private final String TAG = DigestAuthenticationModuleRunner.class.getSimpleName();
+    
 	private static String WWW_AUTHENTICATE_HEADER = "WWW-Authenticate";
 	private static final String REALM = "realm";
 	private static final String DOMAIN = "domain";
