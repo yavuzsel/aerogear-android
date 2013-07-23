@@ -52,6 +52,7 @@ import android.util.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
+import static org.jboss.aerogear.android.pipeline.LoaderPipe.ITEM;
 
 /**
  * This class wraps a Pipe in an asynchronous Loader.
@@ -236,8 +237,8 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
         }
             break;
         case SAVE: {
-            String json = bundle.getString(ITEM);
-            T item = responseParser.handleResponse(json, pipe.getKlass());
+            byte[] json = bundle.getByteArray(ITEM);
+            T item = responseParser.handleResponse(new String(json), pipe.getKlass());
             loader = new SaveLoader(applicationContext, callback,
                     pipe.getHandler(), item);
         }

@@ -218,8 +218,8 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
         }
             break;
         case SAVE: {
-            String json = bundle.getString(ITEM);
-            T item = responseParser.handleResponse(json, pipe.getKlass());
+            byte[] json = bundle.getByteArray(ITEM);
+            T item = responseParser.handleResponse(new String(json), pipe.getKlass());
             loader = new SupportSaveLoader(applicationContext, callback, pipe.getHandler(), item);
         }
             break;
