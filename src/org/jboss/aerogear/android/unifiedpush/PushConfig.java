@@ -18,7 +18,6 @@ package org.jboss.aerogear.android.unifiedpush;
 
 import java.io.Serializable;
 
-import android.content.BroadcastReceiver;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -33,8 +32,6 @@ public class PushConfig implements Serializable {
     private String osVersion = android.os.Build.VERSION.RELEASE;
     private String alias;
     private String category;
-    private Class<? extends BroadcastReceiver> broadCastReceiver = AGPushMessageReceiver.class;
-    private Object[] broadCastReceiverParams;
     public final ImmutableSet<String> senderIds;
 
     public PushConfig(String... senderId) {
@@ -58,10 +55,10 @@ public class PushConfig implements Serializable {
     }
 
     /**
-    * ID of the Variant from the AeroGear UnifiedPush Server.
-    *
-    * @return
-    */
+     * ID of the Variant from the AeroGear UnifiedPush Server.
+     *
+     * @return
+     */
     public String getVariantID() {
         return variantID;
     }
@@ -177,42 +174,5 @@ public class PushConfig implements Serializable {
      */
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    /**
-     * The broadcastReceiver is a class which will be registered as a receiver
-     * of Push messages.
-     *
-     * It will receive Intents named com.google.android.c2dm.intent.RECEIVE
-     */
-    public Class<? extends BroadcastReceiver> getBroadCastReceiver() {
-        return broadCastReceiver;
-    }
-
-    /**
-     * The broadcastReceiver is a class which will be registered as a receiver
-     * of Push messages.
-     *
-     * It will receive Intents named com.google.android.c2dm.intent.RECEIVE
-     */
-    public void setBroadCastReceiver(
-            Class<? extends BroadcastReceiver> broadCastReceiver) {
-        this.broadCastReceiver = broadCastReceiver;
-    }
-
-    /**
-     * BroadCastReceiverParams represent the constructor params for the
-     * BroadcastReceiver
-     */
-    public Object[] getBroadCastReceiverParams() {
-        return broadCastReceiverParams;
-    }
-
-    /**
-     * BroadCastReceiverParams represent the constructor params for the
-     * BroadcastReceiver
-     */
-    public void setBroadCastReceiverParams(Object[] broadCastReceiverParams) {
-        this.broadCastReceiverParams = broadCastReceiverParams;
     }
 }

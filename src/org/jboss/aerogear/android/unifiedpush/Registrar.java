@@ -24,14 +24,10 @@ import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.http.HttpException;
 import org.jboss.aerogear.android.impl.http.HttpRestProvider;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -54,16 +50,13 @@ public class Registrar {
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
-
     private static List<MessageHandler> mainThreadHandlers = new ArrayList<MessageHandler>();
     private static List<MessageHandler> backgroundThreadHandlers = new ArrayList<MessageHandler>();
-
     /**
      * Default lifespan (7 days) of a reservation until it is considered
      * expired.
      */
     public static final long REGISTRATION_EXPIRY_TIME_MS = 1000 * 3600 * 24 * 7;
-
     private GoogleCloudMessaging gcm;
 
     public Registrar(URL registryURL) {
@@ -95,7 +88,6 @@ public class Registrar {
 
                     Gson gson = new GsonBuilder().setExclusionStrategies(
                             new ExclusionStrategy() {
-
                                 private final ImmutableSet<String> fields;
 
                                 {
@@ -131,44 +123,9 @@ public class Registrar {
             }
 
             @SuppressWarnings("unchecked")
-			protected void onPostExecute(Exception result) {
+            @Override
+            protected void onPostExecute(Exception result) {
                 if (result == null) {
-                    ComponentName component = new ComponentName(context,
-                            AGPushMessageReceiver.class);
-                    int status = context.getPackageManager()
-                            .getComponentEnabledSetting(component);
-                    if (status == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT) {
-                        try {
-                            BroadcastReceiver receiverInstance = null;
-                            final IntentFilter filter = new IntentFilter(
-                                    "com.google.android.c2dm.intent.RECEIVE");
-
-                            if (config.getBroadCastReceiverParams() == null) {
-                                receiverInstance = config
-                                        .getBroadCastReceiver().newInstance();
-
-                            } else {
-                                Object[] params = config
-                                        .getBroadCastReceiverParams();
-                                Class<? extends BroadcastReceiver> receiver = config
-                                        .getBroadCastReceiver();
-                                Class<? extends Object>[] classes = new Class[params.length];
-                                for (int i = 0; i < params.length; i++) {
-                                    classes[i] = params[i].getClass();
-                                }
-                                receiverInstance = receiver.getConstructor(
-                                        classes).newInstance(params);
-
-                            }
-                            context.getApplicationContext().registerReceiver(
-                                    receiverInstance, filter);
-                        } catch (Exception e) {
-                            Log.e(TAG, e.getMessage(), e);
-                            callback.onFailure(e);
-                        }
-
-                    }
-
                     callback.onSuccess(null);
                 } else {
                     callback.onFailure(result);
@@ -183,8 +140,9 @@ public class Registrar {
      * Gets the current registration id for application on GCM service.
      * <p>
      * If result is empty, the registration has failed.
-     * 
-     * @return registration id, or empty string if the registration is not complete.
+     *
+     * @return registration id, or empty string if the registration is not
+     *      complete.
      */
     protected String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
@@ -231,7 +189,7 @@ public class Registrar {
      * To avoid the scenario where the device sends the registration to the
      * server but the server loses it, the app developer may choose to
      * re-register after REGISTRATION_EXPIRY_TIME_MS.
-     * 
+     *
      * @return true if the registration has expired.
      */
     private boolean isRegistrationExpired(Context context) {
@@ -244,11 +202,9 @@ public class Registrar {
     /**
      * Stores the registration id, app versionCode, and expiration time in the
      * application's {@code SharedPreferences}.
-     * 
-     * @param context
-     *            application's context.
-     * @param regId
-     *            registration id
+     *
+     * @param context application's context.
+     * @param regId registration id
      */
     private void setRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGCMPreferences(context);
@@ -282,9 +238,9 @@ public class Registrar {
         backgroundThreadHandlers.remove(handler);
     }
 
-    static void notifyHandlers(final Context context, final Intent message, 
+    static void notifyHandlers(final Context context, final Intent message,
             final MessageHandler defaultHandler) {
-        
+
         if (backgroundThreadHandlers.isEmpty() && mainThreadHandlers.isEmpty()) {
             new Thread(new Runnable() {
                 public void run() {
@@ -302,7 +258,7 @@ public class Registrar {
                 }
             }).start();
         }
-        
+
         for (final MessageHandler handler : backgroundThreadHandlers) {
             new Thread(new Runnable() {
                 public void run() {
@@ -325,7 +281,6 @@ public class Registrar {
 
         for (final MessageHandler handler : mainThreadHandlers) {
             new Handler(main).post(new Runnable() {
-
                 @Override
                 public void run() {
                     GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
@@ -341,7 +296,7 @@ public class Registrar {
             });
         }
     }
-    
+
     protected static void notifyHandlers(final Context context,
             final Intent message) {
         notifyHandlers(context, message, null);
