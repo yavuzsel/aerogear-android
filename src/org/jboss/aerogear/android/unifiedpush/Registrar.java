@@ -137,10 +137,61 @@ public class Registrar {
     }
 
     /**
+     * 
+     * Unregisters a device from the GCM push network and from the 3rd party app server.
+     * 
+     * @param context
+     * @param config
+     * @param callback
+     */
+    public void unregister(final Context context, final PushConfig config, final Callback<Void> callback) {
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+
+                try {
+
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(context);
+                    }
+
+                    gcm.unregister();
+
+                    HttpRestProvider provider = new HttpRestProvider(registryURL);
+                    provider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
+
+                    try {
+                        provider.delete(config.getDeviceToken());
+                        config.setDeviceToken("");
+                        return null;
+                    } catch (HttpException ex) {
+                        return ex;
+                    }
+
+                } catch (IOException ex) {
+                    return ex;
+                }
+
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void onPostExecute(Exception result) {
+                if (result == null) {
+                    callback.onSuccess(null);
+                } else {
+                    callback.onFailure(result);
+                }
+            };
+
+        }.execute((Void) null);
+    }
+
+    /**
      * Gets the current registration id for application on GCM service.
      * <p>
      * If result is empty, the registration has failed.
-     *
+     * 
      * @return registration id, or empty string if the registration is not
      *      complete.
      */
@@ -189,7 +240,7 @@ public class Registrar {
      * To avoid the scenario where the device sends the registration to the
      * server but the server loses it, the app developer may choose to
      * re-register after REGISTRATION_EXPIRY_TIME_MS.
-     *
+     * 
      * @return true if the registration has expired.
      */
     private boolean isRegistrationExpired(Context context) {
@@ -202,7 +253,7 @@ public class Registrar {
     /**
      * Stores the registration id, app versionCode, and expiration time in the
      * application's {@code SharedPreferences}.
-     *
+     * 
      * @param context application's context.
      * @param regId registration id
      */
