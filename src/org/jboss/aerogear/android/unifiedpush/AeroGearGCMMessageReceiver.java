@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
+import org.jboss.aerogear.android.impl.unifiedpush.AeroGearGCMPushRegistrar;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
