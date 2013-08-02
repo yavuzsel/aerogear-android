@@ -16,9 +16,9 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
-import org.jboss.aerogear.android.impl.unifiedpush.AeroGearGCMPushRegistrar;
+import java.util.HashMap;
+import java.util.Map;
 import org.jboss.aerogear.android.impl.unifiedpush.DefaultPushRegistrarFactory;
-import org.jboss.aerogear.android.impl.unifiedpush.PushTypes;
 
 /**
  * This is the factory and accessors for PushRegistrars
@@ -26,6 +26,7 @@ import org.jboss.aerogear.android.impl.unifiedpush.PushTypes;
 public class Registrations {
     
     private final DefaultPushRegistrarFactory factory;
+    private final Map<String, PushRegistrar> registrars = new HashMap<String, PushRegistrar>();
     
     public Registrations() {
         this.factory = new DefaultPushRegistrarFactory();
@@ -36,14 +37,20 @@ public class Registrations {
     }
     
     /**
-     * 
+     * @param name the name which will be used to look up the registrar later
      * @param config
      * @return 
      * 
      * @throws  IllegalArgumentException is config.type is not a supported type
      */
-    public PushRegistrar push(PushConfig config) {
-        return factory.createPushRegistrar(config);
+    public PushRegistrar push(String name, PushConfig config) {
+        PushRegistrar registrar = factory.createPushRegistrar(config);
+        registrars.put(name, registrar);
+        return registrar;
+    }
+    
+    public PushRegistrar get(String name) {
+        return registrars.get(name);
     }
     
 }
