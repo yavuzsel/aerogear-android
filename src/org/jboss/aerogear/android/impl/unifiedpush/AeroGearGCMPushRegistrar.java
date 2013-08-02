@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.android.unifiedpush;
+package org.jboss.aerogear.android.impl.unifiedpush;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,16 +22,12 @@ import java.sql.Timestamp;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.http.HttpException;
-import org.jboss.aerogear.android.impl.http.HttpRestProvider;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -40,7 +36,10 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import org.jboss.aerogear.android.impl.http.HttpRestProviderForPush;
+import org.jboss.aerogear.android.unifiedpush.PushConfig;
+import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 
 public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
@@ -293,8 +292,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         backgroundThreadHandlers.remove(handler);
     }
 
-    static void notifyHandlers(final Context context, final Intent message,
-            final MessageHandler defaultHandler) {
+    public static void notifyHandlers(final Context context, final Intent message, final MessageHandler defaultHandler) {
 
         if (backgroundThreadHandlers.isEmpty() && mainThreadHandlers.isEmpty()) {
             new Thread(new Runnable() {
