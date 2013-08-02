@@ -44,12 +44,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jboss.aerogear.android.impl.http.HttpRestProviderForPush;
 
-public class Registrar {
+public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     private static final Integer TIMEOUT = 30000;//30 seconds
     
     private final URL registryURL;
-    private static final String TAG = Registrar.class.getSimpleName();
+    private static final String TAG = AeroGearGCMPushRegistrar.class.getSimpleName();
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
@@ -62,10 +62,11 @@ public class Registrar {
     public static final long REGISTRATION_EXPIRY_TIME_MS = 1000 * 3600 * 24 * 7;
     private GoogleCloudMessaging gcm;
 
-    public Registrar(URL registryURL) {
+    public AeroGearGCMPushRegistrar(URL registryURL) {
         this.registryURL = registryURL;
     }
 
+    @Override
     public void register(final Context context, final PushConfig config, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
             
@@ -82,7 +83,7 @@ public class Registrar {
                     if (regid.length() == 0) {
                         regid = gcm.register(config.senderIds
                                 .toArray(new String[] {}));
-                        Registrar.this.setRegistrationId(context, regid);
+                        AeroGearGCMPushRegistrar.this.setRegistrationId(context, regid);
                     }
 
                     config.setDeviceToken(regid);
@@ -148,6 +149,7 @@ public class Registrar {
      * @param config
      * @param callback
      */
+    @Override
     public void unregister(final Context context, final PushConfig config, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
             @Override
@@ -222,7 +224,7 @@ public class Registrar {
      * @return Application's {@code SharedPreferences}.
      */
     private SharedPreferences getGCMPreferences(Context context) {
-        return context.getSharedPreferences(Registrar.class.getSimpleName(), Context.MODE_PRIVATE);
+        return context.getSharedPreferences(AeroGearGCMPushRegistrar.class.getSimpleName(), Context.MODE_PRIVATE);
     }
 
     /**
