@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * 	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,8 @@ import java.io.Serializable;
 
 
 import com.google.common.collect.ImmutableSet;
+import java.net.URL;
+import org.jboss.aerogear.android.impl.unifiedpush.PushTypes;
 
 public class PushConfig implements Serializable {
 
@@ -32,8 +34,16 @@ public class PushConfig implements Serializable {
     private String osVersion = android.os.Build.VERSION.RELEASE;
     private String alias;
     private String category;
+    private PushType type = PushTypes.AEROGEAR_GCM;
+    private URL registryURL;
+    
     public final ImmutableSet<String> senderIds;
 
+    public PushConfig(URL registryURL, String... senderId) {
+            senderIds = ImmutableSet.copyOf(senderId);
+            this.registryURL = registryURL;
+    }
+    
     public PushConfig(String... senderId) {
         senderIds = ImmutableSet.copyOf(senderId);
     }
@@ -175,4 +185,40 @@ public class PushConfig implements Serializable {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    /**
+     * The type is a key which is used by Registrations to know which 
+     * implementation of PushRegister to use.
+     * 
+     * @return the current type
+     */
+    public PushType getType() {
+        return type;
+    }
+
+    /**
+     * The type is a key which is used by Registrations to know which 
+     * implementation of PushRegister to use.
+     */ 
+    public void setType(PushType type) {
+        this.type = type;
+    }
+
+    /**
+     * RegistryURL is the URL of the 3rd party application server
+     *
+     * @return the current registryURL
+     */
+    public URL getRegistryURL() {
+        return registryURL;
+    }
+
+    /**
+     * RegistryURL is the URL of the 3rd party application server
+     *
+     */
+    public void setRegistryURL(URL registryURL) {
+        this.registryURL = registryURL;
+    }
+
 }
