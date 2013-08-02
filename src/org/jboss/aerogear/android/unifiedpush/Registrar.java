@@ -14,10 +14,6 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.jboss.aerogear.android.unifiedpush;
 
 import java.io.IOException;
@@ -81,7 +77,7 @@ public class Registrar {
 
                     if (regid.length() == 0) {
                         regid = gcm.register(config.senderIds
-                                .toArray(new String[]{}));
+                                .toArray(new String[] {}));
                         Registrar.this.setRegistrationId(context, regid);
                     }
 
@@ -92,27 +88,27 @@ public class Registrar {
 
                     Gson gson = new GsonBuilder().setExclusionStrategies(
                             new ExclusionStrategy() {
-                        private final ImmutableSet<String> fields;
+                                private final ImmutableSet<String> fields;
 
-                        {
-                            fields = ImmutableSet.<String>builder()
-                                    .add("deviceToken")
-                                    .add("deviceType").add("alias")
-                                    .add("operatingSystem")
-                                    .add("osVersion").build();
-                        }
+                                {
+                                    fields = ImmutableSet.<String> builder()
+                                            .add("deviceToken")
+                                            .add("deviceType").add("alias")
+                                            .add("operatingSystem")
+                                            .add("osVersion").build();
+                                }
 
-                        @Override
-                        public boolean shouldSkipField(FieldAttributes f) {
-                            return !(f.getDeclaringClass() == PushConfig.class && fields
-                                    .contains(f.getName()));
-                        }
+                                @Override
+                                public boolean shouldSkipField(FieldAttributes f) {
+                                    return !(f.getDeclaringClass() == PushConfig.class && fields
+                                            .contains(f.getName()));
+                                }
 
-                        @Override
-                        public boolean shouldSkipClass(Class<?> arg0) {
-                            return false;
-                        }
-                    }).create();
+                                @Override
+                                public boolean shouldSkipClass(Class<?> arg0) {
+                                    return false;
+                                }
+                            }).create();
                     try {
                         provider.post(gson.toJson(config));
                         return null;
@@ -134,8 +130,7 @@ public class Registrar {
                 } else {
                     callback.onFailure(result);
                 }
-            }
-        ;
+            };
 
         }.execute((Void) null);
 
@@ -198,7 +193,7 @@ public class Registrar {
      * If result is empty, the registration has failed.
      * 
      * @return registration id, or empty string if the registration is not
-     * complete.
+     *         complete.
      */
     protected String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
@@ -242,9 +237,8 @@ public class Registrar {
     /**
      * Checks if the registration has expired.
      * 
-     * <p>
-     * To avoid the scenario where the device sends the registration to the
-     * server but the server loses it, the app developer may choose to
+     * To avoid the scenario where the device sends the registration to the 
+     * server but the server loses it, the app developer may choose to 
      * re-register after REGISTRATION_EXPIRY_TIME_MS.
      * 
      * @return true if the registration has expired.
