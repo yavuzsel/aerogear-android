@@ -88,11 +88,4 @@ public interface HttpProvider {
      */
     public void setDefaultHeader(String headerName, String headerValue);
 
-    /**
-     * Set passwordAuthentication to use in HTTP Basic requests
-     *
-     * @param username
-     * @param password
-     */
-    void setPasswordAuthentication(String username, String password);
 }

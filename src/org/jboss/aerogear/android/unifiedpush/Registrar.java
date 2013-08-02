@@ -42,9 +42,12 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jboss.aerogear.android.impl.http.HttpRestProviderForPush;
 
 public class Registrar {
 
+    private static final Integer TIMEOUT = 30000;//30 seconds
+    
     private final URL registryURL;
     private static final String TAG = Registrar.class.getSimpleName();
     public static final String PROPERTY_REG_ID = "registration_id";
@@ -65,6 +68,7 @@ public class Registrar {
 
     public void register(final Context context, final PushConfig config, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
+            
             @Override
             protected Exception doInBackground(Void... params) {
 
@@ -83,7 +87,7 @@ public class Registrar {
 
                     config.setDeviceToken(regid);
 
-                    HttpRestProvider provider = new HttpRestProvider(registryURL);
+                    HttpRestProviderForPush provider = new HttpRestProviderForPush(registryURL, TIMEOUT);
                     provider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
 
                     Gson gson = new GsonBuilder().setExclusionStrategies(
@@ -157,7 +161,7 @@ public class Registrar {
 
                     gcm.unregister();
 
-                    HttpRestProvider provider = new HttpRestProvider(registryURL);
+                    HttpRestProviderForPush provider = new HttpRestProviderForPush(registryURL, TIMEOUT);
                     provider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
 
                     try {
