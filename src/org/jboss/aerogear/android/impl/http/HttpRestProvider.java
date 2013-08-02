@@ -260,14 +260,7 @@ public final class HttpRestProvider implements HttpProvider {
         defaultHeaders.put(headerName, headerValue);
     }
 
-    @Override
-    public void setPasswordAuthentication(final String username, final String password) {
-        Authenticator.setDefault(new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password.toCharArray());
-            }
-        });
-    }
+    
 
     private HeaderAndBody getHeaderAndBody(HttpURLConnection urlConnection)
             throws IOException {
