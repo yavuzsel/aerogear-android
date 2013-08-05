@@ -51,6 +51,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
+    private final PushConfig config;
     
     /**
      * Default lifespan (7 days) of a reservation until it is considered
@@ -67,12 +68,13 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         }
     };
     
-    public AeroGearGCMPushRegistrar(URL registryURL) {
+    public AeroGearGCMPushRegistrar(URL registryURL, PushConfig config) {
         this.registryURL = registryURL;
+        this.config = config;
     }
 
     @Override
-    public void register(final Context context, final PushConfig config, final Callback<Void> callback) {
+    public void register(final Context context, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
             
             @Override
@@ -155,7 +157,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
      * @param callback
      */
     @Override
-    public void unregister(final Context context, final PushConfig config, final Callback<Void> callback) {
+    public void unregister(final Context context, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
             @Override
             protected Exception doInBackground(Void... params) {
