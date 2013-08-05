@@ -30,16 +30,15 @@ public interface PushRegistrar {
      * @param config The push configuration which describes the connection
      * @param callback a callback.
      */
-    void register(final Context context, final PushConfig config, final Callback<Void> callback);
+    void register(final Context context, final Callback<Void> callback);
 
     /**
      *
      * Unregisters a device a push network and any party application servers.
      *
      * @param context Android application context
-     * @param config The push configuration which describes the connection
      * @param callback a callback.
      */
-    void unregister(final Context context, final PushConfig config, final Callback<Void> callback);
+    void unregister(final Context context, final Callback<Void> callback);
     
 }
