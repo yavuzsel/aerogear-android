@@ -202,6 +202,17 @@ public class MemoryStorageTest {
         assertNull("bar should be null", bar);
     }
 
+    @Test
+    public void testIsEmpty() {
+        assertTrue("should be empty", store.isEmpty());
+    }
+
+    @Test
+    public void testIsNotEmpty() {
+        store.save(new Data("foo", "desc of foo"));
+        assertFalse("should not be empty", store.isEmpty());
+    }
+
     private static class FakeStoreType implements StoreType {
 
         @Override

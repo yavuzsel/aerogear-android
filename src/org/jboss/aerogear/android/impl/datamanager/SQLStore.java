@@ -256,6 +256,19 @@ public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
      * {@inheritDoc }
      */
     @Override
+    public boolean isEmpty() {
+        String sql = String.format("Select count(_ID) from %s_property", className);
+        Cursor cursor = database.rawQuery(sql, null);
+        cursor.moveToFirst();
+        boolean result = (cursor.getInt(0) == 0);
+        cursor.close();
+        return result;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public void remove(Serializable id) {
         String sql = String.format("Delete from %s_property where PARENT_ID = ?", className);
         Object[] bindArgs = new Object[1];

@@ -106,6 +106,14 @@ public class MemoryStorage<T> implements Store<T> {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public boolean isEmpty() {
+        return data.isEmpty();
+    }
+
+    /**
+     * {@inheritDoc}
      * 
      * @throws IllegalArgumentException if filter.query has nested objects
      */

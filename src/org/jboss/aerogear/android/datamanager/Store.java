@@ -76,4 +76,11 @@ public interface Store<T> {
      */
     public void remove(Serializable id);
 
+    /**
+     * Checks if the storage system contains no stored elements.
+     *
+     * @return true if the storage is empty, otherwise false.
+     */
+    public boolean isEmpty();
+
 }

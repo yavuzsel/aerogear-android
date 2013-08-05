@@ -58,6 +58,11 @@ public class StubStoreFactory implements StoreFactory {
             }
 
             @Override
+            public boolean isEmpty() {
+                return true;
+            }
+
+            @Override
             public void remove(Serializable id) {
             }
 

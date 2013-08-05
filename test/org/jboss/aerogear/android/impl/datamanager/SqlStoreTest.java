@@ -69,6 +69,18 @@ public class SqlStoreTest {
     }
 
     @Test
+    public void testIsEmpty() throws InterruptedException {
+        open(store);
+        Assert.assertTrue(store.isEmpty());
+    }
+
+    @Test
+    public void testIsNotEmpty() throws InterruptedException {
+        saveData(10, "name", "description");
+        Assert.assertFalse(store.isEmpty());
+    }
+
+    @Test
     public void testReadAll() throws InterruptedException, JSONException {
         loadBulkData();
         List<Data> allData = new ArrayList<Data>(store.readAll());
