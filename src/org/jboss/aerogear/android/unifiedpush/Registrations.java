@@ -25,14 +25,14 @@ import org.jboss.aerogear.android.impl.unifiedpush.DefaultPushRegistrarFactory;
  */
 public class Registrations {
     
-    private final DefaultPushRegistrarFactory factory;
+    private final PushRegistrarFactory factory;
     private final Map<String, PushRegistrar> registrars = new HashMap<String, PushRegistrar>();
     
     public Registrations() {
         this.factory = new DefaultPushRegistrarFactory();
     }
 
-    public Registrations(DefaultPushRegistrarFactory factory) {
+    public Registrations(PushRegistrarFactory factory) {
         this.factory = factory;
     }
     
