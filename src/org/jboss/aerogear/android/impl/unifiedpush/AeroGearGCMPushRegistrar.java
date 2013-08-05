@@ -36,6 +36,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jboss.aerogear.android.Provider;
 
 import org.jboss.aerogear.android.impl.http.HttpRestProviderForPush;
 import org.jboss.aerogear.android.unifiedpush.PushConfig;
@@ -58,6 +59,14 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     public static final long REGISTRATION_EXPIRY_TIME_MS = 1000 * 3600 * 24 * 7;
     private GoogleCloudMessaging gcm;
 
+    private final Provider<HttpRestProviderForPush> provider = new Provider<HttpRestProviderForPush> () {
+
+        @Override
+        public HttpRestProviderForPush get(Object... in) {
+            return new HttpRestProviderForPush((URL) in[0], (Integer) in[1]);
+        }
+    };
+    
     public AeroGearGCMPushRegistrar(URL registryURL) {
         this.registryURL = registryURL;
     }
@@ -84,8 +93,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     config.setDeviceToken(regid);
 
-                    HttpRestProviderForPush provider = new HttpRestProviderForPush(registryURL, TIMEOUT);
-                    provider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
+                    HttpRestProviderForPush httpProvider = provider.get(registryURL, TIMEOUT);
+                    httpProvider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
 
                     Gson gson = new GsonBuilder().setExclusionStrategies(
                             new ExclusionStrategy() {
@@ -111,7 +120,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
                                 }
                             }).create();
                     try {
-                        provider.post(gson.toJson(config));
+                        httpProvider.post(gson.toJson(config));
                         return null;
                     } catch (HttpException ex) {
                         return ex;
