@@ -56,8 +56,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
-    private static List<MessageHandler> mainThreadHandlers = new ArrayList<MessageHandler>();
-    private static List<MessageHandler> backgroundThreadHandlers = new ArrayList<MessageHandler>();
+    
     /**
      * Default lifespan (7 days) of a reservation until it is considered
      * expired.
@@ -282,82 +281,4 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         editor.commit();
     }
 
-    public static void registerMainThreadHandler(MessageHandler handler) {
-        mainThreadHandlers.add(handler);
-    }
-
-    public static void registerBackgroundThreadHandler(MessageHandler handler) {
-        backgroundThreadHandlers.add(handler);
-    }
-
-    public static void unregisterMainThreadHandler(MessageHandler handler) {
-        mainThreadHandlers.remove(handler);
-    }
-
-    public static void unregisterBackgroundThreadHandler(MessageHandler handler) {
-        backgroundThreadHandlers.remove(handler);
-    }
-
-    public static void notifyHandlers(final Context context, final Intent message, final MessageHandler defaultHandler) {
-
-        if (backgroundThreadHandlers.isEmpty() && mainThreadHandlers.isEmpty()) {
-            new Thread(new Runnable() {
-                public void run() {
-
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                    String messageType = gcm.getMessageType(message);
-                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                        defaultHandler.onError();
-                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-                        defaultHandler.onDeleteMessage(context, message.getExtras());
-                    } else {
-                        defaultHandler.onMessage(context, message.getExtras());
-                    }
-
-                }
-            }).start();
-        }
-
-        for (final MessageHandler handler : backgroundThreadHandlers) {
-            new Thread(new Runnable() {
-                public void run() {
-
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                    String messageType = gcm.getMessageType(message);
-                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                        handler.onError();
-                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-                        handler.onDeleteMessage(context, message.getExtras());
-                    } else {
-                        handler.onMessage(context, message.getExtras());
-                    }
-
-                }
-            }).start();
-        }
-
-        Looper main = Looper.getMainLooper();
-
-        for (final MessageHandler handler : mainThreadHandlers) {
-            new Handler(main).post(new Runnable() {
-                @Override
-                public void run() {
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                    String messageType = gcm.getMessageType(message);
-                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                        handler.onError();
-                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-                        handler.onDeleteMessage(context, message.getExtras());
-                    } else {
-                        handler.onMessage(context, message.getExtras());
-                    }
-                }
-            });
-        }
-    }
-
-    protected static void notifyHandlers(final Context context,
-            final Intent message) {
-        notifyHandlers(context, message, null);
-    }
 }

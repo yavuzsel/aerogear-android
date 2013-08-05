@@ -16,7 +16,14 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.jboss.aerogear.android.impl.unifiedpush.DefaultPushRegistrarFactory;
 
@@ -27,6 +34,9 @@ public class Registrations {
     
     private final PushRegistrarFactory factory;
     private final Map<String, PushRegistrar> registrars = new HashMap<String, PushRegistrar>();
+
+    private static List<MessageHandler> mainThreadHandlers = new ArrayList<MessageHandler>();
+    private static List<MessageHandler> backgroundThreadHandlers = new ArrayList<MessageHandler>();
     
     public Registrations() {
         this.factory = new DefaultPushRegistrarFactory();
@@ -51,6 +61,85 @@ public class Registrations {
     
     public PushRegistrar get(String name) {
         return registrars.get(name);
+    }
+    
+    public static void registerMainThreadHandler(MessageHandler handler) {
+        mainThreadHandlers.add(handler);
+    }
+
+    public static void registerBackgroundThreadHandler(MessageHandler handler) {
+        backgroundThreadHandlers.add(handler);
+    }
+
+    public static void unregisterMainThreadHandler(MessageHandler handler) {
+        mainThreadHandlers.remove(handler);
+    }
+
+    public static void unregisterBackgroundThreadHandler(MessageHandler handler) {
+        backgroundThreadHandlers.remove(handler);
+    }
+
+    public static void notifyHandlers(final Context context, final Intent message, final MessageHandler defaultHandler) {
+
+        if (backgroundThreadHandlers.isEmpty() && mainThreadHandlers.isEmpty()) {
+            new Thread(new Runnable() {
+                public void run() {
+
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+                    String messageType = gcm.getMessageType(message);
+                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                        defaultHandler.onError();
+                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                        defaultHandler.onDeleteMessage(context, message.getExtras());
+                    } else {
+                        defaultHandler.onMessage(context, message.getExtras());
+                    }
+
+                }
+            }).start();
+        }
+
+        for (final MessageHandler handler : backgroundThreadHandlers) {
+            new Thread(new Runnable() {
+                public void run() {
+
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+                    String messageType = gcm.getMessageType(message);
+                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                        handler.onError();
+                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                        handler.onDeleteMessage(context, message.getExtras());
+                    } else {
+                        handler.onMessage(context, message.getExtras());
+                    }
+
+                }
+            }).start();
+        }
+
+        Looper main = Looper.getMainLooper();
+
+        for (final MessageHandler handler : mainThreadHandlers) {
+            new Handler(main).post(new Runnable() {
+                @Override
+                public void run() {
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+                    String messageType = gcm.getMessageType(message);
+                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                        handler.onError();
+                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                        handler.onDeleteMessage(context, message.getExtras());
+                    } else {
+                        handler.onMessage(context, message.getExtras());
+                    }
+                }
+            });
+        }
+    }
+
+    protected static void notifyHandlers(final Context context,
+            final Intent message) {
+        notifyHandlers(context, message, null);
     }
     
 }
