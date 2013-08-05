@@ -19,20 +19,15 @@ package org.jboss.aerogear.android.impl.unifiedpush;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jboss.aerogear.android.Callback;
 import org.jboss.aerogear.android.http.HttpException;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -43,7 +38,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.jboss.aerogear.android.impl.http.HttpRestProviderForPush;
-import org.jboss.aerogear.android.unifiedpush.MessageHandler;
 import org.jboss.aerogear.android.unifiedpush.PushConfig;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 
