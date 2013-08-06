@@ -22,7 +22,7 @@ public interface PushRegistrarFactory {
      * Creates a push registrar
      * 
      * @param config the push config to use to build.
-     * @return 
+     * @return an instance of PushRegistrar configured for config
      * 
      * @throws  IllegalArgumentException is config.type is not a supported type
      */

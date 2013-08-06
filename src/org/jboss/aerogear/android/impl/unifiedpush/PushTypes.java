@@ -16,10 +16,19 @@
  */
 package org.jboss.aerogear.android.impl.unifiedpush;
 
+import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.PushType;
 
+/**
+ * This class enumerates all of the PushTypes that the AeroGear library supports.
+ * 
+ */
 public enum PushTypes implements PushType {
-    
+   
+    /**
+     * This value will cause AeroGear to provide a {@link PushRegistrar} 
+     * instance which registers against both GCM and an AeroGear push server.
+     */
     AEROGEAR_GCM("AEROGEAR_GCM");
 
     private final String typeDescription;

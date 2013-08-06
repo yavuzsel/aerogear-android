@@ -148,14 +148,6 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     }
 
-    /**
-     * 
-     * Unregisters a device from the GCM push network and from the 3rd party app server.
-     * 
-     * @param context
-     * @param config
-     * @param callback
-     */
     @Override
     public void unregister(final Context context, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
