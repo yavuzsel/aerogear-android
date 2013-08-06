@@ -54,7 +54,8 @@ public class RegistrationsTest {
         reg.push(PUSH, config);
         
     }
-    
+
+    @Test
     public void testCustomFactoryType() {
         Registrations reg = new Registrations(new PushRegistrarFactory() {
 
