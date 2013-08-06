@@ -27,7 +27,6 @@ public interface PushRegistrar {
      * Registers a device to a push network and any 3rd party application servers.
      *
      * @param context Android application context
-     * @param config The push configuration which describes the connection
      * @param callback a callback.
      */
     void register(final Context context, final Callback<Void> callback);

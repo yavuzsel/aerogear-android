@@ -47,8 +47,14 @@ public class Registrations {
     }
     
     /**
+     * 
+     * This method will try to build a PuserRegistrar based on the values
+     * in the configuration bean.  It will store a reference to the Registrar
+     * which can be recalled using {@link Registrations#get(java.lang.String)} 
+     * and passing in the name parameter.
+     * 
      * @param name the name which will be used to look up the registrar later
-     * @param config
+     * @param config a configuration bean.
      * @return 
      * 
      * @throws  IllegalArgumentException is config.type is not a supported type
@@ -59,26 +65,77 @@ public class Registrations {
         return registrar;
     }
     
+    /**
+     * Recalls a PushRegister instance which was created with 
+     * {@link Registrations#push(java.lang.String, org.jboss.aerogear.android.unifiedpush.PushConfig) }.
+     * 
+     * @param name the name parameter to look up
+     * @return a PushRegistration or null if none is found.
+     */
     public PushRegistrar get(String name) {
         return registrars.get(name);
     }
     
+    /**
+     * 
+     * When a push message is received, all main thread handlers will be 
+     * notified on the main(UI) thread.  This is very convenient for Activities
+     * and Fragments.
+     * 
+     * @param handler a handler to added to the list of handlers to be notified.
+     */
     public static void registerMainThreadHandler(MessageHandler handler) {
         mainThreadHandlers.add(handler);
     }
 
+    /**
+     * 
+     * When a push message is received, all background thread handlers will be 
+     * notified on a non UI thread.  This should be used by classes which need
+     * to update internal state or preform some action which doesn't change the 
+     * UI.
+     * 
+     * @param handler a handler to added to the list of handlers to be notified.
+     */
     public static void registerBackgroundThreadHandler(MessageHandler handler) {
         backgroundThreadHandlers.add(handler);
     }
 
+    /**
+     * 
+     * This will remove the given handler from the collection of main thread 
+     * handlers.  This MUST be called when a Fragment or activity is 
+     * backgrounded via onPause.
+     * 
+     * @param handler 
+     */
     public static void unregisterMainThreadHandler(MessageHandler handler) {
         mainThreadHandlers.remove(handler);
     }
 
+    /**
+     * 
+     * This will remove the given handler from the collection of background 
+     * thread handlers.  
+     * 
+     * @param handler 
+     */
     public static void unregisterBackgroundThreadHandler(MessageHandler handler) {
         backgroundThreadHandlers.remove(handler);
     }
 
+        /**
+     * 
+     * This will deliver an intent to all registered handlers.  Currently it is 
+     * GCM centric, but this will be changed in the future.
+     * 
+     * See: {@link https://issues.jboss.org/browse/AGDROID-84}
+     * 
+     * @param context the application's context
+     * @param message the message to pass
+     * @param defaultHandler a default handler is a handler which will be called 
+     *          if there are no other handlers registered.  May be null
+     */  
     public static void notifyHandlers(final Context context, final Intent message, final MessageHandler defaultHandler) {
 
         if (backgroundThreadHandlers.isEmpty() && mainThreadHandlers.isEmpty()
@@ -138,6 +195,16 @@ public class Registrations {
         }
     }
 
+    /**
+     * 
+     * This will deliver an intent to all registered handlers.  Currently it is 
+     * GCM centric, but this will be changed in the future.
+     * 
+     * See: {@link https://issues.jboss.org/browse/AGDROID-84}
+     * 
+     * @param context the application's context
+     * @param message the message to pass
+     */ 
     protected static void notifyHandlers(final Context context,
             final Intent message) {
         notifyHandlers(context, message, null);
