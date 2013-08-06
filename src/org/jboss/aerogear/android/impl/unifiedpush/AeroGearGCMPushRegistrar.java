@@ -68,8 +68,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
         }
     };
     
-    public AeroGearGCMPushRegistrar(URL registryURL, PushConfig config) {
-        this.registryURL = registryURL;
+    public AeroGearGCMPushRegistrar(PushConfig config) {
+        this.registryURL = config.getRegistryURL();
         this.config = config;
     }
 
