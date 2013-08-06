@@ -81,7 +81,8 @@ public class Registrations {
 
     public static void notifyHandlers(final Context context, final Intent message, final MessageHandler defaultHandler) {
 
-        if (backgroundThreadHandlers.isEmpty() && mainThreadHandlers.isEmpty()) {
+        if (backgroundThreadHandlers.isEmpty() && mainThreadHandlers.isEmpty()
+            && defaultHandler != null) {
             new Thread(new Runnable() {
                 public void run() {
 
