@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.android.impl.unifiedpush;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.jboss.aerogear.android.unifiedpush.PushConfig;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrarFactory;
@@ -31,9 +33,9 @@ public class RegistrationsTest {
     private static final String PUSH = "push";
     
     @Test
-    public void testDefaultConfig() {
+    public void testDefaultConfig() throws MalformedURLException {
         Registrations reg = new Registrations();
-        PushConfig config = new PushConfig("http://testreg.com", "TestID");
+        PushConfig config = new PushConfig(new URL("http://testreg.com"), "TestID");
         reg.push(PUSH, config);
         PushRegistrar registrar = reg.get(PUSH);
         assertNotNull(registrar);
@@ -41,9 +43,9 @@ public class RegistrationsTest {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testFailsOnUnsupportedType() {
+    public void testFailsOnUnsupportedType() throws MalformedURLException {
         Registrations reg = new Registrations();
-        PushConfig config = new PushConfig("http://testreg.com", "TestID");
+        PushConfig config = new PushConfig(new URL("http://testreg.com"), "TestID");
         config.setType(new PushType() {
 
             @Override
@@ -56,7 +58,7 @@ public class RegistrationsTest {
     }
 
     @Test
-    public void testCustomFactoryType() {
+    public void testCustomFactoryType() throws MalformedURLException {
         Registrations reg = new Registrations(new PushRegistrarFactory() {
 
             @Override
@@ -69,7 +71,7 @@ public class RegistrationsTest {
                 }
             }
         });
-        PushConfig config = new PushConfig("http://testreg.com", "TestID");
+        PushConfig config = new PushConfig(new URL("http://testreg.com"), "TestID");
         config.setType(new PushType() {
 
             @Override
