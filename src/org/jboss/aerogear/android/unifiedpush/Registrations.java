@@ -55,7 +55,7 @@ public class Registrations {
      * 
      * @param name the name which will be used to look up the registrar later
      * @param config a configuration bean.
-     * @return 
+     * @return a PushRegistration for config
      * 
      * @throws  IllegalArgumentException is config.type is not a supported type
      */
@@ -129,7 +129,7 @@ public class Registrations {
      * This will deliver an intent to all registered handlers.  Currently it is 
      * GCM centric, but this will be changed in the future.
      * 
-     * See: {@link https://issues.jboss.org/browse/AGDROID-84}
+     * See: <a href="https://issues.jboss.org/browse/AGDROID-84">AGDROID-84</a>
      * 
      * @param context the application's context
      * @param message the message to pass
@@ -200,7 +200,7 @@ public class Registrations {
      * This will deliver an intent to all registered handlers.  Currently it is 
      * GCM centric, but this will be changed in the future.
      * 
-     * See: {@link https://issues.jboss.org/browse/AGDROID-84}
+     * See: <a href="https://issues.jboss.org/browse/AGDROID-84">AGDROID-84</a>
      * 
      * @param context the application's context
      * @param message the message to pass

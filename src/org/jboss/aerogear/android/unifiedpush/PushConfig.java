@@ -66,8 +66,6 @@ public class PushConfig implements Serializable {
 
     /**
      * ID of the Variant from the AeroGear UnifiedPush Server.
-     *
-     * @return
      */
     public String getVariantID() {
         return variantID;
@@ -75,17 +73,13 @@ public class PushConfig implements Serializable {
 
     /**
      * ID of the Variant from the AeroGear UnifiedPush Server.
-     *
-     * @param variantID
      */
     public void setVariantID(String variantID) {
         this.variantID = variantID;
     }
 
     /**
-     * Secret of the Variant from the AeroGear UnifiedPush Server.
-     *
-     * @return
+     * Secret of the Variant from the AeroGear UnifiedPush Server.     
      */
     public String getSecret() {
         return secret;
@@ -93,8 +87,6 @@ public class PushConfig implements Serializable {
 
     /**
      * Secret of the Variant from the AeroGear UnifiedPush Server.
-     *
-     * @param secret
      */
     public void setSecret(String secret) {
         this.secret = secret;
