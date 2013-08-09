@@ -20,7 +20,9 @@ import java.io.Serializable;
 
 
 import com.google.common.collect.ImmutableSet;
-import java.net.URL;
+
+import java.net.URI;
+
 import org.jboss.aerogear.android.impl.unifiedpush.PushTypes;
 
 public class PushConfig implements Serializable {
@@ -35,13 +37,13 @@ public class PushConfig implements Serializable {
     private String alias;
     private String category;
     private PushType type = PushTypes.AEROGEAR_GCM;
-    private URL registryURL;
+    private URI pushServerURI;
     
     public final ImmutableSet<String> senderIds;
 
-    public PushConfig(URL registryURL, String... senderId) {
+    public PushConfig(URI pushServerURI, String... senderId) {
             senderIds = ImmutableSet.copyOf(senderId);
-            this.registryURL = registryURL;
+            this.pushServerURI = pushServerURI;
     }
     
     public PushConfig(String... senderId) {
@@ -199,18 +201,18 @@ public class PushConfig implements Serializable {
     /**
      * RegistryURL is the URL of the 3rd party application server
      *
-     * @return the current registryURL
+     * @return the current pushServerURI
      */
-    public URL getRegistryURL() {
-        return registryURL;
+    public URI getPushServerURI() {
+        return pushServerURI;
     }
 
     /**
      * RegistryURL is the URL of the 3rd party application server
      *
      */
-    public void setRegistryURL(URL registryURL) {
-        this.registryURL = registryURL;
+    public void setPushServerURI(URI pushServerURI) {
+        this.pushServerURI = pushServerURI;
     }
 
 }

@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.impl.unifiedpush;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.sql.Timestamp;
 
@@ -46,11 +47,13 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     private static final Integer TIMEOUT = 30000;//30 seconds
     
-    private final URL registryURL;
+
     private static final String TAG = AeroGearGCMPushRegistrar.class.getSimpleName();
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
+
+    private final URI pushServerURI;
     private final PushConfig config;
     
     /**
@@ -69,7 +72,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     };
     
     public AeroGearGCMPushRegistrar(PushConfig config) {
-        this.registryURL = config.getRegistryURL();
+        this.pushServerURI = config.getPushServerURI();
         this.config = config;
     }
 
@@ -95,7 +98,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     config.setDeviceToken(regid);
 
-                    HttpRestProviderForPush httpProvider = provider.get(registryURL, TIMEOUT);
+                    HttpRestProviderForPush httpProvider = provider.get(pushServerURI.toURL(), TIMEOUT);
                     httpProvider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
 
                     Gson gson = new GsonBuilder().setExclusionStrategies(
@@ -162,7 +165,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     gcm.unregister();
 
-                    HttpRestProviderForPush provider = new HttpRestProviderForPush(registryURL, TIMEOUT);
+                    HttpRestProviderForPush provider = new HttpRestProviderForPush(pushServerURI.toURL(), TIMEOUT);
                     provider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
 
                     try {
