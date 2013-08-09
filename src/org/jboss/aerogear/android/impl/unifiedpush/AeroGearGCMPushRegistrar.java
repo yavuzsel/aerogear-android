@@ -53,7 +53,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
 
-    private final String registryDeviceEndpoint = "rest/registry/device";
+    private static final String registryDeviceEndpoint = "/rest/registry/device";
     private final URI pushServerURI;
     private final PushConfig config;
 
