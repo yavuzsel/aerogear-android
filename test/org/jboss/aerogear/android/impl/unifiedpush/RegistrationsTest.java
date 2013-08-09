@@ -17,6 +17,8 @@
 package org.jboss.aerogear.android.impl.unifiedpush;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import org.jboss.aerogear.android.unifiedpush.PushConfig;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
@@ -33,9 +35,9 @@ public class RegistrationsTest {
     private static final String PUSH = "push";
     
     @Test
-    public void testDefaultConfig() throws MalformedURLException {
+    public void testDefaultConfig() throws URISyntaxException {
         Registrations reg = new Registrations();
-        PushConfig config = new PushConfig(new URL("http://testreg.com"), "TestID");
+        PushConfig config = new PushConfig(new URI("http://testreg.com"), "TestID");
         reg.push(PUSH, config);
         PushRegistrar registrar = reg.get(PUSH);
         assertNotNull(registrar);
@@ -43,9 +45,9 @@ public class RegistrationsTest {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testFailsOnUnsupportedType() throws MalformedURLException {
+    public void testFailsOnUnsupportedType() throws URISyntaxException {
         Registrations reg = new Registrations();
-        PushConfig config = new PushConfig(new URL("http://testreg.com"), "TestID");
+        PushConfig config = new PushConfig(new URI("http://testreg.com"), "TestID");
         config.setType(new PushType() {
 
             @Override
@@ -58,7 +60,7 @@ public class RegistrationsTest {
     }
 
     @Test
-    public void testCustomFactoryType() throws MalformedURLException {
+    public void testCustomFactoryType() throws URISyntaxException {
         Registrations reg = new Registrations(new PushRegistrarFactory() {
 
             @Override
@@ -71,7 +73,7 @@ public class RegistrationsTest {
                 }
             }
         });
-        PushConfig config = new PushConfig(new URL("http://testreg.com"), "TestID");
+        PushConfig config = new PushConfig(new URI("http://testreg.com"), "TestID");
         config.setType(new PushType() {
 
             @Override
