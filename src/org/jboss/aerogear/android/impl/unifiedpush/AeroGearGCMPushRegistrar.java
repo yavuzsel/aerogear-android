@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,22 +40,23 @@ import com.google.gson.GsonBuilder;
 import org.jboss.aerogear.android.Provider;
 
 import org.jboss.aerogear.android.impl.http.HttpRestProviderForPush;
+import org.jboss.aerogear.android.impl.util.UrlUtils;
 import org.jboss.aerogear.android.unifiedpush.PushConfig;
 import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
 
 public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     private static final Integer TIMEOUT = 30000;//30 seconds
-    
 
     private static final String TAG = AeroGearGCMPushRegistrar.class.getSimpleName();
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
 
+    private final String registryDeviceEndpoint = "rest/registry/device";
     private final URI pushServerURI;
     private final PushConfig config;
-    
+
     /**
      * Default lifespan (7 days) of a reservation until it is considered
      * expired.
@@ -70,7 +71,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
             return new HttpRestProviderForPush((URL) in[0], (Integer) in[1]);
         }
     };
-    
+
     public AeroGearGCMPushRegistrar(PushConfig config) {
         this.pushServerURI = config.getPushServerURI();
         this.config = config;
@@ -79,7 +80,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     @Override
     public void register(final Context context, final Callback<Void> callback) {
         new AsyncTask<Void, Void, Exception>() {
-            
+
             @Override
             protected Exception doInBackground(Void... params) {
 
@@ -98,7 +99,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     config.setDeviceToken(regid);
 
-                    HttpRestProviderForPush httpProvider = provider.get(pushServerURI.toURL(), TIMEOUT);
+                    URL deviceRegistryURL = UrlUtils.appendToBaseURL(pushServerURI.toURL(), registryDeviceEndpoint);
+                    HttpRestProviderForPush httpProvider = provider.get(deviceRegistryURL, TIMEOUT);
                     httpProvider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
 
                     Gson gson = new GsonBuilder().setExclusionStrategies(
@@ -165,7 +167,8 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
                     gcm.unregister();
 
-                    HttpRestProviderForPush provider = new HttpRestProviderForPush(pushServerURI.toURL(), TIMEOUT);
+                    URL deviceRegistryURL = UrlUtils.appendToBaseURL(pushServerURI.toURL(), registryDeviceEndpoint);
+                    HttpRestProviderForPush provider = new HttpRestProviderForPush(deviceRegistryURL, TIMEOUT);
                     provider.setPasswordAuthentication(config.getVariantID(), config.getSecret());
 
                     try {
@@ -199,7 +202,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
      * Gets the current registration id for application on GCM service.
      * <p>
      * If result is empty, the registration has failed.
-     * 
+     *
      * @return registration id, or empty string if the registration is not
      *         complete.
      */
@@ -244,11 +247,11 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
 
     /**
      * Checks if the registration has expired.
-     * 
+     *
      * To avoid the scenario where the device sends the registration to the 
      * server but the server loses it, the app developer may choose to 
      * re-register after REGISTRATION_EXPIRY_TIME_MS.
-     * 
+     *
      * @return true if the registration has expired.
      */
     private boolean isRegistrationExpired(Context context) {
@@ -261,7 +264,7 @@ public class AeroGearGCMPushRegistrar implements PushRegistrar {
     /**
      * Stores the registration id, app versionCode, and expiration time in the
      * application's {@code SharedPreferences}.
-     * 
+     *
      * @param context application's context.
      * @param regId registration id
      */
