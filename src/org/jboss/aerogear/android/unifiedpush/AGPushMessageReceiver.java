@@ -16,55 +16,20 @@
  */
 package org.jboss.aerogear.android.unifiedpush;
 
-import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.support.v4.app.NotificationCompat;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import org.jboss.aerogear.R;
 
-public class AGPushMessageReceiver  extends BroadcastReceiver {
+public class AGPushMessageReceiver extends BroadcastReceiver {
 
-    public static final int NOTIFICATION_ID = 1;
+	public static final int NOTIFICATION_ID = 1;
+	public static Intent configIntent;
 
-    private NotificationManager mNotificationManager;
-    private Context ctx;
+	Context ctx;
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-        ctx = context;
-        String messageType = gcm.getMessageType(intent);
-        if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-            sendNotification("Send error: " + intent.getExtras().toString());
-        } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-            sendNotification("Deleted messages on server: " + intent.getExtras().toString());
-        } else {
-            sendNotification(intent.getStringExtra("alert"));
-        }
-        setResultCode(Activity.RESULT_OK);
-    }
-
-    // Put the GCM message into a notification and post it.
-    private void sendNotification(String msg) {
-        if(msg == null) { return; }
-
-        mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx)
-                // TODO Configurable title
-                .setContentTitle("GCM Notification")
-                // TODO Configurable icon
-                .setSmallIcon(R.drawable.common_signin_btn_icon_dark)
-                // TODO Change to received sound
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
-                .setContentText(msg);
-
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
-    }
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		Registrar.notifyHandlers(context, intent);
+	}
 
 }
