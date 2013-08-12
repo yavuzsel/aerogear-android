@@ -28,10 +28,13 @@ import org.jboss.aerogear.android.impl.http.HttpRestProvider;
 import org.jboss.aerogear.android.impl.pipeline.PipeConfig;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -40,6 +43,8 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Registrar {
 
@@ -49,6 +54,9 @@ public class Registrar {
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_ON_SERVER_EXPIRATION_TIME = "onServerExpirationTimeMs";
 
+	private static List<MessageHandler> mainThreadHandlers = new ArrayList<MessageHandler>();
+	private static List<MessageHandler> backgroundThreadHandlers = new ArrayList<MessageHandler>();
+        
     // Default lifespan (7 days) of a reservation until it is considered expired.
     public static final long REGISTRATION_EXPIRY_TIME_MS = 1000 * 3600 * 24 * 7;
 
@@ -213,4 +221,63 @@ public class Registrar {
 	    editor.commit();
 	}
 	
+    public static void registerMainThreadHandler(MessageHandler handler) {
+        mainThreadHandlers.add(handler);
+    }
+
+    public static void registerBackgroundThreadHandler(MessageHandler handler) {
+        backgroundThreadHandlers.add(handler);
+    }
+
+    public static void unregisterMainThreadHandler(MessageHandler handler) {
+        mainThreadHandlers.remove(handler);
+    }
+
+    public static void unregisterBackgroundThreadHandler(MessageHandler handler) {
+        backgroundThreadHandlers.remove(handler);
+    }
+
+    protected final static void notifyHandlers(final Context context,
+            final Intent message) {
+
+        for (final MessageHandler handler : backgroundThreadHandlers) {
+            new Thread(new Runnable() {
+                public void run() {
+
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+                    String messageType = gcm.getMessageType(message);
+                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                        handler.onError();
+                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                        handler.onDeleteMessage(context, message.getExtras());
+                    } else {
+                        handler.onMessage(context, message.getExtras());
+                    }
+
+
+                }
+            }).start();
+        }
+
+        Looper main = Looper.getMainLooper();
+
+        for (final MessageHandler handler : mainThreadHandlers) {
+            new Handler(main).post(new Runnable() {
+                @Override
+                public void run() {
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+                    String messageType = gcm.getMessageType(message);
+                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                        handler.onError();
+                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                        handler.onDeleteMessage(context, message.getExtras());
+                    } else {
+                        handler.onMessage(context, message.getExtras());
+                    }
+                }
+            });
+        }
+
+    }
+        
 }
