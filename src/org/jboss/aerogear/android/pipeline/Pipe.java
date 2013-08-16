@@ -89,6 +89,11 @@ public interface Pipe<T> {
     void remove(String id, Callback<Void> callback);
 
     /**
+     * Cancels all running and queued tasks on the pipe.
+     */
+    //void cancel();
+
+    /**
      * Returns the GSON serializer used to serialized instances of objects.
      * 
      * @return the gson instance servicing this pipe.

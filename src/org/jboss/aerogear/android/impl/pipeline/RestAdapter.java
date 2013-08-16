@@ -17,6 +17,7 @@
 package org.jboss.aerogear.android.impl.pipeline;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
@@ -63,6 +64,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     private final PipeHandler<T> restRunner;
     private final RequestBuilder<T> requestBuilder;
     private final ResponseParser<T> responseParser;
+    public List<Runnable> runnableCollection; // TODO: will change this to private
 
     public RestAdapter(Class<T> klass, URL baseURL) {
         this.restRunner = new RestRunner<T>(klass, baseURL);
@@ -70,6 +72,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.baseURL = baseURL;
         this.requestBuilder = new GsonRequestBuilder<T>();
         this.responseParser = new GsonResponseParser<T>();
+        this.runnableCollection = new ArrayList<Runnable>();
     }
 
     @SuppressWarnings("unchecked")
@@ -85,7 +88,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         } else {
             this.restRunner = new RestRunner<T>(klass, baseURL, config);
         }
-
+        this.runnableCollection = new ArrayList<Runnable>();
     }
 
     /**
@@ -116,7 +119,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         }
         final ReadFilter innerFilter = filter;
 
-        THREAD_POOL_EXECUTOR.execute(new Runnable() {
+        /*THREAD_POOL_EXECUTOR.execute(new Runnable() {
             List<T> result = null;
             Exception exception = null;
 
@@ -134,7 +137,16 @@ public final class RestAdapter<T> implements Pipe<T> {
                     callback.onFailure(exception);
                 }
             }
-        });
+        });*/
+        Runnable runnable = new PipeRunnable<List<T>>(callback, this) {
+
+            @Override
+            protected List<T> perform() {
+                return restRunner.onReadWithFilter(innerFilter, RestAdapter.this);
+            }
+        };
+        this.runnableCollection.add(runnable);
+        THREAD_POOL_EXECUTOR.execute(runnable);
 
     }
 
@@ -143,7 +155,7 @@ public final class RestAdapter<T> implements Pipe<T> {
      */
     @Override
     public void read(final Callback<List<T>> callback) {
-        THREAD_POOL_EXECUTOR.execute(new Runnable() {
+        /*THREAD_POOL_EXECUTOR.execute(new Runnable() {
             List<T> result = null;
             Exception exception = null;
 
@@ -161,13 +173,23 @@ public final class RestAdapter<T> implements Pipe<T> {
                     callback.onFailure(exception);
                 }
             }
-        });
+        });*/
+
+        Runnable runnable = new PipeRunnable<List<T>>(callback, this) {
+
+            @Override
+            protected List<T> perform() {
+                return restRunner.onRead(RestAdapter.this);
+            }
+        };
+        this.runnableCollection.add(runnable);
+        THREAD_POOL_EXECUTOR.execute(runnable);
     }
 
     @Override
     public void save(final T data, final Callback<T> callback) {
 
-        THREAD_POOL_EXECUTOR.execute(new Runnable() {
+        /*THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 T result = null;
@@ -185,8 +207,17 @@ public final class RestAdapter<T> implements Pipe<T> {
                     callback.onFailure(exception);
                 }
             }
-        });
+        });*/
 
+        Runnable runnable = new PipeRunnable<T>(callback, this) {
+
+            @Override
+            protected T perform() {
+                return restRunner.onSave(data);
+            }
+        };
+        this.runnableCollection.add(runnable);
+        THREAD_POOL_EXECUTOR.execute(runnable);
     }
 
     /**
@@ -195,7 +226,7 @@ public final class RestAdapter<T> implements Pipe<T> {
     @Override
     public void remove(final String id, final Callback<Void> callback) {
 
-        THREAD_POOL_EXECUTOR.execute(new Runnable() {
+        /*THREAD_POOL_EXECUTOR.execute(new Runnable() {
             Exception exception = null;
 
             @Override
@@ -211,8 +242,47 @@ public final class RestAdapter<T> implements Pipe<T> {
                     callback.onFailure(exception);
                 }
             }
-        });
+        });*/
 
+        Runnable runnable = new PipeRunnable<Void>(callback, this) {
+
+            @Override
+            protected Void perform() {
+                RestAdapter.this.restRunner.onRemove(id);
+                return null;
+            }
+        };
+        this.runnableCollection.add(runnable);
+        THREAD_POOL_EXECUTOR.execute(runnable);
+    }
+
+    private static abstract class PipeRunnable<T> implements Runnable {
+        private Exception exception = null;
+        private T result;
+        private Callback<T> callback;
+        private Pipe requestingPipe;
+
+        private PipeRunnable(Callback<T> callback, Pipe requestingPipe){
+            this.requestingPipe = requestingPipe;
+            this.callback = callback;
+        }
+
+        protected abstract T perform();
+
+        @Override
+        public void run() {
+            try {
+                this.result = perform();
+            } catch (Exception e) {
+                exception = e;
+            }
+            ((RestAdapter)this.requestingPipe).runnableCollection.remove(this);
+            if (exception == null) {
+                callback.onSuccess(result);
+            } else {
+                callback.onFailure(exception);
+            }
+        }
     }
 
     @Override
