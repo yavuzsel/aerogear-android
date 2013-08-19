@@ -261,22 +261,33 @@ public final class RestAdapter<T> implements Pipe<T> {
         private T result;
         private Callback<T> callback;
         private Pipe requestingPipe;
+        private Boolean isCancelled;
 
         private PipeRunnable(Callback<T> callback, Pipe requestingPipe){
             this.requestingPipe = requestingPipe;
             this.callback = callback;
+            isCancelled = false;
         }
 
         protected abstract T perform();
 
+        protected void cancel() {
+            isCancelled = true;
+        }
+
         @Override
         public void run() {
-            try {
-                this.result = perform();
-            } catch (Exception e) {
-                exception = e;
+            if (!isCancelled) {
+                try {
+                    this.result = perform();
+                } catch (Exception e) {
+                    exception = e;
+                }
             }
             ((RestAdapter)this.requestingPipe).runnableCollection.remove(this);
+            if (isCancelled) {
+                return;
+            }
             if (exception == null) {
                 callback.onSuccess(result);
             } else {
