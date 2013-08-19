@@ -126,10 +126,8 @@ public class Registrations {
 
         /**
      * 
-     * This will deliver an intent to all registered handlers.  Currently it is 
-     * GCM centric, but this will be changed in the future.
-     * 
-     * See: <a href="https://issues.jboss.org/browse/AGDROID-84">AGDROID-84</a>
+     * This will deliver an intent to all registered handlers.  
+     * See {@link PushConstants} for information on how messages will be routed.
      * 
      * @param context the application's context
      * @param message the message to pass
@@ -143,11 +141,9 @@ public class Registrations {
             new Thread(new Runnable() {
                 public void run() {
 
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                    String messageType = gcm.getMessageType(message);
-                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                    if (message.getBooleanExtra(PushConstants.ERROR, false)) {
                         defaultHandler.onError();
-                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                    } else if (message.getBooleanExtra(PushConstants.DELETED, false)) { 
                         defaultHandler.onDeleteMessage(context, message.getExtras());
                     } else {
                         defaultHandler.onMessage(context, message.getExtras());
@@ -161,11 +157,9 @@ public class Registrations {
             new Thread(new Runnable() {
                 public void run() {
 
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                    String messageType = gcm.getMessageType(message);
-                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                    if (message.getBooleanExtra(PushConstants.ERROR, false)) {
                         handler.onError();
-                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                    } else if (message.getBooleanExtra(PushConstants.DELETED, false)) { 
                         handler.onDeleteMessage(context, message.getExtras());
                     } else {
                         handler.onMessage(context, message.getExtras());
@@ -181,11 +175,9 @@ public class Registrations {
             new Handler(main).post(new Runnable() {
                 @Override
                 public void run() {
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                    String messageType = gcm.getMessageType(message);
-                    if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
+                    if (message.getBooleanExtra(PushConstants.ERROR, false)) {
                         handler.onError();
-                    } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
+                    } else if (message.getBooleanExtra(PushConstants.DELETED, false)) { 
                         handler.onDeleteMessage(context, message.getExtras());
                     } else {
                         handler.onMessage(context, message.getExtras());
