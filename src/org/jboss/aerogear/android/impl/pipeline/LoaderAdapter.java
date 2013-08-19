@@ -278,6 +278,11 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
     }
 
     @Override
+    public void cancel() {
+        reset();
+    }
+
+    @Override
     public void setLoaderIds(Multimap<String, Integer> idsForNamedPipes) {
         this.idsForNamedPipes = idsForNamedPipes;
     }

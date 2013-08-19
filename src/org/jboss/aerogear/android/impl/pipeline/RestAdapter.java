@@ -18,6 +18,8 @@ package org.jboss.aerogear.android.impl.pipeline;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
@@ -72,7 +74,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         this.baseURL = baseURL;
         this.requestBuilder = new GsonRequestBuilder<T>();
         this.responseParser = new GsonResponseParser<T>();
-        this.runnableCollection = new ArrayList<Runnable>();
+        this.runnableCollection = Collections.synchronizedList(new ArrayList<Runnable>());
     }
 
     @SuppressWarnings("unchecked")
@@ -88,7 +90,7 @@ public final class RestAdapter<T> implements Pipe<T> {
         } else {
             this.restRunner = new RestRunner<T>(klass, baseURL, config);
         }
-        this.runnableCollection = new ArrayList<Runnable>();
+        this.runnableCollection = Collections.synchronizedList(new ArrayList<Runnable>());
     }
 
     /**
@@ -254,6 +256,16 @@ public final class RestAdapter<T> implements Pipe<T> {
         };
         this.runnableCollection.add(runnable);
         THREAD_POOL_EXECUTOR.execute(runnable);
+    }
+
+    @Override
+    public void cancel() {
+        synchronized (this.runnableCollection) {
+            for (Iterator<Runnable> i = this.runnableCollection.iterator(); i.hasNext(); ) {
+                PipeRunnable r = (PipeRunnable)i.next();
+                r.cancel();
+            }
+        }
     }
 
     private static abstract class PipeRunnable<T> implements Runnable {

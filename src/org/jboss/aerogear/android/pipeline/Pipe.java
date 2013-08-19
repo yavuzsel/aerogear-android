@@ -91,7 +91,7 @@ public interface Pipe<T> {
     /**
      * Cancels all running and queued tasks on the pipe.
      */
-    //void cancel();
+    void cancel();
 
     /**
      * Returns the GSON serializer used to serialized instances of objects.

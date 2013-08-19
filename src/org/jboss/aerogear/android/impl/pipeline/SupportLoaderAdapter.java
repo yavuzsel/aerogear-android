@@ -316,6 +316,11 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
     }
 
     @Override
+    public void cancel() {
+        reset();
+    }
+
+    @Override
     public void setLoaderIds(Multimap<String, Integer> idsForNamedPipes) {
         this.idsForNamedPipes = idsForNamedPipes;
     }

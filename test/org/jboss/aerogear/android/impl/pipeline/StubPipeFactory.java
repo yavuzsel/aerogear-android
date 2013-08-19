@@ -74,6 +74,10 @@ public class StubPipeFactory implements PipeFactory {
             }
 
             @Override
+            public void cancel() {
+            }
+
+            @Override
             public PipeHandler getHandler() {
                 return null;
             }
