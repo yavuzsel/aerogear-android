@@ -179,6 +179,7 @@ public class SQLStore<T> extends SQLiteOpenHelper implements Store<T> {
                     }
                     count.incrementAndGet();
                 }
+                cursor.close();
             }
         }
         List<T> results = new ArrayList<T>();
