@@ -42,7 +42,6 @@ import org.jboss.aerogear.android.impl.http.HttpStubProvider;
 import org.jboss.aerogear.android.pipeline.Pipe;
 import org.junit.Assert;
 import org.junit.Before;
-import sun.rmi.runtime.Log;
 
 public class MultipartRequestBuilderTest {
 
