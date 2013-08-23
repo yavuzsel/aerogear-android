@@ -70,4 +70,10 @@ public class SupportReadLoader<T> extends AbstractSupportPipeLoader<List<T>> {
         super.onReset();
         result = null;
     }
+
+    @Override
+    public void onCanceled(List<T> data) {
+        super.onCanceled(data);
+        result = null;
+    }
 }

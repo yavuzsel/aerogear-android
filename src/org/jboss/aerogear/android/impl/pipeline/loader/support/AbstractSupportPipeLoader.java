@@ -55,6 +55,12 @@ public abstract class AbstractSupportPipeLoader<T> extends AsyncTaskLoader<T> {
         exception = null;
     }
 
+    @Override
+    public void onCanceled(T data) {
+        super.onCanceled(data);
+        exception = null;
+    }
+
     public Callback<T> getCallback() {
         return callback;
     }

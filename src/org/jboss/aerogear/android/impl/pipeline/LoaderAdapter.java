@@ -279,7 +279,12 @@ public class LoaderAdapter<T> implements LoaderPipe<T>,
 
     @Override
     public void cancel() {
-        reset();
+        for (Integer id : idsForNamedPipes.get(name)) {
+            Loader loader = manager.getLoader(id);
+            if (loader != null) {
+                loader.cancelLoad();
+            }
+        }
     }
 
     @Override

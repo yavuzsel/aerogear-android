@@ -70,4 +70,13 @@ public class ReadLoader<T> extends AbstractPipeLoader<List<T>> {
         super.onReset();
         result = null;
     }
+
+    @Override
+    protected boolean onCancelLoad() {
+        if (super.onCancelLoad()) {
+            result = null;
+            return true;
+        }
+        return false;
+    }
 }

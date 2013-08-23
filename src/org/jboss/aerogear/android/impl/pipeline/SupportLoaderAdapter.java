@@ -317,7 +317,12 @@ public class SupportLoaderAdapter<T> implements LoaderPipe<T>, LoaderManager.Loa
 
     @Override
     public void cancel() {
-        reset();
+        for (Integer id : this.idsForNamedPipes.get(name)) {
+            Loader loader = manager.getLoader(id);
+            if (loader != null) {
+                // TODO: cancel loader
+            }
+        }
     }
 
     @Override
